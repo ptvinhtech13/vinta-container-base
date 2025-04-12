@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container Base - <th:block th:include=":: #pageTitle">Title</th:block></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --nav-width: 68px;
+            --first-color: #4723D9;
+            --first-color-light: #AFA5D9;
+            --white-color: #F7F6FB;
+            --body-font: 'Nunito', sans-serif;
+            --normal-font-size: 1rem;
+            --z-fixed: 100
+        }
+
+        body {
+            position: relative;
+            margin: var(--nav-width) 0 0 0;
+            padding: 0 1rem;
+            font-family: var(--body-font);
+            font-size: var(--normal-font-size);
+            transition: 0.5s
+        }
+
+        .header {
+            width: 100%;
+            height: var(--nav-width);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            background-color: var(--white-color);
+            z-index: var(--z-fixed);
+            transition: 0.5s
+        }
+
+        .header_toggle {
+            color: var(--first-color);
+            font-size: 1.5rem;
+            cursor: pointer
+        }
+
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: calc(var(--nav-width) + 156px);
+            height: 100vh;
+            background-color: var(--first-color);
+            padding: .5rem 1rem 0 0;
+            transition: .5s;
+            z-index: var(--z-fixed)
+        }
+
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden
+        }
+
+        .nav_logo, .nav_link {
+            text-decoration: none;  /* Remove underline */
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: 1rem;
+            padding: .5rem 0 .5rem 1.5rem
+        }
+
+        .nav_logo {
+            margin-bottom: 2rem
+        }
+
+        .nav_logo-icon {
+            font-size: 1.25rem;
+            color: var(--white-color)
+        }
+
+        .nav_logo-name {
+            color: var(--white-color);
+            font-weight: 700
+        }
+
+        .nav_link {
+            position: relative;
+            color: var(--first-color-light);
+            margin-bottom: 1.5rem;
+            transition: .3s
+        }
+
+        .nav_link:hover {
+            text-decoration: none;  /* Remove underline on hover */
+            color: var(--white-color)
+        }
+
+        .nav_icon {
+            font-size: 1.25rem
+        }
+
+        .show {
+            left: 0
+        }
+
+        .body-pd {
+            padding-left: calc(var(--nav-width) + 1rem)
+        }
+
+        .active {
+            color: var(--white-color)
+        }
+
+        .active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 2px;
+            height: 32px;
+            background-color: var(--white-color)
+        }
+
+        .main-content {
+            padding-top: calc(var(--nav-width) + 1rem);
+        }
+
+        @media screen and (min-width: 768px) {
+            body {
+                margin: calc(var(--nav-width) + 1rem) 0 0 0;
+                padding-left: calc(var(--nav-width) + 2rem)
+            }
+
+            .header {
+                height: calc(var(--nav-width) + 1rem);
+                padding: 0 2rem 0 calc(var(--nav-width) + 2rem)
+            }
+
+            .l-navbar {
+                left: 0;
+                padding: 1rem 1rem 0 0;
+                width: calc(var(--nav-width) + 156px);
+            }
+
+            body {
+                padding-left: calc(var(--nav-width) + 188px);
+            }
+        }
+
+        /* Pagination styles */
+        .pagination {
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        /* File upload list styles */
+        .file-list {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .file-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .remove-file {
+            color: #dc3545;
+            cursor: pointer;
+        }
+
+        /* Add new styles for the header title */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header_title {
+            color: var(--first-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-left: calc(var(--nav-width) + 60px);
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        /* Remove the header_img styles since we're removing the Guest text */
+        .header_toggle {
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle">
+            <i class='bx bx-menu' id="header-toggle"></i>
+        </div>
+        <h1 class="header_title">
+            <th:block th:include=":: #pageTitle">Title</th:block>
+        </h1>
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div>
+                <a href="/" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">Container Base</span>
+                </a>
+                <div class="nav_list">
+                    <a href="/" class="nav_link" th:classappend="${currentUri == '/' ? 'active' : ''}">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Home</span>
+                    </a>
+                    <a href="#" class="nav_link" data-bs-toggle="collapse" data-bs-target="#containersSubmenu">
+                        <i class='bx bx-box nav_icon'></i>
+                        <span class="nav_name">Containers</span>
+                    </a>
+                    <div id="containersSubmenu">
+                        <a href="/containers/input" class="nav_link ms-4"
+                           th:classappend="${currentUri == '/containers/input' ? 'active' : ''}">
+                            <i class='bx bx-upload nav_icon'></i>
+                            <span class="nav_name">Input</span>
+                        </a>
+                        <a href="/containers/export" class="nav_link ms-4"
+                           th:classappend="${currentUri == '/containers/export' ? 'active' : ''}">
+                            <i class='bx bx-import nav_icon'></i>
+                            <span class="nav_name">Export</span>
+                        </a>
+                    </div>
+                    <a href="/settings" class="nav_link" th:classappend="${currentUri == '/settings' ? 'active' : ''}">
+                        <i class='bx bx-cog nav_icon'></i>
+                        <span class="nav_name">Settings</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div th:replace="~{:: #content}">
+            <!-- Content will be inserted here -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                    nav = document.getElementById(navId),
+                    bodypd = document.getElementById(bodyId),
+                    headerpd = document.getElementById(headerId)
+
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        nav.classList.toggle('show')
+                        toggle.classList.toggle('bx-x')
+                        bodypd.classList.toggle('body-pd')
+                        headerpd.classList.toggle('body-pd')
+                    })
+                }
+            }
+
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
+        });
+    </script>
+</body>
+</html>
