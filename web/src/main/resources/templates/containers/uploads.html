@@ -32,29 +32,24 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option1FileInput')">
-                                                Option 1
+                                                Demo Form
                                             </a>
                                         </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option2FileInput')">
-                                                Option 2
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option3FileInput')">
-                                                Option 3
-                                            </a>
-                                        </li>
+<!--                                        <li>-->
+                                        <!--                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option2FileInput')">-->
+                                        <!--                                                Option 2-->
+                                        <!--                                            </a>-->
+                                        <!--                                        </li>-->
                                     </ul>
                                 </div>
 
                                 <!-- Hidden file inputs for each option -->
                                 <input type="file" id="option1FileInput" multiple style="display: none"
-                                       onchange="uploadsPage.handleFileSelect(event, 'Option 1')">
-                                <input type="file" id="option2FileInput" multiple style="display: none"
-                                       onchange="uploadsPage.handleFileSelect(event, 'Option 2')">
-                                <input type="file" id="option3FileInput" multiple style="display: none"
-                                       onchange="uploadsPage.handleFileSelect(event, 'Option 3')">
+                                       onchange="uploadsPage.handleFileSelect(event, 'demo')">
+<!--                                <input type="file" id="option2FileInput" multiple style="display: none"-->
+<!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 2')">-->
+<!--                                <input type="file" id="option3FileInput" multiple style="display: none"-->
+<!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 3')">-->
                             </div>
                             <div id="fileList" class="file-list">
                                 <!-- Files will be listed here -->
@@ -176,13 +171,13 @@
                     document.getElementById(inputId).click();
                 },
 
-                handleFileSelect(event, optionType) {
+                handleFileSelect(event, formId) {
                     const files = event.target.files;
                     for (let file of files) {
                         if (this.validateFileSize(file)) {
                             this.uploadedFiles.push({
                                 file: file,
-                                optionType: optionType
+                                formId: formId
                             });
                         }
                     }
@@ -207,7 +202,7 @@
                         fileItem.className = 'file-item';
                         fileItem.innerHTML = `
                             <span>
-                                <strong>${fileObj.optionType}:</strong>
+                                <strong>${fileObj.formId}:</strong>
                                 ${fileObj.file.name} (${this.formatFileSize(fileObj.file.size)})
                             </span>
                             <i class="bx bx-x remove-file" onclick="uploadsPage.removeFile(${index})"></i>
@@ -236,10 +231,10 @@
                     const formData = new FormData();
                     this.uploadedFiles.forEach(fileObj => {
                         formData.append('files', fileObj.file);
-                        formData.append('types', fileObj.optionType);
+                        formData.append('formIds', fileObj.formId);
                     });
 
-                    fetch('/api/containers/input/create', {
+                    fetch('/api/import-job/create', {
                         method: 'POST',
                         body: formData
                     })
