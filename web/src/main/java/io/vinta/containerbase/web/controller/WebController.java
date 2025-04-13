@@ -57,7 +57,7 @@ public class WebController {
 		return "index";
 	}
 
-	@GetMapping("/containers/input")
+	@GetMapping("/containers/import")
 	public String uploads(@RequestParam(required = false) String containerId,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
@@ -101,7 +101,7 @@ public class WebController {
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateTo", dateTo);
 
-		return "containers/input";
+		return "containers/import";
 	}
 
 	@GetMapping("/containers/export")
@@ -156,7 +156,7 @@ public class WebController {
 		return "settings";
 	}
 
-	@GetMapping("/containers/input/create")
+	@GetMapping("/containers/import/create")
 	public String createContainer() {
 		return "containers/uploads";
 	}

@@ -231,10 +231,10 @@
                         <span class="nav_name">Containers</span>
                     </a>
                     <div id="containersSubmenu">
-                        <a href="/containers/input" class="nav_link ms-4"
-                           th:classappend="${currentUri == '/containers/input' ? 'active' : ''}">
+                        <a href="/containers/import" class="nav_link ms-4"
+                           th:classappend="${currentUri == '/containers/import' ? 'active' : ''}">
                             <i class='bx bx-upload nav_icon'></i>
-                            <span class="nav_name">Input</span>
+                            <span class="nav_name">Import</span>
                         </a>
                         <a href="/containers/export" class="nav_link ms-4"
                            th:classappend="${currentUri == '/containers/export' ? 'active' : ''}">
@@ -279,5 +279,8 @@
             showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header')
         });
     </script>
+
+    <!-- Page specific scripts -->
+    <th:block th:insert="~{:: #page-scripts} ?: _"></th:block>
 </body>
 </html>
