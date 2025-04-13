@@ -9,12 +9,20 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers;
+package io.vinta.containerbase.common.annotation;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.containers.entities.Container;
-import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import io.vinta.containerbase.common.idgenerator.Snowflake;
+import java.io.Serializable;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.IdentifierGenerator;
 
-public interface ContainerRepository {
-	Paging<Container> queryContainers(FindContainerQuery query);
+public final class SnowflakeIdentifierGenerator implements IdentifierGenerator {
+
+	private static final Snowflake dbSnowflake = new Snowflake();
+
+	@Override
+	public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+		return dbSnowflake.nextId();
+	}
 }

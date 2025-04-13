@@ -9,12 +9,22 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers;
+package io.vinta.containerbase.data.access.relational.containers.mapper;
 
-import io.vinta.containerbase.common.paging.Paging;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
+import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.containers.entities.Container;
-import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import io.vinta.containerbase.data.access.relational.containers.entities.ContainerEntity;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public interface ContainerRepository {
-	Paging<Container> queryContainers(FindContainerQuery query);
+@Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
+public interface ContainerEntityMapper {
+	ContainerEntityMapper INSTANCE = Mappers.getMapper(ContainerEntityMapper.class);
+
+	@Mapping(target = "id", source = "id", qualifiedByName = "longToContainerId")
+	@Mapping(target = "importJobId", source = "importJobId", qualifiedByName = "stringToImportJobId")
+	Container toModel(ContainerEntity entity);
 }

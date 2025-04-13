@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SnowflakeIdGenerator {
 
-	private static final SnowflakeId GENERATOR = new SnowflakeId();
+	private static final Snowflake GENERATOR = new Snowflake();
 
 	public static Long randomId() {
 		return GENERATOR.nextId();

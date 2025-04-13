@@ -11,7 +11,10 @@
  ******************************************************************************/
 package io.vinta.containerbase.core.containers;
 
-public interface ContainerQueryService {
-	//TODO: Vinh implements ContainerQueryService.java
+import io.vinta.containerbase.common.paging.Paging;
+import io.vinta.containerbase.core.containers.entities.Container;
+import io.vinta.containerbase.core.containers.request.FindContainerQuery;
 
+public interface ContainerQueryService {
+	Paging<Container> queryContainers(FindContainerQuery query);
 }

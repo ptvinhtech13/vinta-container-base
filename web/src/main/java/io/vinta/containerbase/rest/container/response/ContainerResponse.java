@@ -9,25 +9,20 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers.entities;
+package io.vinta.containerbase.rest.container.response;
 
-import io.vinta.containerbase.common.baseid.BaseEntity;
-import io.vinta.containerbase.common.baseid.ContainerId;
-import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.enums.ContainerState;
 import io.vinta.containerbase.common.enums.TransportEquipmentType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.With;
 
 @Getter
-@Builder
-@With
 @RequiredArgsConstructor
-public class Container extends BaseEntity<ContainerId> {
-	private final ContainerId id;
-	private final ImportJobId importJobId;
+@Builder
+public class ContainerResponse {
+	private final String id;
+	private final String importJobId;
 	private final String containerNumber;
 	private final String isoEquipmentCode;
 	private final String equipmentReference;

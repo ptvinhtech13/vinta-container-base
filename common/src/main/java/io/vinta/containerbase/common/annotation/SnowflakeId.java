@@ -9,12 +9,19 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers;
+package io.vinta.containerbase.common.annotation;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.containers.entities.Container;
-import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public interface ContainerRepository {
-	Paging<Container> queryContainers(FindContainerQuery query);
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import org.hibernate.annotations.IdGeneratorType;
+
+@IdGeneratorType(SnowflakeIdentifierGenerator.class)
+@Target({ METHOD, FIELD })
+@Retention(RUNTIME)
+public @interface SnowflakeId {
+	String name() default "snowflake_id_generator";
 }

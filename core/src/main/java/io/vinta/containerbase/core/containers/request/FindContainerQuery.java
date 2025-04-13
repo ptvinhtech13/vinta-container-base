@@ -9,12 +9,21 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers;
+package io.vinta.containerbase.core.containers.request;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.containers.entities.Container;
-import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import io.vinta.containerbase.common.paging.PaginationQuery;
+import java.util.Collection;
+import lombok.Builder;
 
-public interface ContainerRepository {
-	Paging<Container> queryContainers(FindContainerQuery query);
+public class FindContainerQuery extends PaginationQuery<FilterContainer> {
+	@Builder
+	public FindContainerQuery(FilterContainer filter, Integer size, Integer page, String sortDirection,
+			Collection<String> sortFields) {
+		super(filter, size, page, sortDirection, sortFields);
+	}
+
+	public FindContainerQuery withFilter(FilterContainer newFilter) {
+		return new FindContainerQuery(newFilter, size, page, sortDirection, sortFields);
+	}
+
 }

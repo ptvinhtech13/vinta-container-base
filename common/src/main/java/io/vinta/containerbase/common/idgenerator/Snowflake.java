@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Enumeration;
 
-public class SnowflakeId {
+public class Snowflake {
 	private static final int EPOCH_BITS = 41;
 	private static final int NODE_ID_BITS = 10;
 	private static final int SEQUENCE_BITS = 12;
@@ -23,7 +23,7 @@ public class SnowflakeId {
 	private volatile long sequence = 0L;
 
 	// Create Snowflake with a nodeId and custom epoch
-	public SnowflakeId(long nodeId, long customEpoch) {
+	public Snowflake(long nodeId, long customEpoch) {
 		if (nodeId < 0 || nodeId > MAX_NODE_ID) {
 			throw new IllegalArgumentException(String.format("NodeId must be between %d and %d", 0, MAX_NODE_ID));
 		}
@@ -32,12 +32,12 @@ public class SnowflakeId {
 	}
 
 	// Create Snowflake with a nodeId
-	public SnowflakeId(long nodeId) {
+	public Snowflake(long nodeId) {
 		this(nodeId, DEFAULT_CUSTOM_EPOCH);
 	}
 
 	// Let Snowflake generate a nodeId
-	public SnowflakeId() {
+	public Snowflake() {
 		this.nodeId = createNodeId();
 		this.customEpoch = DEFAULT_CUSTOM_EPOCH;
 	}

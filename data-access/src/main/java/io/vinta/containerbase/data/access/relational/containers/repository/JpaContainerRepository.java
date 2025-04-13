@@ -9,12 +9,10 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.containers;
+package io.vinta.containerbase.data.access.relational.containers.repository;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.containers.entities.Container;
-import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import io.vinta.containerbase.common.querydsl.BaseQuerydslRepository;
+import io.vinta.containerbase.data.access.relational.containers.entities.ContainerEntity;
 
-public interface ContainerRepository {
-	Paging<Container> queryContainers(FindContainerQuery query);
+public interface JpaContainerRepository extends BaseQuerydslRepository<ContainerEntity, Long> {
 }
