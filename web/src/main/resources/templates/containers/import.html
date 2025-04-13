@@ -38,7 +38,7 @@
                                 <input type="hidden" id="dateToZoned" name="dateTo" th:value="${dateTo}">
                             </div>
                             <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                                <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </form>
                     </div>
@@ -105,8 +105,8 @@
                                     </a>
                                 </li>
                                 <li class="page-item"
-                                    th:each="pageNum : ${totalPages > 1 ? #numbers.sequence(1, totalPages) : 1}"
-                                    th:classappend="${pageNum == currentPage} ? 'active' : ''">
+                                    th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                                    th:classappend="${pageNum == currentPage + 1} ? 'active' : ''">
                                     <a class="page-link" th:href="@{/containers/import-jobs(page=${pageNum})}"
                                        th:text="${pageNum}">1</a>
                                 </li>

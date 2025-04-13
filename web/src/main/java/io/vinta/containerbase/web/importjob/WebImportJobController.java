@@ -49,7 +49,7 @@ public class WebImportJobController implements BaseWebController {
 				.page(page - 1)
 				.sortFields(List.of("createdAt"))
 				.sortDirection("DESC")
-				.size(20)
+				.size(3)
 				.build());
 
 		model.addAttribute("jobs", result.getContent()
