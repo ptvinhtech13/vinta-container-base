@@ -9,12 +9,14 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.importjob;
+package io.vinta.containerbase.web;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.importjob.entities.ImportJob;
-import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
-public interface ImportJobQueryService {
-	Paging<ImportJob> queryImportJobs(FindImportJobQuery query);
+public interface BaseWebController {
+	@ModelAttribute("currentUri")
+	default String currentUri(HttpServletRequest request) {
+		return request.getRequestURI();
+	}
 }

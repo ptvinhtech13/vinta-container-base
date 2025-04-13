@@ -1,7 +1,7 @@
 package io.vinta.containerbase.web.controller;
 
+import io.vinta.containerbase.web.BaseWebController;
 import io.vinta.containerbase.web.model.Container;
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class WebController {
+public class WebController implements BaseWebController {
 	private static final int PAGE_SIZE = 10;
 	private final List<Container> dummyContainers;
 
@@ -45,63 +44,6 @@ public class WebController {
 				.minusDays(5)));
 		dummyContainers.add(new Container("postgres-db", "jkl321mno654", LocalDateTime.now()
 				.minusDays(5)));
-	}
-
-	@ModelAttribute("currentUri")
-	public String currentUri(HttpServletRequest request) {
-		return request.getRequestURI();
-	}
-
-	@GetMapping("/")
-	public String index() {
-		return "index";
-	}
-
-	@GetMapping("/containers/import")
-	public String uploads(@RequestParam(required = false) String containerId,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
-			@RequestParam(defaultValue = "1") int page, Model model) {
-		List<Container> filteredContainers = dummyContainers.stream()
-				.filter(container -> {
-					if (containerId != null && !containerId.isEmpty()) {
-						return container.getContainerId()
-								.contains(containerId);
-					}
-					return true;
-				})
-				.filter(container -> {
-					if (dateFrom != null) {
-						return !container.getCreatedAt()
-								.isBefore(dateFrom);
-					}
-					return true;
-				})
-				.filter(container -> {
-					if (dateTo != null) {
-						return !container.getCreatedAt()
-								.isAfter(dateTo);
-					}
-					return true;
-				})
-				.collect(Collectors.toList());
-
-		// Calculate pagination
-		int totalItems = filteredContainers.size();
-		int totalPages = (int) Math.ceil((double) totalItems / PAGE_SIZE);
-		int start = (page - 1) * PAGE_SIZE;
-		int end = Math.min(start + PAGE_SIZE, totalItems);
-
-		List<Container> pageContainers = filteredContainers.subList(start, end);
-
-		model.addAttribute("containers", pageContainers);
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", totalPages);
-		model.addAttribute("containerId", containerId);
-		model.addAttribute("dateFrom", dateFrom);
-		model.addAttribute("dateTo", dateTo);
-
-		return "containers/import";
 	}
 
 	@GetMapping("/containers/export")
@@ -149,20 +91,5 @@ public class WebController {
 		model.addAttribute("dateTo", dateTo);
 
 		return "containers/export";
-	}
-
-	@GetMapping("/settings")
-	public String settings() {
-		return "settings";
-	}
-
-	@GetMapping("/containers/import/create")
-	public String createContainer() {
-		return "containers/uploads";
-	}
-
-	@GetMapping("/containers/export/create")
-	public String exportContainer() {
-		return "containers/create-export";
 	}
 }

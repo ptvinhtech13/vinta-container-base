@@ -58,12 +58,11 @@ public class ImportJobController implements ImportJobApi {
 	}
 
 	private Set<FileDataSource> uploadFiles(ImportJobId importJobId, List<MultipartFile> files,
-			List<SheetFormId> sheetFormIds) throws IOException {
+			List<SheetFormId> sheetFormIds) {
 		// Create container directory
 		final var jobDir = uploadDir.resolve(importJobId.getValue());
 		jobDir.toFile()
 				.mkdirs();
-		//		Files.createDirectory(jobDir);
 
 		return IntStream.range(0, files.size())
 				.mapToObj(index -> {

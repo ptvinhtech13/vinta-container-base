@@ -9,12 +9,17 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.importjob;
+package io.vinta.containerbase.core.importjob.request;
 
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.importjob.entities.ImportJob;
-import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
+import java.time.Instant;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
-public interface ImportJobQueryService {
-	Paging<ImportJob> queryImportJobs(FindImportJobQuery query);
+@Getter
+@Builder
+@AllArgsConstructor
+public class FilterImportJob {
+	private Instant byCreatedFrom;
+	private Instant byCreatedTo;
 }

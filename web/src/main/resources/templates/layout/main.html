@@ -128,7 +128,7 @@
         }
 
         .main-content {
-            padding-top: calc(var(--nav-width) + 1rem);
+            padding-top: 1rem;
         }
 
         @media screen and (min-width: 768px) {
@@ -231,8 +231,8 @@
                         <span class="nav_name">Containers</span>
                     </a>
                     <div id="containersSubmenu">
-                        <a href="/containers/import" class="nav_link ms-4"
-                           th:classappend="${currentUri == '/containers/import' ? 'active' : ''}">
+                        <a href="/containers/import-jobs" class="nav_link ms-4"
+                           th:classappend="${currentUri == '/containers/import-jobs' ? 'active' : ''}">
                             <i class='bx bx-upload nav_icon'></i>
                             <span class="nav_name">Import</span>
                         </a>

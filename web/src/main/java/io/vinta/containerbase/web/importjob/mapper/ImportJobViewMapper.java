@@ -9,12 +9,22 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.importjob;
+package io.vinta.containerbase.web.importjob.mapper;
 
-import io.vinta.containerbase.common.paging.Paging;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
+import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.importjob.entities.ImportJob;
-import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
+import io.vinta.containerbase.web.importjob.views.ImportJobView;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public interface ImportJobQueryService {
-	Paging<ImportJob> queryImportJobs(FindImportJobQuery query);
+@Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
+public interface ImportJobViewMapper {
+	ImportJobViewMapper INSTANCE = Mappers.getMapper(ImportJobViewMapper.class);
+
+	@Mapping(target = "sources", expression = ("java(io.vinta.containerbase.web.utility.DisplayUtils.formatSourcesDisplay(job.getSources()))"))
+	ImportJobView toView(ImportJob job);
+
 }
