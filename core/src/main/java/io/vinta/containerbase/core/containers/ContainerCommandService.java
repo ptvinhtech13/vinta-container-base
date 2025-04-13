@@ -11,6 +11,10 @@
  ******************************************************************************/
 package io.vinta.containerbase.core.containers;
 
+import io.vinta.containerbase.core.containers.entities.Container;
+import io.vinta.containerbase.core.containers.request.CreateContainerCommand;
+import java.util.List;
+
 public interface ContainerCommandService {
-	//TODO: Vinh implements ContainerCommandService.java
+	List<Container> createContainers(List<CreateContainerCommand> commands);
 }

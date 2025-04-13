@@ -27,4 +27,9 @@ public interface ContainerEntityMapper {
 	@Mapping(target = "id", source = "id", qualifiedByName = "longToContainerId")
 	@Mapping(target = "importJobId", source = "importJobId", qualifiedByName = "stringToImportJobId")
 	Container toModel(ContainerEntity entity);
+
+	@Mapping(target = "id", source = "id", qualifiedByName = "containerIdToLong")
+	@Mapping(target = "importJobId", source = "importJobId", qualifiedByName = "importJobIdToString")
+	@Mapping(target = "isReefer", source = "reefer")
+	ContainerEntity toEntity(Container container);
 }

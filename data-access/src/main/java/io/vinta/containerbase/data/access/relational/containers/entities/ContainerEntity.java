@@ -20,7 +20,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,7 +46,6 @@ public class ContainerEntity {
 	private Long id;
 
 	@Column(name = "import_iob_id")
-	@NotNull
 	private String importJobId;
 
 	@Column(name = "container_number")

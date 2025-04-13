@@ -19,6 +19,7 @@ import io.vinta.containerbase.core.containers.request.FilterContainer;
 import io.vinta.containerbase.core.containers.request.FindContainerQuery;
 import io.vinta.containerbase.data.access.relational.containers.mapper.ContainerEntityMapper;
 import io.vinta.containerbase.data.access.relational.importjob.entities.QImportJobEntity;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +58,17 @@ public class ContainerRepositoryImpl implements ContainerRepository {
 								.stream()
 								.map(Sort.Order::toString)
 								.toList());
+
+	}
+
+	@Override
+	public List<Container> saveAll(List<Container> containers) {
+		return repository.saveAll(containers.stream()
+				.map(ContainerEntityMapper.INSTANCE::toEntity)
+				.toList())
+				.stream()
+				.map(ContainerEntityMapper.INSTANCE::toModel)
+				.toList();
 
 	}
 }

@@ -36,3 +36,11 @@ CREATE
             created_at TIMESTAMP(6) DEFAULT NOW(),
             updated_at TIMESTAMP(6) DEFAULT NOW()
         );
+
+CREATE
+    INDEX IF NOT EXISTS containers_import_iob_id_idx ON
+    containers(import_iob_id);
+
+CREATE
+    INDEX IF NOT EXISTS containers_container_number_idx ON
+    containers(container_number);

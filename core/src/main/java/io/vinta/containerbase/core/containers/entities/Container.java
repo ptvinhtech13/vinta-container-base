@@ -16,6 +16,7 @@ import io.vinta.containerbase.common.baseid.ContainerId;
 import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.enums.ContainerState;
 import io.vinta.containerbase.common.enums.TransportEquipmentType;
+import java.time.Instant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -47,4 +48,7 @@ public class Container extends BaseEntity<ContainerId> {
 	private final String ownerShippingSCAC;
 	private final String ownerName;
 	private final String ownerAddress;
+
+	private final Instant createdAt;
+	private final Instant updatedAt;
 }

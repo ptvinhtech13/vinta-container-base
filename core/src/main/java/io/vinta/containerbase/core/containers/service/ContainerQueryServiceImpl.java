@@ -27,7 +27,7 @@ public class ContainerQueryServiceImpl implements ContainerQueryService {
 
 	@Override
 	public Paging<Container> queryContainers(FindContainerQuery query) {
-
 		return repository.queryContainers(query);
 	}
+
 }

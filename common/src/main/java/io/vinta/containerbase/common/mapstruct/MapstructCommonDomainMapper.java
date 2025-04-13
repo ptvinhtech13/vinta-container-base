@@ -62,4 +62,11 @@ public interface MapstructCommonDomainMapper {
 				.orElse(null);
 	}
 
+	@Named("containerIdToLong")
+	default Long containerIdToLong(ContainerId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
 }
