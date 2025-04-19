@@ -5,239 +5,246 @@
 
 </head>
 <body>
-    <div id="pageTitle">Upload Container</div>
-    <div id="content">
-        <div class="container-fluid">
-            <!-- Add back button at the top -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <a href="/containers/import-jobs" class="btn btn-secondary">
-                        <i class="bx bx-arrow-back"></i> Back
-                    </a>
-                </div>
+<div id="pageTitle">Upload Container</div>
+<div id="content">
+    <div class="container-fluid">
+        <!-- Add back button at the top -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <a href="/containers/import-jobs" class="btn btn-secondary">
+                    <i class="bx bx-arrow-back"></i> Back
+                </a>
             </div>
+        </div>
 
-            <!-- Input Section -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Input</h5>
-                            <div class="mb-3">
-                                <!-- Upload dropdown button -->
-                                <div class="dropdown d-inline-block">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bx bx-upload"></i> Upload Files
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option1FileInput')">
-                                                Demo Form
-                                            </a>
-                                        </li>
-<!--                                        <li>-->
-                                        <!--                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option2FileInput')">-->
-                                        <!--                                                Option 2-->
-                                        <!--                                            </a>-->
-                                        <!--                                        </li>-->
-                                    </ul>
-                                </div>
-
-                                <!-- Hidden file inputs for each option -->
-                                <input type="file" id="option1FileInput" multiple style="display: none"
-                                       onchange="uploadsPage.handleFileSelect(event, 'demo')">
-<!--                                <input type="file" id="option2FileInput" multiple style="display: none"-->
-<!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 2')">-->
-<!--                                <input type="file" id="option3FileInput" multiple style="display: none"-->
-<!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 3')">-->
-                            </div>
-                            <div id="fileList" class="file-list">
-                                <!-- Files will be listed here -->
-                            </div>
-                            <div class="mt-3">
-                                <button type="button" class="btn btn-success" onclick="uploadsPage.handleUpload()" id="uploadButton" disabled>
-                                    <i class="bx bx-check"></i> Create
+        <!-- Input Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Input</h5>
+                        <div class="mb-3">
+                            <!-- Upload dropdown button -->
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <i class="bx bx-upload"></i> Upload Files
                                 </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#"
+                                           onclick="uploadsPage.triggerFileInput('option1FileInput')">
+                                            Demo Form
+                                        </a>
+                                    </li>
+                                    <!--                                        <li>-->
+                                    <!--                                            <a class="dropdown-item" href="#" onclick="uploadsPage.triggerFileInput('option2FileInput')">-->
+                                    <!--                                                Option 2-->
+                                    <!--                                            </a>-->
+                                    <!--                                        </li>-->
+                                </ul>
                             </div>
+
+                            <!-- Hidden file inputs for each option -->
+                            <input type="file" id="option1FileInput" multiple style="display: none"
+                                   onchange="uploadsPage.handleFileSelect(event, 'demo')">
+                            <!--                                <input type="file" id="option2FileInput" multiple style="display: none"-->
+                            <!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 2')">-->
+                            <!--                                <input type="file" id="option3FileInput" multiple style="display: none"-->
+                            <!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 3')">-->
+                        </div>
+                        <div id="fileList" class="file-list">
+                            <!-- Files will be listed here -->
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-success" onclick="uploadsPage.handleUpload()"
+                                    id="uploadButton" disabled>
+                                <i class="bx bx-check"></i> Create
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toast container -->
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bx bx-check me-2"></i>
-                    Files uploaded successfully!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+<!-- Toast container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+         aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bx bx-check me-2"></i>
+                Files uploaded successfully!
             </div>
-        </div>
-
-        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bx bx-error me-2"></i>
-                    <span id="errorToastMessage">An error occurred while uploading files.</span>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
         </div>
     </div>
 
-    <!-- Page specific scripts -->
-    <th:block id="page-scripts">
-        <script>
-            // Create a module for the uploads page
-            const uploadsPage = {
-                uploadedFiles: [],
-                successToast: null,
-                errorToast: null,
-                MAX_FILE_SIZE: 50 * 1024 * 1024, // 10MB in bytes
-                MAX_TOTAL_SIZE: 200 * 1024 * 1024, // 50MB in bytes
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert"
+         aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bx bx-error me-2"></i>
+                <span id="errorToastMessage">An error occurred while uploading files.</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
-                initialize() {
-                    // Wait for DOM to be fully loaded
-                    const successToastEl = document.getElementById('successToast');
-                    const errorToastEl = document.getElementById('errorToast');
+<!-- Page specific scripts -->
+<th:block id="page-scripts">
+    <script>
+        // Create a module for the uploads page
+        const uploadsPage = {
+            uploadedFiles: [],
+            successToast: null,
+            errorToast: null,
+            MAX_FILE_SIZE: 50 * 1024 * 1024, // 10MB in bytes
+            MAX_TOTAL_SIZE: 200 * 1024 * 1024, // 50MB in bytes
 
-                    if (successToastEl && errorToastEl) {
-                        this.successToast = new bootstrap.Toast(successToastEl, {
-                            animation: true,
-                            autohide: true,
-                            delay: 3000
+            initialize() {
+                // Wait for DOM to be fully loaded
+                const successToastEl = document.getElementById('successToast');
+                const errorToastEl = document.getElementById('errorToast');
+
+                if (successToastEl && errorToastEl) {
+                    this.successToast = new bootstrap.Toast(successToastEl, {
+                        animation: true,
+                        autohide: true,
+                        delay: 3000
+                    });
+
+                    this.errorToast = new bootstrap.Toast(errorToastEl, {
+                        animation: true,
+                        autohide: true,
+                        delay: 5000
+                    });
+                } else {
+                    console.error('Toast elements not found in DOM');
+                }
+            },
+
+            showError(message) {
+                const errorToastMessage = document.getElementById('errorToastMessage');
+                if (errorToastMessage && this.errorToast) {
+                    errorToastMessage.textContent = message;
+                    this.errorToast.show();
+                } else {
+                    console.error('Error toast elements not properly initialized');
+                    // Fallback to alert if toast isn't available
+                    alert(message);
+                }
+            },
+
+            showSuccess(message) {
+                if (this.successToast) {
+                    this.successToast.show();
+                } else {
+                    console.error('Success toast not properly initialized');
+                    // Fallback to alert if toast isn't available
+                    alert(message || 'Operation completed successfully');
+                }
+            },
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            },
+
+            validateFileSize(file) {
+                if (file.size > this.MAX_FILE_SIZE) {
+                    this.showError(`File "${file.name}" exceeds maximum size of ${this.formatFileSize(this.MAX_FILE_SIZE)}`);
+                    return false;
+                }
+
+                const totalSize = this.uploadedFiles.reduce((sum, fileObj) => sum + fileObj.file.size, 0) + file.size;
+                if (totalSize > this.MAX_TOTAL_SIZE) {
+                    this.showError(`Total upload size exceeds maximum of ${this.formatFileSize(this.MAX_TOTAL_SIZE)}`);
+                    return false;
+                }
+
+                return true;
+            },
+
+            triggerFileInput(inputId) {
+                document.getElementById(inputId).click();
+            },
+
+            handleFileSelect(event, formId) {
+                const files = event.target.files;
+                for (let file of files) {
+                    if (this.validateFileSize(file)) {
+                        this.uploadedFiles.push({
+                            file: file,
+                            formId: formId
                         });
-
-                        this.errorToast = new bootstrap.Toast(errorToastEl, {
-                            animation: true,
-                            autohide: true,
-                            delay: 5000
-                        });
-                    } else {
-                        console.error('Toast elements not found in DOM');
                     }
-                },
+                }
+                this.updateFileList();
+                // Reset the input to allow selecting the same file again
+                event.target.value = '';
+            },
 
-                showError(message) {
-                    const errorToastMessage = document.getElementById('errorToastMessage');
-                    if (errorToastMessage && this.errorToast) {
-                        errorToastMessage.textContent = message;
-                        this.errorToast.show();
-                    } else {
-                        console.error('Error toast elements not properly initialized');
-                        // Fallback to alert if toast isn't available
-                        alert(message);
-                    }
-                },
+            removeFile(index) {
+                this.uploadedFiles.splice(index, 1);
+                this.updateFileList();
+            },
 
-                showSuccess(message) {
-                    if (this.successToast) {
-                        this.successToast.show();
-                    } else {
-                        console.error('Success toast not properly initialized');
-                        // Fallback to alert if toast isn't available
-                        alert(message || 'Operation completed successfully');
-                    }
-                },
+            updateFileList() {
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = '';
 
-                formatFileSize(bytes) {
-                    if (bytes === 0) return '0 Bytes';
-                    const k = 1024;
-                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                    const i = Math.floor(Math.log(bytes) / Math.log(k));
-                    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-                },
-
-                validateFileSize(file) {
-                    if (file.size > this.MAX_FILE_SIZE) {
-                        this.showError(`File "${file.name}" exceeds maximum size of ${this.formatFileSize(this.MAX_FILE_SIZE)}`);
-                        return false;
-                    }
-
-                    const totalSize = this.uploadedFiles.reduce((sum, fileObj) => sum + fileObj.file.size, 0) + file.size;
-                    if (totalSize > this.MAX_TOTAL_SIZE) {
-                        this.showError(`Total upload size exceeds maximum of ${this.formatFileSize(this.MAX_TOTAL_SIZE)}`);
-                        return false;
-                    }
-
-                    return true;
-                },
-
-                triggerFileInput(inputId) {
-                    document.getElementById(inputId).click();
-                },
-
-                handleFileSelect(event, formId) {
-                    const files = event.target.files;
-                    for (let file of files) {
-                        if (this.validateFileSize(file)) {
-                            this.uploadedFiles.push({
-                                file: file,
-                                formId: formId
-                            });
-                        }
-                    }
-                    this.updateFileList();
-                    // Reset the input to allow selecting the same file again
-                    event.target.value = '';
-                },
-
-                removeFile(index) {
-                    this.uploadedFiles.splice(index, 1);
-                    this.updateFileList();
-                },
-
-                updateFileList() {
-                    const fileList = document.getElementById('fileList');
-                    fileList.innerHTML = '';
-
-                    let totalSize = 0;
-                    this.uploadedFiles.forEach((fileObj, index) => {
-                        totalSize += fileObj.file.size;
-                        const fileItem = document.createElement('div');
-                        fileItem.className = 'file-item';
-                        fileItem.innerHTML = `
+                let totalSize = 0;
+                this.uploadedFiles.forEach((fileObj, index) => {
+                    totalSize += fileObj.file.size;
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    fileItem.innerHTML = `
                             <span>
                                 <strong>${fileObj.formId}:</strong>
                                 ${fileObj.file.name} (${this.formatFileSize(fileObj.file.size)})
                             </span>
                             <i class="bx bx-x remove-file" onclick="uploadsPage.removeFile(${index})"></i>
                         `;
-                        fileList.appendChild(fileItem);
-                    });
+                    fileList.appendChild(fileItem);
+                });
 
-                    // Add total size information
-                    if (this.uploadedFiles.length > 0) {
-                        const totalSizeDiv = document.createElement('div');
-                        totalSizeDiv.className = 'mt-2 text-muted';
-                        totalSizeDiv.textContent = `Total size: ${this.formatFileSize(totalSize)}`;
-                        fileList.appendChild(totalSizeDiv);
-                    }
+                // Add total size information
+                if (this.uploadedFiles.length > 0) {
+                    const totalSizeDiv = document.createElement('div');
+                    totalSizeDiv.className = 'mt-2 text-muted';
+                    totalSizeDiv.textContent = `Total size: ${this.formatFileSize(totalSize)}`;
+                    fileList.appendChild(totalSizeDiv);
+                }
 
-                    // Enable/disable upload button based on files
-                    document.getElementById('uploadButton').disabled = this.uploadedFiles.length === 0;
-                },
+                // Enable/disable upload button based on files
+                document.getElementById('uploadButton').disabled = this.uploadedFiles.length === 0;
+            },
 
-                handleUpload() {
-                    if (this.uploadedFiles.length === 0) {
-                        this.showError('Please select files to upload');
-                        return;
-                    }
+            handleUpload() {
+                if (this.uploadedFiles.length === 0) {
+                    this.showError('Please select files to upload');
+                    return;
+                }
 
-                    const formData = new FormData();
-                    this.uploadedFiles.forEach(fileObj => {
-                        formData.append('files', fileObj.file);
-                        formData.append('formIds', fileObj.formId);
-                    });
+                const formData = new FormData();
+                this.uploadedFiles.forEach(fileObj => {
+                    formData.append('files', fileObj.file);
+                    formData.append('formIds', fileObj.formId);
+                });
 
-                    fetch('/api/import-job/create', {
-                        method: 'POST',
-                        body: formData
-                    })
+                fetch('/api/import-job/create', {
+                    method: 'POST',
+                    body: formData
+                })
                     .then(response => {
                         if (!response.ok) {
                             return response.text().then(text => {
@@ -256,20 +263,20 @@
                         console.error('Error:', error);
                         this.showError(error.message || 'Failed to upload files. Please try again.');
                     });
-                }
-            };
+            }
+        };
 
-            // Make sure DOM is fully loaded before initializing
-            document.addEventListener('DOMContentLoaded', () => {
-                // Ensure Bootstrap is loaded
-                if (typeof bootstrap === 'undefined') {
-                    console.error('Bootstrap is not loaded');
-                    return;
-                }
+        // Make sure DOM is fully loaded before initializing
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure Bootstrap is loaded
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap is not loaded');
+                return;
+            }
 
-                uploadsPage.initialize();
-            });
-        </script>
-    </th:block>
+            uploadsPage.initialize();
+        });
+    </script>
+</th:block>
 </body>
 </html>

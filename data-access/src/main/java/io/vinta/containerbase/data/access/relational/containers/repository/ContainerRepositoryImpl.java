@@ -1,14 +1,3 @@
-/******************************************************************************
- *  (C) Copyright 2008 STYL Solutions Pte. Ltd. , All rights reserved          *
- *                                                                             *
- *  This source code and any compilation or derivative thereof is the sole     *
- *  property of STYL Solutions Pte. Ltd. and is provided pursuant to a         *
- *  Software License Agreement.  This code is the proprietary information of   *
- *  STYL Solutions Pte. Ltd. and is confidential in nature. Its use and        *
- *  dissemination by any party other than STYL Solutions Pte. Ltd. is strictly *
- *  limited by the confidential information provisions of the Agreement        *
- *  referenced above.                                                          *
- ******************************************************************************/
 package io.vinta.containerbase.data.access.relational.containers.repository;
 
 import io.vinta.containerbase.common.paging.Paging;
@@ -17,14 +6,17 @@ import io.vinta.containerbase.core.containers.ContainerRepository;
 import io.vinta.containerbase.core.containers.entities.Container;
 import io.vinta.containerbase.core.containers.request.FilterContainer;
 import io.vinta.containerbase.core.containers.request.FindContainerQuery;
+import io.vinta.containerbase.data.access.relational.containers.entities.QContainerEntity;
 import io.vinta.containerbase.data.access.relational.containers.mapper.ContainerEntityMapper;
 import io.vinta.containerbase.data.access.relational.importjob.entities.QImportJobEntity;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -43,10 +35,18 @@ public class ContainerRepositoryImpl implements ContainerRepository {
 						.toArray(String[]::new));
 
 		final var predicate = WhereBuilder.build()
+				.applyIf(StringUtils.isNotBlank(filter.getByImportJobId()), where -> where.and(
+						QContainerEntity.containerEntity.importJobId.eq(filter.getByImportJobId())))
+				.applyIf(!CollectionUtils.isEmpty(filter.getByContainerNumbers()), where -> where.and(
+						QContainerEntity.containerEntity.containerNumber.in(filter.getByContainerNumbers())))
+				.applyIf(StringUtils.isNotBlank(filter.getByBookingReference()), where -> where.and(
+						QContainerEntity.containerEntity.bookingReference.eq(filter.getByBookingReference())))
+				.applyIf(StringUtils.isNotBlank(filter.getByOwnerShippingLineCode()), where -> where.and(
+						QContainerEntity.containerEntity.ownerShippingLineCode.eq(filter.getByOwnerShippingLineCode())))
 				.applyIf(filter.getByCreatedFrom() != null, where -> where.and(
-						QImportJobEntity.importJobEntity.createdAt.after(filter.getByCreatedFrom())))
-				.applyIf(filter.getByCreatedTo() != null, where -> where.and(QImportJobEntity.importJobEntity.createdAt
-						.after(filter.getByCreatedTo())));
+						QContainerEntity.containerEntity.createdAt.after(filter.getByCreatedFrom())))
+				.applyIf(filter.getByCreatedTo() != null, where -> where.and(QContainerEntity.containerEntity.createdAt
+						.before(filter.getByCreatedTo())));
 
 		final var pageResult = repository.findAllWithBase(predicate, pageable);
 

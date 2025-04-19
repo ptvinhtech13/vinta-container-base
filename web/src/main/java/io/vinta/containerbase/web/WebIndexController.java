@@ -16,9 +16,4 @@ public class WebIndexController implements BaseWebController {
 		return "settings";
 	}
 
-	@GetMapping("/containers/export/create")
-	public String exportContainer() {
-		return "containers/create-export";
-	}
-
 }
