@@ -48,7 +48,7 @@ public class ExportJobScheduler {
 
 	@Scheduled(cron = "${io.vinta.containerbase.export-job.scheduling.cron-expression}")
 	@SchedulerLock(name = "Export.ExportJobScheduler", lockAtLeastFor = "${io.vinta.containerbase.export-job.scheduling.lock-at-least-for:PT10S}", lockAtMostFor = "${io.vinta.containerbase.export-job.scheduling.lock-at-most-for:PT10M}")
-	public void startDeletingUsers() {
+	public void startExportScheduling() {
 		LockAssert.assertLocked();
 		final var result = exportJobQueryService.queryExportJobs(FindExportJobQuery.builder()
 				.filter(FilterExportJob.builder()

@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VintaDemoInOut extends BaseFileFormInOut implements FileFormExporter, FileFormImporter {
 
-	private static final Integer MAX_BATCH_SIZE = 500;
+	private static final Integer MAX_BATCH_SIZE = 1000;
 
 	@Override
 	public boolean hasSupport(FileFormId formId) {
@@ -52,8 +53,12 @@ public class VintaDemoInOut extends BaseFileFormInOut implements FileFormExporte
 					.withTotalPage(containers.getTotalPages());
 
 			exportToFilePath(Paths.get(job.getFileOutputPath()), job.getExportForm(), containers.getContent());
-			return exportCommandService.updateExportJob(job.withStatus(Objects.equals(job.getTotalContainer(), job
-					.getTotalExportedContainer()) ? ExportJobStatus.SUCCEEDED : ExportJobStatus.ERROR))
+			final var isSucceeded = Objects.equals(job.getTotalContainer(), (long) containers.getContent()
+					.size());
+
+			return exportCommandService.updateExportJob(job.withStatus(isSucceeded
+					? ExportJobStatus.SUCCEEDED
+					: ExportJobStatus.EXPORTING))
 					.withTotalExportedContainer((long) containers.getContent()
 							.size())
 					.withLastExportedPage(0);
@@ -66,15 +71,25 @@ public class VintaDemoInOut extends BaseFileFormInOut implements FileFormExporte
 				.build());
 
 		exportToFilePath(Paths.get(job.getFileOutputPath()), job.getExportForm(), containers.getContent());
-		return exportCommandService.updateExportJob(job.withStatus(Objects.equals(job.getTotalContainer(), job
-				.getTotalExportedContainer()) ? ExportJobStatus.SUCCEEDED : ExportJobStatus.ERROR))
+
+		final var isSucceeded = Objects.equals(job.getTotalContainer(), job.getTotalExportedContainer() + containers
+				.getContent()
+				.size());
+
+		return exportCommandService.updateExportJob(job.withStatus(isSucceeded
+				? ExportJobStatus.SUCCEEDED
+				: ExportJobStatus.EXPORTING))
 				.withTotalExportedContainer(job.getTotalExportedContainer() + containers.getContent()
 						.size())
 				.withLastExportedPage(job.getLastExportedPage() + 1);
 	}
 
+	@SneakyThrows
 	private void exportToFilePath(Path path, FileForm form, List<Container> containers) {
 		boolean fileExists = Files.exists(path);
+
+		createFileIfNotExists(path);
+
 		final var columns = form.getSchema()
 				.getColumDefinitions();
 		columns.sort(Comparator.comparingInt(FileFormSchema.ColumDefinition::getIndex));

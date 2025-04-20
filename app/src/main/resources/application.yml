@@ -106,6 +106,6 @@ io.vinta.containerbase:
   export-job:
     scheduling:
       enabled: true
-      cron-expression: "0 */1 * * * *" ## Every 20 mins for check
+      cron-expression: "0 */1 * * * *" ## Every 1 min for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M

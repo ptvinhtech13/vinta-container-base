@@ -2,7 +2,7 @@ CREATE
     TABLE
         IF NOT EXISTS export_job(
             id BIGSERIAL NOT NULL CONSTRAINT export_job_pk PRIMARY KEY,
-            exportFormId VARCHAR(64),
+            export_form_id VARCHAR(64),
             status VARCHAR(64),
             total_container INTEGER DEFAULT 0,
             total_page INTEGER DEFAULT 0,

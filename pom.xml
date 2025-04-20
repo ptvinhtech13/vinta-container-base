@@ -73,6 +73,12 @@
 
             <dependency>
                 <groupId>io.vinta.containerbase</groupId>
+                <artifactId>scheduling</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.vinta.containerbase</groupId>
                 <artifactId>web</artifactId>
                 <version>${project.version}</version>
             </dependency>

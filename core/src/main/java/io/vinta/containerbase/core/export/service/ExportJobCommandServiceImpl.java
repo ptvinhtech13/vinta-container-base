@@ -18,7 +18,7 @@ public class ExportJobCommandServiceImpl implements ExportJobCommandService {
 	@Override
 	public ExportJob createExportJob(CreateExportJobCommand command) {
 		return repository.save(ExportJobMapper.INSTANCE.toNewExportJob(command, fileFormManagerService.getFileForm(
-				command.getExportedFormId())
+				command.getExportFormId())
 				.orElseThrow()));
 
 	}

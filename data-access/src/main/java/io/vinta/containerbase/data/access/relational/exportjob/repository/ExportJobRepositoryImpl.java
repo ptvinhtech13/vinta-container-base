@@ -11,6 +11,7 @@ import io.vinta.containerbase.data.access.relational.exportjob.entities.QExportJ
 import io.vinta.containerbase.data.access.relational.exportjob.mapper.ExportJobEntityMapper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -37,7 +38,9 @@ public class ExportJobRepositoryImpl implements ExportJobRepository {
 				.applyIf(filter.getByCreatedFrom() != null, where -> where.and(
 						QExportJobEntity.exportJobEntity.createdAt.after(filter.getByCreatedFrom())))
 				.applyIf(filter.getByCreatedTo() != null, where -> where.and(QExportJobEntity.exportJobEntity.createdAt
-						.after(filter.getByCreatedTo())));
+						.after(filter.getByCreatedTo())))
+				.applyIf(CollectionUtils.isNotEmpty(filter.getByStatuses()), where -> where.and(
+						QExportJobEntity.exportJobEntity.status.in(filter.getByStatuses())));
 
 		final var pageResult = exportJobRepository.findAllWithBase(predicate, pageable);
 

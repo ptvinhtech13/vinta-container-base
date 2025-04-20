@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.util.CollectionUtils;
 
 public abstract class PaginationQuery<T> {
-	private static final int DEFAULT_MAX_SIZE = 500;
+	private static final int DEFAULT_MAX_SIZE = 1000;
 	private static final int DEFAULT_PAGE_SIZE = 20;
 	private static final int DEFAULT_PAGE = 0;
 	private static final Set<String> DEFAULT_SORT_COLUMNS = Set.of("id");

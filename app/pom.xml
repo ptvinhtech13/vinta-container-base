@@ -19,6 +19,11 @@
 
         <dependency>
             <groupId>io.vinta.containerbase</groupId>
+            <artifactId>scheduling</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.vinta.containerbase</groupId>
             <artifactId>web</artifactId>
         </dependency>
 

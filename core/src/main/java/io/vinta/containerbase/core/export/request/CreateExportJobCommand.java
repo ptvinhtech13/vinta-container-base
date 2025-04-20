@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class CreateExportJobCommand {
-	private final FileFormId exportedFormId;
+	private final FileFormId exportFormId;
 	private final String remark;
 	private final FilterContainer filterContainer;
 }
