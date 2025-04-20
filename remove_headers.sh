@@ -2,7 +2,7 @@
 
 # Directories to scan (space-separated)
 #DIRS_TO_SCAN="app/src web/src"
-DIRS_TO_SCAN="app common core data-access web"
+DIRS_TO_SCAN="app common core data-access web scheduling"
 
 # Create a temporary file for sed pattern
 cat > /tmp/header_pattern << 'EOF'

@@ -56,7 +56,7 @@
                                         <i class="bx bx-upload"></i> Export
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#" onclick="handleExportSelection('FORM_DEMO')">Form Demo</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="handleExportSelection('VINTA_DEMO')">Vinta Demo Form</a></li>
                                         <li><a class="dropdown-item" href="#" onclick="handleExportSelection('TRANSIT_LLC')">Transit LLC Standard</a></li>
                                         <li><a class="dropdown-item" href="#" onclick="handleExportSelection('COSCO')">COSCO Shipping Lines Standard</a></li>
                                     </ul>
@@ -378,18 +378,18 @@
             }
 
             const payload = {
-                formType: selectedForm,
-                filter: {
-                    importJobId: document.getElementById('importJobId').value || null,
-                    containerNumbers: containerNumbers ? containerNumbers.split(',').map(n => n.trim()) : null,
-                    bookingReference: document.getElementById('bookingReference').value || null,
-                    ownerShippingLineCode: document.getElementById('ownerShippingLineCode').value || null,
-                    dateFrom: document.getElementById('dateFromZoned').value || null,
-                    dateTo: document.getElementById('dateToZoned').value || null
+                exportFormId: selectedForm,
+                filterContainer: {
+                    byImportJobId: document.getElementById('importJobId').value || null,
+                    byContainerNumbers: containerNumbers ? containerNumbers.split(',').map(n => n.trim()) : null,
+                    byBookingReference: document.getElementById('bookingReference').value || null,
+                    byOwnerShippingLineCode: document.getElementById('ownerShippingLineCode').value || null,
+                    byCreatedFrom: document.getElementById('dateFromZoned').value || null,
+                    byCreatedTo: document.getElementById('dateToZoned').value || null
                 }
             };
 
-            fetch('/api/containers/export', {
+            fetch('/api/export', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

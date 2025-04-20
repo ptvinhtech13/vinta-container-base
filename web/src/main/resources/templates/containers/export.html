@@ -83,18 +83,19 @@
                                             (job.getStatus().name() == 'ERROR' ? 'bg-danger' :
                                             (job.getStatus().name() == 'EXPORTING' ? 'bg-warning' :
                                             (job.getStatus().name() == 'CREATED' ? 'bg-primary' : 'bg-info'))))}"
-                                            th:text="${job.getStatus()}">
+                                              th:text="${job.getStatus()}">
                                         </span>
                                     </td>
                                     <td>
-                                        <div th:if="${job.getStatus().name() != 'CREATED'}" class="progress" style="height: 20px;">
+                                        <div th:if="${job.getStatus().name() != 'CREATED'}" class="progress"
+                                             style="height: 20px;">
                                             <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                                role="progressbar"
-                                                th:style="${'width: ' + (job.getTotalContainer() == 0 ? 0 : (job.getTotalExportedContainer() * 100 / job.getTotalContainer())) + '%'}"
-                                                th:aria-valuenow="${job.getTotalExportedContainer()}"
-                                                th:aria-valuemin="0"
-                                                th:aria-valuemax="${job.getTotalContainer()}"
-                                                th:text="${job.getTotalExportedContainer() + ' / ' + job.getTotalContainer()}">
+                                                 role="progressbar"
+                                                 th:style="${'width: ' + (job.getTotalContainer() == 0 ? 0 : (job.getTotalExportedContainer() * 100 / job.getTotalContainer())) + '%'}"
+                                                 th:aria-valuenow="${job.getTotalExportedContainer()}"
+                                                 th:aria-valuemin="0"
+                                                 th:aria-valuemax="${job.getTotalContainer()}"
+                                                 th:text="${job.getTotalExportedContainer() + ' / ' + job.getTotalContainer()}">
                                             </div>
                                         </div>
                                         <span th:if="${job.getStatus().name() == 'CREATED'}"
@@ -227,7 +228,7 @@
 
     </script>
     <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Get URL parameters
             const urlParams = new URLSearchParams(window.location.search);
 
