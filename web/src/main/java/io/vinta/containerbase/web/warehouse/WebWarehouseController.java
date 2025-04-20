@@ -3,16 +3,12 @@ package io.vinta.containerbase.web.warehouse;
 import io.vinta.containerbase.core.containers.ContainerQueryService;
 import io.vinta.containerbase.core.containers.request.FilterContainer;
 import io.vinta.containerbase.core.containers.request.FindContainerQuery;
-
-import java.time.Instant;
+import io.vinta.containerbase.web.warehouse.mapper.ContainerViewMapper;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.time.ZoneId;
-
-import io.vinta.containerbase.web.warehouse.mapper.ContainerViewMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,20 +26,18 @@ public class WebWarehouseController {
 
 	@GetMapping("/containers/warehouse")
 	public String warehouse(
-			@RequestParam(required = false)
-			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
-			@RequestParam(required = false) String importJobId,
-			@RequestParam(required = false) String bookingReference,
+			@RequestParam(required = false) String importJobId, @RequestParam(required = false) String bookingReference,
 			@RequestParam(required = false) String ownerShippingLineCode,
-			@RequestParam(required = false) Set<String> containerNumbers,
-			@RequestParam(defaultValue = "1") int page, Model model) {
+			@RequestParam(required = false) Set<String> containerNumbers, @RequestParam(defaultValue = "1") int page,
+			Model model) {
 
 		final var result = queryService.queryContainers(FindContainerQuery.builder()
 				.filter(FilterContainer.builder()
 						.byCreatedFrom(Optional.ofNullable(dateFrom)
 								.map(it -> it.atZone(ZoneId.systemDefault())
-								.toInstant())
+										.toInstant())
 								.orElse(null))
 						.byCreatedTo(Optional.ofNullable(dateTo)
 								.map(it -> it.atZone(ZoneId.systemDefault())
@@ -60,10 +54,14 @@ public class WebWarehouseController {
 				.size(20)
 				.build());
 
-		model.addAttribute("containers", result.getContent().stream().map(ContainerViewMapper.INSTANCE::toView).toList());
+		model.addAttribute("containers", result.getContent()
+				.stream()
+				.map(ContainerViewMapper.INSTANCE::toView)
+				.toList());
 		model.addAttribute("currentPage", result.getPage());
 		model.addAttribute("totalPages", result.getTotalPages());
-		model.addAttribute("pageSize", result.getContent().size());
+		model.addAttribute("pageSize", result.getContent()
+				.size());
 		model.addAttribute("totalElements", result.getTotalElements());
 
 		return "containers/warehouse";

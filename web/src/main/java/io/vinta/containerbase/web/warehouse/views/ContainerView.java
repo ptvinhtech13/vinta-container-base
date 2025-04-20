@@ -1,14 +1,11 @@
 package io.vinta.containerbase.web.warehouse.views;
 
-import io.vinta.containerbase.common.baseid.ContainerId;
-import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.enums.ContainerState;
 import io.vinta.containerbase.common.enums.TransportEquipmentType;
+import java.time.Instant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.time.Instant;
 
 @Getter
 @RequiredArgsConstructor

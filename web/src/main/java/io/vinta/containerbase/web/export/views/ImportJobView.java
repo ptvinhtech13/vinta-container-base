@@ -2,11 +2,10 @@ package io.vinta.containerbase.web.export.views;
 
 import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.enums.ImportJobStatus;
+import java.time.Instant;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.time.Instant;
 
 @Getter
 @RequiredArgsConstructor

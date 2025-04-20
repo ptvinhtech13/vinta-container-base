@@ -2,6 +2,8 @@ package io.vinta.containerbase.common.mapstruct;
 
 import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.baseid.ContainerId;
+import io.vinta.containerbase.common.baseid.ExportJobId;
+import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.baseid.ImportJobId;
 import java.util.Optional;
 import org.mapstruct.Mapper;
@@ -58,4 +60,48 @@ public interface MapstructCommonDomainMapper {
 				.orElse(null);
 	}
 
+	@Named("stringToFileFormId")
+	default FileFormId stringToFileFormId(String source) {
+		return Optional.ofNullable(source)
+				.map(FileFormId::new)
+				.orElse(null);
+	}
+
+	@Named("fileFormIdToString")
+	default String fileFormIdToString(FileFormId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("stringToExportJobId")
+	default ExportJobId stringToExportJobId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(ExportJobId::new)
+				.orElse(null);
+	}
+
+	@Named("longToExportJobId")
+	default ExportJobId longToExportJobId(Long source) {
+		return Optional.ofNullable(source)
+				.map(ExportJobId::new)
+				.orElse(null);
+	}
+
+	@Named("exportJobIdToString")
+	default String exportJobIdToString(ExportJobId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("exportJobIdToLong")
+	default Long exportJobIdToLong(ExportJobId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
 }

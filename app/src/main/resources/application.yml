@@ -74,3 +74,38 @@ spring:
   sql:
     init:
       platform: h2
+
+
+io.vinta.containerbase:
+  supported-file-forms:
+    - fileFormId: VINTA_DEMO
+      actions:
+        - EXPORT
+        - IMPORT
+      schema:
+        headerRowIndex: 1
+        columDefinitions:
+          - index: 0
+            key: containerNumber
+            columnName: Container Number
+          - index: 1
+            key: isoEquipmentCode
+            columnName: ISO Equipment Code
+          - index: 2
+            key: equipmentReference
+            columnName: Equipment Reference
+          - index: 3
+            key: transportEquipmentType
+            columnName: Transport Equipment Type
+          - index: 4
+            key: tareWeightKg
+            columnName: Tare Weight (kg)
+          - index: 5
+            key: maxGrossWeightKg
+            columnName: Max Gross Weight (kg)
+  export-job:
+    scheduling:
+      enabled: true
+      cron-expression: "0 */1 * * * *" ## Every 20 mins for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT120M

@@ -8,7 +8,6 @@ import io.vinta.containerbase.core.containers.request.FilterContainer;
 import io.vinta.containerbase.core.containers.request.FindContainerQuery;
 import io.vinta.containerbase.data.access.relational.containers.entities.QContainerEntity;
 import io.vinta.containerbase.data.access.relational.containers.mapper.ContainerEntityMapper;
-import io.vinta.containerbase.data.access.relational.importjob.entities.QImportJobEntity;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
