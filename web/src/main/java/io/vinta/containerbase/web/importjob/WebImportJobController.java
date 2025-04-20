@@ -5,7 +5,8 @@ import io.vinta.containerbase.core.importjob.request.FilterImportJob;
 import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
 import io.vinta.containerbase.web.BaseWebController;
 import io.vinta.containerbase.web.importjob.mapper.ImportJobViewMapper;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,19 @@ public class WebImportJobController implements BaseWebController {
 
 	@GetMapping("/containers/import-jobs")
 	public String uploads(
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime dateFrom,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime dateTo,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
 			@RequestParam(defaultValue = "1") int page, Model model) {
 
 		final var result = queryService.queryImportJobs(FindImportJobQuery.builder()
 				.filter(FilterImportJob.builder()
 						.byCreatedFrom(Optional.ofNullable(dateFrom)
-								.map(ZonedDateTime::toInstant)
+								.map(it -> it.atZone(ZoneId.systemDefault())
+										.toInstant())
 								.orElse(null))
 						.byCreatedTo(Optional.ofNullable(dateTo)
-								.map(ZonedDateTime::toInstant)
+								.map(it -> it.atZone(ZoneId.systemDefault())
+										.toInstant())
 								.orElse(null))
 						.build())
 				.page(page - 1)

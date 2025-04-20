@@ -15,6 +15,7 @@ import lombok.With;
 @RequiredArgsConstructor
 public class FileForm extends BaseEntity<FileFormId> {
 	private final FileFormId id;
+	private final String fileFormName;
 	private final FileFormSchema schema;
 	private final Set<FileFormAction> actions;
 }

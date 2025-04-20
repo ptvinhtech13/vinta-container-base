@@ -79,6 +79,7 @@ spring:
 io.vinta.containerbase:
   supported-file-forms:
     - fileFormId: VINTA_DEMO
+      fileFormName: Demo Container Form
       actions:
         - EXPORT
         - IMPORT
@@ -106,6 +107,6 @@ io.vinta.containerbase:
   export-job:
     scheduling:
       enabled: true
-      cron-expression: "0 */1 * * * *" ## Every 1 min for check
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M

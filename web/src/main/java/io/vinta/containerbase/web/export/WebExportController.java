@@ -1,11 +1,12 @@
 package io.vinta.containerbase.web.export;
 
-import io.vinta.containerbase.core.importjob.ImportJobQueryService;
-import io.vinta.containerbase.core.importjob.request.FilterImportJob;
-import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
+import io.vinta.containerbase.core.export.ExportJobQueryService;
+import io.vinta.containerbase.core.export.request.FilterExportJob;
+import io.vinta.containerbase.core.export.request.FindExportJobQuery;
 import io.vinta.containerbase.web.BaseWebController;
-import io.vinta.containerbase.web.export.mapper.ImportJobViewMapper;
-import java.time.ZonedDateTime;
+import io.vinta.containerbase.web.export.mapper.ExportJobViewMapper;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,40 +19,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 public class WebExportController implements BaseWebController {
-	private final ImportJobQueryService queryService;
+	private final ExportJobQueryService queryService;
 
 	@GetMapping("/containers/export")
 	public String uploads(
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime dateFrom,
-			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime dateTo,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
 			@RequestParam(defaultValue = "1") int page, Model model) {
 
-		final var request = FindImportJobQuery.builder()
-				.filter(FilterImportJob.builder()
+		final var request = FindExportJobQuery.builder()
+				.filter(FilterExportJob.builder()
 						.byCreatedFrom(Optional.ofNullable(dateFrom)
-								.map(ZonedDateTime::toInstant)
+								.map(it -> it.atZone(ZoneId.systemDefault())
+										.toInstant())
 								.orElse(null))
 						.byCreatedTo(Optional.ofNullable(dateTo)
-								.map(ZonedDateTime::toInstant)
+								.map(it -> it.atZone(ZoneId.systemDefault())
+										.toInstant())
 								.orElse(null))
 						.build())
 				.page(page - 1)
-				.sortFields(List.of("createdAt"))
+				.sortFields(List.of("id"))
 				.sortDirection("DESC")
 				.size(100)
 				.build();
 
-		final var result = queryService.queryImportJobs(request);
+		final var result = queryService.queryExportJobs(request);
 
 		model.addAttribute("jobs", result.getContent()
 				.stream()
-				.map(ImportJobViewMapper.INSTANCE::toView)
+				.map(ExportJobViewMapper.INSTANCE::toView)
 				.toList());
 		model.addAttribute("currentPage", result.getPage());
 		model.addAttribute("totalPages", result.getTotalPages());
+		model.addAttribute("pageSize", request.getSize());
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateTo", dateTo);
-		model.addAttribute("pageSize", request.getSize());
 		return "containers/export";
 	}
 

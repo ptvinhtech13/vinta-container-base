@@ -1,4 +1,6 @@
 #FileLock
-#Sun Apr 20 09:41:35 UTC 2025
-id=19652931ff0c04bdba6690a1408947581e2b26dfabc
+#Sun Apr 20 20:19:23 ICT 2025
+hostName=192.168.6.122
+id=196535a83a9d0b096c0b0e32c6db891478a5f1cbbd9
 method=file
+server=192.168.6.122\:57985

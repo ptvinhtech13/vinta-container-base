@@ -1,5 +1,6 @@
 package io.vinta.containerbase.data.access.relational.exportjob.repository;
 
+import io.vinta.containerbase.common.baseid.ExportJobId;
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.querydsl.WhereBuilder;
 import io.vinta.containerbase.core.export.ExportJobRepository;
@@ -66,5 +67,15 @@ public class ExportJobRepositoryImpl implements ExportJobRepository {
 				.map(it -> ExportJobEntityMapper.INSTANCE.toModel(fileFormManagerService, it))
 				.orElseGet(() -> ExportJobEntityMapper.INSTANCE.toModel(fileFormManagerService, exportJobRepository
 						.save(ExportJobEntityMapper.INSTANCE.toNewEntity(job))));
+	}
+
+	@Override
+	public Optional<ExportJob> findOneByExportJobId(ExportJobId exportJobId) {
+		if (exportJobId == null || exportJobId.getValue() == null) {
+			throw new IllegalArgumentException("ExportJobId cannot be null");
+		}
+
+		return exportJobRepository.findById(exportJobId.getValue())
+				.map(it -> ExportJobEntityMapper.INSTANCE.toModel(fileFormManagerService, it));
 	}
 }

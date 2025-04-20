@@ -31,8 +31,8 @@ public class TestExport {
 		exportJobCommandService.createExportJob(CreateExportJobCommand.builder()
 				.exportFormId(new FileFormId("VINTA_DEMO"))
 				.filterContainer(FilterContainer.builder()
-						//								.byOwnerShippingLineCode("ONE")
-						.byBookingReference("BK63019871")
+						//						.byOwnerShippingLineCode("ONE")
+						//						.byBookingReference("BK63019871")
 						.build())
 				.build());
 	}

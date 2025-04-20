@@ -26,6 +26,7 @@ public class FileFormConfigProperties {
 	@NoArgsConstructor
 	public static class FileFormConfig {
 		private String fileFormId;
+		private String fileFormName;
 		private Set<FileFormAction> actions;
 		private FileFormSchema schema;
 	}

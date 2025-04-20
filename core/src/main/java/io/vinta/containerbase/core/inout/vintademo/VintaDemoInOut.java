@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VintaDemoInOut extends BaseFileFormInOut implements FileFormExporter, FileFormImporter {
 
-	private static final Integer MAX_BATCH_SIZE = 1000;
+	private static final Integer MAX_BATCH_SIZE = 500;
 
 	@Override
 	public boolean hasSupport(FileFormId formId) {
