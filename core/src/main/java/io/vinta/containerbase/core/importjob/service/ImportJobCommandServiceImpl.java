@@ -15,6 +15,11 @@ public class ImportJobCommandServiceImpl implements ImportJobCommandService {
 
 	@Override
 	public ImportJob createImportJob(CreateImportJobCommand command) {
-		return repository.save(ImportJobMapper.INSTANCE.toEntity(command));
+		return repository.save(ImportJobMapper.INSTANCE.toNewEntity(command));
+	}
+
+	@Override
+	public ImportJob updateImportJob(ImportJob importJob) {
+		return repository.save(importJob);
 	}
 }

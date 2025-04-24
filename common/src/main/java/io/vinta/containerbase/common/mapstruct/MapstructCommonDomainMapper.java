@@ -5,6 +5,7 @@ import io.vinta.containerbase.common.baseid.ContainerId;
 import io.vinta.containerbase.common.baseid.ExportJobId;
 import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.baseid.ImportJobId;
+import io.vinta.containerbase.common.baseid.ImportRecordId;
 import java.util.Optional;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
@@ -100,6 +101,36 @@ public interface MapstructCommonDomainMapper {
 
 	@Named("exportJobIdToLong")
 	default Long exportJobIdToLong(ExportJobId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringToImportRecordId")
+	default ImportRecordId stringToImportRecordId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(ImportRecordId::new)
+				.orElse(null);
+	}
+
+	@Named("longToImportRecordId")
+	default ImportRecordId longToImportRecordId(Long source) {
+		return Optional.ofNullable(source)
+				.map(ImportRecordId::new)
+				.orElse(null);
+	}
+
+	@Named("importRecordIdToString")
+	default String importRecordIdToString(ImportRecordId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("importRecordIdToLong")
+	default Long importRecordIdToLong(ImportRecordId source) {
 		return Optional.ofNullable(source)
 				.map(BaseId::getValue)
 				.orElse(null);

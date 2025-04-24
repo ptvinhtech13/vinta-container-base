@@ -14,5 +14,6 @@ public interface ImportJobResponseMapper {
 	ImportJobResponseMapper INSTANCE = Mappers.getMapper(ImportJobResponseMapper.class);
 
 	@Mapping(source = "id", target = "id", qualifiedByName = "importJobIdToString")
+	@Mapping(source = "fileFormId", target = "fileFormId", qualifiedByName = "fileFormIdToString")
 	ImportJobResponse toResponse(ImportJob job);
 }

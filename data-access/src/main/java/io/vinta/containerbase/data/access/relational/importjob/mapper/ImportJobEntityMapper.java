@@ -16,14 +16,17 @@ public interface ImportJobEntityMapper {
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "fileFormId", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	ImportJobEntity toUpdateEntity(@MappingTarget ImportJobEntity existing, ImportJob job);
 
 	@Mapping(target = "id", source = "id", qualifiedByName = "importJobIdToString")
+	@Mapping(target = "fileFormId", source = "fileFormId", qualifiedByName = "fileFormIdToString")
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	ImportJobEntity toNewEntity(ImportJob job);
 
 	@Mapping(target = "id", source = "id", qualifiedByName = "stringToImportJobId")
+	@Mapping(target = "fileFormId", source = "fileFormId", qualifiedByName = "stringToFileFormId")
 	ImportJob toModel(ImportJobEntity entity);
 }

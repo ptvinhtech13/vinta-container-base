@@ -13,7 +13,6 @@ import org.mapstruct.factory.Mappers;
 public interface ImportJobViewMapper {
 	ImportJobViewMapper INSTANCE = Mappers.getMapper(ImportJobViewMapper.class);
 
-	@Mapping(target = "sources", expression = ("java(io.vinta.containerbase.web.utility.DisplayUtils.formatSourcesDisplay(job.getSources()))"))
+	@Mapping(target = "fileFormId", source = "fileFormId", qualifiedByName = "fileFormIdToString")
 	ImportJobView toView(ImportJob job);
-
 }

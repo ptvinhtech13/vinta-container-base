@@ -89,6 +89,17 @@
                             <strong>Containers to Export:</strong>
                             <span id="containerCount"></span>
                         </div>
+                        <div class="mb-3">
+                            <label for="exportRemark" class="form-label">Remark</label>
+                            <div class="position-relative">
+                                <textarea class="form-control" id="exportRemark"
+                                          maxlength="200" rows="3"
+                                          placeholder="Enter remark (optional)"></textarea>
+                                <small class="text-muted position-absolute bottom-0 end-0 pe-2">
+                                    <span id="remarkCharCount">0</span>/200
+                                </small>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -379,6 +390,7 @@
 
             const payload = {
                 exportFormId: selectedForm,
+                remark: document.getElementById('exportRemark').value || null,
                 filterContainer: {
                     byImportJobId: document.getElementById('importJobId').value || null,
                     byContainerNumbers: containerNumbers ? containerNumbers.split(',').map(n => n.trim()) : null,
@@ -397,6 +409,8 @@
             .then(response => response.json())
             .then(data => {
                 exportModal.hide();
+                document.getElementById('exportRemark').value = '';
+                document.getElementById('remarkCharCount').textContent = '0';
                 alert('Export job created successfully!');
             })
             .catch(error => {
@@ -467,6 +481,15 @@
                     handleDateChange(dateToLocal);
                 }
             }
+
+            // Add character counter for remark
+            const remarkTextarea = document.getElementById('exportRemark');
+            const remarkCharCount = document.getElementById('remarkCharCount');
+
+            remarkTextarea.addEventListener('input', function() {
+                const currentLength = this.value.length;
+                remarkCharCount.textContent = currentLength;
+            });
         });
     </script>
 </th:block>

@@ -110,3 +110,15 @@ io.vinta.containerbase:
       cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M
+  import-job-importer:
+    scheduling:
+      enabled: true
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT120M
+  import-job-processor:
+    scheduling:
+      enabled: true
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT120M

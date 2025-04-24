@@ -27,7 +27,6 @@ public class FileFormSchema {
 				.sorted(Comparator.comparingInt(ColumDefinition::getIndex))
 				.map(ColumDefinition::getColumnName)
 				.toList();
-
 	}
 
 	@Data

@@ -1,10 +1,30 @@
 CREATE
     TABLE
-        IF NOT EXISTS import_job(
-            id VARCHAR(64) NOT NULL CONSTRAINT import_job_pk PRIMARY KEY,
+        IF NOT EXISTS import_jobs(
+            id VARCHAR(64) NOT NULL CONSTRAINT import_jobs_pk PRIMARY KEY,
             status VARCHAR(50) NOT NULL,
-            sources JSON NOT NULL,
-            remark VARCHAR(1000),
+            file_form_id VARCHAR(64) NOT NULL,
+            uploaded_file_path VARCHAR(300) NOT NULL,
+            actual_schema JSON,
+            metrics JSON,
+            consolidated_error_messages TEXT,
+            remark TEXT,
+            created_at TIMESTAMP(6) DEFAULT NOW(),
+            updated_at TIMESTAMP(6) DEFAULT NOW()
+        );
+
+CREATE
+    TABLE
+        IF NOT EXISTS import_records(
+            id BIGSERIAL NOT NULL CONSTRAINT import_records_pk PRIMARY KEY,
+            import_job_id VARCHAR(64) NOT NULL,
+            record_index INTEGER NOT NULL,
+            record_type VARCHAR(50) NOT NULL,
+            record_status VARCHAR(50) NOT NULL,
+            error_message TEXT,
+            stacktrace TEXT,
+            DATA JSON,
+            raw_data TEXT,
             created_at TIMESTAMP(6) DEFAULT NOW(),
             updated_at TIMESTAMP(6) DEFAULT NOW()
         );

@@ -34,8 +34,7 @@ public abstract class BaseId<T> {
 
 	@Override
 	public String toString() {
-		return "Id [value=" + value
-				+ "]";
+		return String.valueOf(value);
 	}
 
 }

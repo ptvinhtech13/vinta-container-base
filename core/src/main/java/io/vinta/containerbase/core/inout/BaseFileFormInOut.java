@@ -2,6 +2,8 @@ package io.vinta.containerbase.core.inout;
 
 import io.vinta.containerbase.core.containers.ContainerQueryService;
 import io.vinta.containerbase.core.export.ExportJobCommandService;
+import io.vinta.containerbase.core.fileform.FileFormManagerService;
+import io.vinta.containerbase.core.importjob.ImportJobCommandService;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.SneakyThrows;
@@ -13,7 +15,13 @@ public abstract class BaseFileFormInOut {
 	protected ContainerQueryService containerQueryService;
 
 	@Autowired
+	protected ImportJobCommandService importCommandService;
+
+	@Autowired
 	protected ExportJobCommandService exportCommandService;
+
+	@Autowired
+	protected FileFormManagerService fileFormManagerService;
 
 	@SneakyThrows
 	protected void createFileIfNotExists(Path path) {

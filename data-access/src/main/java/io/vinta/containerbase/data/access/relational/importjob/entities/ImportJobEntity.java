@@ -2,7 +2,8 @@ package io.vinta.containerbase.data.access.relational.importjob.entities;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.vinta.containerbase.common.enums.ImportJobStatus;
-import io.vinta.containerbase.core.importjob.entities.FileDataSource;
+import io.vinta.containerbase.core.fileform.entities.FileFormSchema;
+import io.vinta.containerbase.core.importjob.entities.ImportJobTrackingMetrics;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -10,9 +11,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +33,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @DynamicUpdate
-@Table(name = "import_job")
+@Table(name = "import_jobs")
 public class ImportJobEntity {
+
 	@Id
 	private String id;
 
@@ -42,10 +44,24 @@ public class ImportJobEntity {
 	@NotNull
 	private ImportJobStatus status;
 
+	@Column(name = "file_form_id")
+	@NotEmpty
+	private String fileFormId;
+
+	@Column(name = "uploaded_file_path")
+	@NotEmpty
+	private String uploadedFilePath;
+
 	@Type(JsonType.class)
-	@Column(name = "sources", columnDefinition = "json")
-	@NotNull
-	private List<FileDataSource> sources;
+	@Column(name = "actual_schema", columnDefinition = "json")
+	private FileFormSchema actualSchema;
+
+	@Type(JsonType.class)
+	@Column(name = "metrics", columnDefinition = "json")
+	private ImportJobTrackingMetrics metrics;
+
+	@Column(name = "consolidated_error_messages")
+	private String consolidatedErrorMessages;
 
 	@Column(name = "remark")
 	private String remark;
