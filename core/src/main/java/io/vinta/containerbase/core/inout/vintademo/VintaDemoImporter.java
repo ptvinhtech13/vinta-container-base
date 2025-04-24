@@ -1,5 +1,6 @@
 package io.vinta.containerbase.core.inout.vintademo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVReader;
 import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.enums.ImportJobStatus;
@@ -16,6 +17,8 @@ import io.vinta.containerbase.core.importrecord.entities.ImportRecord;
 import io.vinta.containerbase.core.inout.BaseFileFormInOut;
 import io.vinta.containerbase.core.inout.FileFormImporter;
 import io.vinta.containerbase.core.inout.models.ProcessedCsvResult;
+import io.vinta.containerbase.core.inout.vintademo.mapper.VintaContainerMapper;
+import io.vinta.containerbase.core.inout.vintademo.models.VintaDemoContainerImportModelData;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -36,6 +40,7 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 
 	private static final int BATCH_RECORD_MAX_SIZE = 500;
 	private final ContainerVintaDemoCsvRowDataValidator rowDataValidator;
+	private final ObjectMapper objectMapper;
 
 	@Override
 	public boolean hasSupport(FileFormId formId) {
@@ -53,7 +58,7 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 		final var result = processCsv(fileForm, job, batchingRecordConsumer);
 
 		final var hasError = result.getTotalErrorRecords() > 0;
-
+		log.info("Completed for loading job: {}", job);
 		return importCommandService.updateImportJob(job.withStatus(hasError
 				? ImportJobStatus.ERROR
 				: ImportJobStatus.VALIDATED)
@@ -65,9 +70,16 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 	}
 
 	@Override
+	@Transactional
 	public List<ImportRecord> processRecords(List<ImportRecord> content) {
-		return List.of();//TODO: write method processRecords
-
+		final var containerLists = content.stream()
+				.map(record -> VintaContainerMapper.INSTANCE.toCreateContainer(record.getImportJobId(), objectMapper
+						.convertValue(record.getData(), VintaDemoContainerImportModelData.class)))
+				.toList();
+		containerCommandService.createContainers(containerLists);
+		return content.stream()
+				.map(it -> it.withRecordStatus(ImportRecordStatus.COMPLETED))
+				.toList();
 	}
 
 	protected FileFormSchema buildCsvDataSchemaByHeader(String[] actualHeaders, FileFormSchema defaultSchema) {
@@ -128,6 +140,7 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 				final var rowValidationResult = rowDataValidator.validateRow(actualCsvSchema, rowData);
 
 				records.add(ImportRecord.builder()
+						.importJobId(job.getId())
 						.recordIndex(csvReader.getRecordsRead() - 1)
 						.recordType(ImportRecordType.CONTAINER)
 						.recordStatus(rowValidationResult.isValid()

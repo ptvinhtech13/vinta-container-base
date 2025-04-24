@@ -17,7 +17,6 @@ public interface ImportJobMapper {
 	@Mapping(target = "remark", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
-	@Mapping(target = "uploadedFilePath", ignore = true)
 	@Mapping(target = "actualSchema", ignore = true)
 	@Mapping(target = "consolidatedErrorMessages", ignore = true)
 	@Mapping(target = "metrics", ignore = true)

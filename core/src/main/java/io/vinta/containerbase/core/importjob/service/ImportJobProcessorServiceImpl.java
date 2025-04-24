@@ -31,6 +31,7 @@ public class ImportJobProcessorServiceImpl implements ImportJobProcessorService 
 	public void processImport(ImportJob job) {
 		try {
 			job = jobCommandService.updateImportJob(job.withStatus(ImportJobStatus.IMPORTING));
+			log.info("Processing job: {}", job);
 
 			final var fileFormId = job.getFileFormId();
 			final var importer = fileFormImporters.stream()
@@ -49,8 +50,13 @@ public class ImportJobProcessorServiceImpl implements ImportJobProcessorService 
 					.sortFields(List.of("id"))
 					.build());
 
+			log.info("Updating records records: {} - {}", job.getId(), records.getContent()
+					.size());
+			// Processor Importing Raw Records
 			final var updatingRecords = recordCommandService.upsertRecords(importer.processRecords(records
 					.getContent()));
+			log.info("Completed updating records: {} - {}", job.getId(), records.getContent()
+					.size());
 
 			if (updatingRecords.isEmpty()) {
 				return;
@@ -59,13 +65,13 @@ public class ImportJobProcessorServiceImpl implements ImportJobProcessorService 
 			final var totalProcessedRecords = records.getContent()
 					.size() + job.getMetrics()
 							.getTotalProcessedRecords();
-
 			final var status = totalProcessedRecords == job.getMetrics()
 					.getTotalRecords() ? ImportJobStatus.SUCCEEDED : ImportJobStatus.IMPORTING;
 
-			jobCommandService.updateImportJob(job.withStatus(status)
+			job = jobCommandService.updateImportJob(job.withStatus(status)
 					.withMetrics(job.getMetrics()
 							.withTotalProcessedRecords(totalProcessedRecords)));
+			log.info("Completed processing job: {}", job);
 		} catch (Exception e) {
 			log.error("Failed to load records for job: {}", job.getId(), e);
 			jobCommandService.updateImportJob(job.withStatus(ImportJobStatus.ERROR)

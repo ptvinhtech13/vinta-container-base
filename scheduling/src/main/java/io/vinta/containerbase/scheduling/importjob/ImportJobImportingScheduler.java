@@ -8,6 +8,7 @@ import io.vinta.containerbase.core.importjob.request.FilterImportJob;
 import io.vinta.containerbase.core.importjob.request.FindImportJobQuery;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,6 @@ public class ImportJobImportingScheduler {
 	@SchedulerLock(name = "ImportJob.ImportJobLoadingScheduler", lockAtLeastFor = "${io.vinta.containerbase.import-job-importer.scheduling.lock-at-least-for:PT10S}", lockAtMostFor = "${io.vinta.containerbase.import-job-importer.scheduling.lock-at-most-for:PT10M}")
 	public void triggerImportJobLoader() {
 		LockAssert.assertLocked();
-
 		final var pageResult = queryService.queryImportJobs(FindImportJobQuery.builder()
 				.filter(FilterImportJob.builder()
 						.byStatuses(Set.of(ImportJobStatus.CREATED, ImportJobStatus.LOADING))
@@ -51,16 +51,16 @@ public class ImportJobImportingScheduler {
 				.sortFields(List.of("id"))
 				.build());
 
-		final var job = pageResult.getContent()
-				.getFirst();
-		loaderService.loadRecords(job);
+		Optional.ofNullable(pageResult.getContent())
+				.filter(it -> !it.isEmpty())
+				.map(List::getFirst)
+				.ifPresent(loaderService::loadRecords);
 	}
 
 	@Scheduled(cron = "${io.vinta.containerbase.export-job.scheduling.cron-expression}")
 	@SchedulerLock(name = "ImportJob.ImportJobProcessingScheduler", lockAtLeastFor = "${io.vinta.containerbase.import-job-processor.scheduling.lock-at-least-for:PT10S}", lockAtMostFor = "${io.vinta.containerbase.import-job-processor.scheduling.lock-at-most-for:PT10M}")
 	public void triggerImportJobProcessing() {
 		LockAssert.assertLocked();
-
 		final var pageResult = queryService.queryImportJobs(FindImportJobQuery.builder()
 				.filter(FilterImportJob.builder()
 						.byStatuses(Set.of(ImportJobStatus.VALIDATED, ImportJobStatus.IMPORTING))
@@ -71,9 +71,10 @@ public class ImportJobImportingScheduler {
 				.sortFields(List.of("id"))
 				.build());
 
-		final var job = pageResult.getContent()
-				.getFirst();
-		processorService.processImport(job);
+		Optional.ofNullable(pageResult.getContent())
+				.filter(it -> !it.isEmpty())
+				.map(List::getFirst)
+				.ifPresent(processorService::processImport);
 	}
 
 }

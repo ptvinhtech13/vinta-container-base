@@ -1,5 +1,6 @@
 package io.vinta.containerbase.core.fileform.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Comparator;
 import java.util.List;
@@ -22,6 +23,7 @@ public class FileFormSchema {
 	@Builder.Default
 	private int headerRowIndex = 1;
 
+	@JsonIgnore
 	public List<String> getHeaderRow() {
 		return columDefinitions.stream()
 				.sorted(Comparator.comparingInt(ColumDefinition::getIndex))

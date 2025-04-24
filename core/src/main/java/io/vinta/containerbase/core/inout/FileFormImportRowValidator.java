@@ -32,7 +32,7 @@ public interface FileFormImportRowValidator {
 
 	RowValidationResult validate(FileFormSchema csvSchema, String[] rowData);
 
-	default String getColumnDataByKey(FileFormSchema csvSchema, String[] rowData, String key) {
+	default Optional<String> getColumnDataByKey(FileFormSchema csvSchema, String[] rowData, String key) {
 		return csvSchema.getColumDefinitions()
 				.stream()
 				.filter(it -> key.equals(it.getKey()))
@@ -40,7 +40,6 @@ public interface FileFormImportRowValidator {
 				.map(FileFormSchema.ColumDefinition::getIndex)
 				.filter(index -> rowData.length > index)
 				.map(index -> rowData[index])
-				.filter(StringUtils::isNotBlank)
-				.orElse(null);
+				.filter(StringUtils::isNotBlank);
 	}
 }

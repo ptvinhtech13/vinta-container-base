@@ -10,6 +10,7 @@ import io.vinta.containerbase.data.access.relational.importjob.entities.QImportJ
 import io.vinta.containerbase.data.access.relational.importjob.mapper.ImportJobEntityMapper;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ public class ImportJobRepositoryImpl implements ImportJobRepository {
 		return ImportJobEntityMapper.INSTANCE.toModel(Optional.ofNullable(job.getId())
 				.map(jobId -> {
 					final var existing = repository.findById(jobId.getValue())
-							.orElseGet(() -> (repository.save(ImportJobEntityMapper.INSTANCE.toNewEntity(job))));
+							.orElseGet(() -> repository.save(ImportJobEntityMapper.INSTANCE.toNewEntity(job)));
 					return repository.save(ImportJobEntityMapper.INSTANCE.toUpdateEntity(existing, job));
 				})
 				.orElseGet(() -> repository.save(ImportJobEntityMapper.INSTANCE.toNewEntity(job))));
@@ -43,6 +44,8 @@ public class ImportJobRepositoryImpl implements ImportJobRepository {
 						.toArray(String[]::new));
 
 		final var predicate = WhereBuilder.build()
+				.applyIf(CollectionUtils.isNotEmpty(filter.getByStatuses()), where -> where.and(
+						QImportJobEntity.importJobEntity.status.in(filter.getByStatuses())))
 				.applyIf(filter.getByCreatedFrom() != null, where -> where.and(
 						QImportJobEntity.importJobEntity.createdAt.after(filter.getByCreatedFrom())))
 				.applyIf(filter.getByCreatedTo() != null, where -> where.and(QImportJobEntity.importJobEntity.createdAt

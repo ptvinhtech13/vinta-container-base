@@ -60,7 +60,7 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
   datasource:
-    url: jdbc:h2:file:./app-data/db/database;AUTO_SERVER=TRUE;INIT=SET TIME ZONE 'UTC'
+    url: jdbc:h2:file:./app-data/db/database;AUTO_SERVER=TRUE;INIT=SET TIME ZONE 'UTC';DATABASE_TO_LOWER=TRUE;MODE=PostgreSQL;
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -107,18 +107,18 @@ io.vinta.containerbase:
   export-job:
     scheduling:
       enabled: true
-      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M
   import-job-importer:
     scheduling:
       enabled: true
-      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M
   import-job-processor:
     scheduling:
       enabled: true
-      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT120M

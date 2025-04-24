@@ -64,10 +64,10 @@ public class ImportRecordEntity {
 	private String stacktrace;
 
 	@Type(JsonType.class)
-	@Column(name = "data", columnDefinition = "json")
+	@Column(name = "data_values", columnDefinition = "json")
 	private Map<String, String> data;
 
-	@Column(name = "raw_rata")
+	@Column(name = "raw_data_values")
 	@NotNull
 	private String rawData;
 

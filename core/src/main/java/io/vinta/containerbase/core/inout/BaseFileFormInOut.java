@@ -1,5 +1,6 @@
 package io.vinta.containerbase.core.inout;
 
+import io.vinta.containerbase.core.containers.ContainerCommandService;
 import io.vinta.containerbase.core.containers.ContainerQueryService;
 import io.vinta.containerbase.core.export.ExportJobCommandService;
 import io.vinta.containerbase.core.fileform.FileFormManagerService;
@@ -13,6 +14,9 @@ public abstract class BaseFileFormInOut {
 
 	@Autowired
 	protected ContainerQueryService containerQueryService;
+
+	@Autowired
+	protected ContainerCommandService containerCommandService;
 
 	@Autowired
 	protected ImportJobCommandService importCommandService;

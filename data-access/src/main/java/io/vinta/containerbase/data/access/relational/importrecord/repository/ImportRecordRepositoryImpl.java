@@ -8,6 +8,7 @@ import io.vinta.containerbase.core.importrecord.entities.ImportRecord;
 import io.vinta.containerbase.core.importrecord.request.FilterImportRecord;
 import io.vinta.containerbase.core.importrecord.request.FindImportRecordQuery;
 import io.vinta.containerbase.data.access.relational.importrecord.entities.ImportRecordEntity;
+import io.vinta.containerbase.data.access.relational.importrecord.entities.QImportRecordEntity;
 import io.vinta.containerbase.data.access.relational.importrecord.mapper.ImportRecordEntityMapper;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,7 @@ public class ImportRecordRepositoryImpl implements ImportRecordRepository {
 						.collect(Collectors.toMap(ImportRecordEntity::getId, Function.identity()));
 
 		final var existingUpdatedEntities = records.stream()
+				.filter(it -> it.getId() != null)
 				.filter(it -> existingMaps.containsKey(it.getId()
 						.getValue()))
 				.map(record -> {
@@ -55,8 +58,7 @@ public class ImportRecordRepositoryImpl implements ImportRecordRepository {
 				.toList();
 
 		final var newEntities = records.stream()
-				.filter(it -> !existingMaps.containsKey(it.getId()
-						.getValue()))
+				.filter(it -> it.getId() == null)
 				.map(ImportRecordEntityMapper.INSTANCE::toNewEntity)
 				.toList();
 
@@ -78,13 +80,16 @@ public class ImportRecordRepositoryImpl implements ImportRecordRepository {
 				.getSortDirection()), query.getSortFields()
 						.toArray(String[]::new));
 
-		final var predicate = WhereBuilder.build();
-		//				.applyIf(filter.getByCreatedFrom() != null, where -> where.and(
-		//						QExportJobEntity.exportJobEntity.createdAt.after(filter.getByCreatedFrom())))
-		//				.applyIf(filter.getByCreatedTo() != null, where -> where.and(QExportJobEntity.exportJobEntity.createdAt
-		//						.after(filter.getByCreatedTo())))
-		//				.applyIf(CollectionUtils.isNotEmpty(filter.getByStatuses()), where -> where.and(
-		//						QExportJobEntity.exportJobEntity.status.in(filter.getByStatuses())));
+		final var predicate = WhereBuilder.build()
+				.applyIf(filter.getByImportJobId() != null, where -> where.and(
+						QImportRecordEntity.importRecordEntity.importJobId.eq(filter.getByImportJobId()
+								.getValue())))
+				.applyIf(CollectionUtils.isNotEmpty(filter.getByStatuses()), where -> where.and(
+						QImportRecordEntity.importRecordEntity.recordStatus.in(filter.getByStatuses())))
+				.applyIf(filter.getByCreatedFrom() != null, where -> where.and(
+						QImportRecordEntity.importRecordEntity.createdAt.after(filter.getByCreatedFrom())))
+				.applyIf(filter.getByCreatedTo() != null, where -> where.and(
+						QImportRecordEntity.importRecordEntity.createdAt.after(filter.getByCreatedTo())));
 
 		final var pageResult = repository.findAllWithBase(predicate, pageable);
 

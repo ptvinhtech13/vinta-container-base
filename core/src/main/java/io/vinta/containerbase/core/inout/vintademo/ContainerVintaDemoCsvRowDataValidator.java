@@ -27,38 +27,49 @@ public class ContainerVintaDemoCsvRowDataValidator implements FileFormImportRowV
 		final var containerDataModel = VintaDemoContainerImportModelData.builder()
 
 				.containerNumber(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.CONTAINER_NUMBER
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.isoEquipmentCode(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.ISO_EQUIPMENT_CODE
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.equipmentReference(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.EQUIPMENT_REFERENCE
-						.getHeaderKey()))
-				.transportEquipmentType(TransportEquipmentType.valueOf(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.TRANSPORT_EQUIPMENT_TYPE.getHeaderKey())))
-				.tareWeightKg(Integer.valueOf(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.TARE_WEIGHT_KG.getHeaderKey())))
-				.maxGrossWeightKg(Integer.valueOf(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.MAX_GROSS_WEIGHT_KG.getHeaderKey())))
-				.payloadWeightKg(Integer.valueOf(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.PAYLOAD_WEIGHT_KG.getHeaderKey())))
-				.state(ContainerState.valueOf(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.STATE
-						.getHeaderKey())))
+						.getHeaderKey()).orElse(null))
+				.transportEquipmentType(getColumnDataByKey(csvSchema, rowData,
+						VintaDemoDataModelSchema.TRANSPORT_EQUIPMENT_TYPE.getHeaderKey()).map(
+								TransportEquipmentType::valueOf)
+						.orElse(null)
+
+				)
+				.tareWeightKg(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.TARE_WEIGHT_KG
+						.getHeaderKey()).map(Integer::valueOf)
+						.orElse(null))
+				.maxGrossWeightKg(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.MAX_GROSS_WEIGHT_KG
+						.getHeaderKey()).map(Integer::valueOf)
+						.orElse(null))
+				.payloadWeightKg(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.PAYLOAD_WEIGHT_KG
+						.getHeaderKey()).map(Integer::valueOf)
+						.orElse(null))
+				.state(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.STATE.getHeaderKey()).map(
+						ContainerState::valueOf)
+						.orElse(null))
 				.damageDescription(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.DAMAGE_DESCRIPTION
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.bookingReference(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.BOOKING_REFERENCE
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.shipmentReference(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.SHIPMENT_REFERENCE
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.contentsDescription(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.CONTENTS_DESCRIPTION.getHeaderKey()))
-				.sealNumber(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.SEAL_NUMBER.getHeaderKey()))
-				.sealSource(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.SEAL_SOURCE.getHeaderKey()))
+						VintaDemoDataModelSchema.CONTENTS_DESCRIPTION.getHeaderKey()).orElse(null))
+				.sealNumber(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.SEAL_NUMBER.getHeaderKey())
+						.orElse(null))
+				.sealSource(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.SEAL_SOURCE.getHeaderKey())
+						.orElse(null))
 				.ownerShippingLineCode(getColumnDataByKey(csvSchema, rowData,
-						VintaDemoDataModelSchema.OWNER_SHIPPING_LINE_CODE.getHeaderKey()))
+						VintaDemoDataModelSchema.OWNER_SHIPPING_LINE_CODE.getHeaderKey()).orElse(null))
 				.ownerShippingSCAC(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.OWNER_SHIPPING_SCAC
-						.getHeaderKey()))
-				.ownerName(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.OWNER_NAME.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
+				.ownerName(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.OWNER_NAME.getHeaderKey())
+						.orElse(null))
 				.ownerAddress(getColumnDataByKey(csvSchema, rowData, VintaDemoDataModelSchema.OWNER_ADDRESS
-						.getHeaderKey()))
+						.getHeaderKey()).orElse(null))
 				.build();
 
 		final var results = validator.validate(containerDataModel);

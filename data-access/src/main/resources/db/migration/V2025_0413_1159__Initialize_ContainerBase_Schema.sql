@@ -23,8 +23,8 @@ CREATE
             record_status VARCHAR(50) NOT NULL,
             error_message TEXT,
             stacktrace TEXT,
-            DATA JSON,
-            raw_data TEXT,
+            data_values JSON,
+            raw_data_values TEXT,
             created_at TIMESTAMP(6) DEFAULT NOW(),
             updated_at TIMESTAMP(6) DEFAULT NOW()
         );
