@@ -27,7 +27,7 @@ public class WebImportJobController implements BaseWebController {
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
 			@RequestParam(defaultValue = "1") int page, Model model) {
 
-		final var result = queryService.queryImportJobs(FindImportJobQuery.builder()
+		final var request = FindImportJobQuery.builder()
 				.filter(FilterImportJob.builder()
 						.byCreatedFrom(Optional.ofNullable(dateFrom)
 								.map(it -> it.atZone(ZoneId.systemDefault())
@@ -41,14 +41,17 @@ public class WebImportJobController implements BaseWebController {
 				.page(page - 1)
 				.sortFields(List.of("createdAt"))
 				.sortDirection("DESC")
-				.size(3)
-				.build());
+				.size(20)
+				.build();
+		final var result = queryService.queryImportJobs(request);
 
 		model.addAttribute("jobs", result.getContent()
 				.stream()
 				.map(ImportJobViewMapper.INSTANCE::toView)
 				.toList());
 		model.addAttribute("currentPage", result.getPage());
+		model.addAttribute("pageSize", request.getSize());
+		model.addAttribute("totalElements", result.getTotalElements());
 		model.addAttribute("totalPages", result.getTotalPages());
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateTo", dateTo);
