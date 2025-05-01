@@ -94,6 +94,8 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 								.withIndex(getIndexOfByIgnoreCase(col.getKey(), headerValues)))
 						.addFallBack(col -> getIndexOfByIgnoreCase(col.getColumnName(), headerValues) != -1, col -> col
 								.withIndex(getIndexOfByIgnoreCase(col.getColumnName(), headerValues)))
+						.addFallBack(col -> getIndexOfByIgnoreCaseContaining(col.getColumnName(), headerValues) != -1, col -> col
+								.withIndex(getIndexOfByIgnoreCaseContaining(col.getColumnName(), headerValues)))
 						.execute(it))
 				.filter(Objects::nonNull)
 				.toList();
@@ -114,6 +116,16 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 				.map(String::toLowerCase)
 				.toList()
 				.indexOf(checkingValue.toLowerCase());
+	}
+
+	private static int getIndexOfByIgnoreCaseContaining(String checkingValue, List<String> values) {
+		final var lowerCaseCheckingValue = checkingValue.toLowerCase();
+		for (int i = 0; i < values.size(); i++) {
+			if (values.get(i).toLowerCase().contains(lowerCaseCheckingValue)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	protected ProcessedCsvResult processCsv(FileForm fileForm, ImportJob job,

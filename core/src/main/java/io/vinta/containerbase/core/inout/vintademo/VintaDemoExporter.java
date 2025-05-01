@@ -10,7 +10,7 @@ import io.vinta.containerbase.core.fileform.entities.FileForm;
 import io.vinta.containerbase.core.fileform.entities.FileFormSchema;
 import io.vinta.containerbase.core.inout.BaseFileFormInOut;
 import io.vinta.containerbase.core.inout.FileFormExporter;
-import io.vinta.containerbase.core.inout.mapper.ContainerFileFormMapper;
+import io.vinta.containerbase.core.inout.mapper.ContainerFileFormSelector;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,7 +102,7 @@ public class VintaDemoExporter extends BaseFileFormInOut implements FileFormExpo
 			log.info("Writing {} rows to {}", containers.size(), path.getFileName());
 			final var rows = containers.stream()
 					.map(container -> columns.stream()
-							.map(columDefinition -> ContainerFileFormMapper.getValue(columDefinition, container))
+							.map(columDefinition -> ContainerFileFormSelector.getValue(columDefinition, container))
 							.toArray(String[]::new))
 					.toList();
 			writer.writeAll(rows);

@@ -1,0 +1,29 @@
+sequenceDiagram
+    title ContainerSupplyChainWorkflow
+    autonumber
+    box rgb(51, 153, 255) Container List
+        actor Carrier-ShippingLine Agent
+    end
+
+    box rgb(249, 91, 11) Import Container List
+        actor ContainerBase Operator
+    end
+
+    box rgb(249, 91, 11) ContainerBase
+        participant ContainerBase
+    end
+
+    box rgb(249, 91, 11) Export
+        participant Predefined Form - External System
+    end
+    
+Carrier-ShippingLine Agent -->> ContainerBase Operator: Send Container List via Emails
+activate ContainerBase Operator
+ContainerBase Operator ->> ContainerBase: Import into ContainerBase App
+deactivate ContainerBase Operator
+activate ContainerBase
+ContainerBase ->> Predefined Form - External System: Export to Predefined form
+deactivate ContainerBase
+
+
+

@@ -1,7 +1,10 @@
-package io.vinta.containerbase.app;
+package io.vinta.containerbase.app.test;
 
 import io.vinta.containerbase.common.enums.ContainerState;
 import io.vinta.containerbase.common.enums.TransportEquipmentType;
+import io.vinta.containerbase.common.idgenerator.ImportJobIdGenerator;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.core.containers.ContainerCommandService;
 import io.vinta.containerbase.core.containers.request.CreateContainerCommand;
 import java.util.ArrayList;
@@ -10,15 +13,16 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
-//@Component
+// @Component
 @RequiredArgsConstructor
 public class ContainerDummyGenerator {
 	private final ContainerCommandService containerCommandService;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
-		containerCommandService.createContainers(generateDummyContainers(2500));
+		containerCommandService.createContainers(generateDummyContainers(5500));
 	}
 
 	private List<CreateContainerCommand> generateDummyContainers(int count) {
@@ -58,6 +62,7 @@ public class ContainerDummyGenerator {
 			int payloadWeight = maxGrossWeight - tareWeight;
 
 			containers.add(CreateContainerCommand.builder()
+							.importJobId(MapstructCommonDomainMapper.INSTANCE.stringToImportJobId(String.format("%08d", (10000 + random.nextInt(30)))))
 					.containerNumber(containerNumber)
 					.isoEquipmentCode(isoCode)
 					.equipmentReference("REF" + String.format("%06d", i))
@@ -68,10 +73,10 @@ public class ContainerDummyGenerator {
 					.isReefer(isReefer)
 					.state(ContainerState.valueOf(states[random.nextInt(states.length)]))
 					.damageDescription(random.nextInt(20) == 0 ? "Minor damage on panel" : null) // 5% chance of damage
-					.bookingReference("BK" + String.format("%08d", random.nextInt(100000000)))
-					.shipmentReference("SH" + String.format("%08d", random.nextInt(100000000)))
+					.bookingReference("BK" + String.format("%08d", (100000000 + random.nextInt(200))))
+					.shipmentReference("SH" + String.format("%08d", (100000000 + random.nextInt(200))))
 					.contentsDescription(contents[random.nextInt(contents.length)])
-					.sealNumber("SL" + String.format("%06d", random.nextInt(1000000)))
+					.sealNumber("SL" + String.format("%06d", (100000000 + random.nextInt(200))))
 					.sealSource(random.nextBoolean() ? "CARRIER" : "SHIPPER")
 					.ownerShippingLineCode(lineCode)
 					.ownerShippingSCAC(lineSCAC)

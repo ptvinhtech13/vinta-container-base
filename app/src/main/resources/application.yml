@@ -104,21 +104,57 @@ io.vinta.containerbase:
           - index: 5
             key: maxGrossWeightKg
             columnName: Max Gross Weight (kg)
+          - index: 6
+            key: payloadWeightKg
+            columnName: Payload Weight (kg)
+          - index: 7
+            key: state
+            columnName: State
+          - index: 8
+            key: damageDescription
+            columnName: Damage Description
+          - index: 9
+            key: bookingReference
+            columnName: Booking Reference
+          - index: 10
+            key: shipmentReference
+            columnName: Shipment Reference
+          - index: 11
+            key: contentsDescription
+            columnName: Contents Description
+          - index: 12
+            key: sealNumber
+            columnName: Seal Number
+          - index: 13
+            key: sealSource
+            columnName: Seal Source
+          - index: 14
+            key: ownerShippingLineCode
+            columnName: Owner Shipping Line Code
+          - index: 15
+            key: ownerShippingSCAC
+            columnName: Owner Shipping SCAC
+          - index: 16
+            key: ownerName
+            columnName: Owner Name
+          - index: 17
+            key: ownerAddress
+            columnName: Owner Address
   export-job:
     scheduling:
       enabled: true
-      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
-      lock-at-most-for: PT120M
+      lock-at-most-for: PT15M
   import-job-importer:
     scheduling:
       enabled: true
-      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
-      lock-at-most-for: PT120M
+      lock-at-most-for: PT15M
   import-job-processor:
     scheduling:
       enabled: true
-      cron-expression: "*/15 * * * * *" ## Every 30 seconds for check
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
-      lock-at-most-for: PT120M
+      lock-at-most-for: PT15M

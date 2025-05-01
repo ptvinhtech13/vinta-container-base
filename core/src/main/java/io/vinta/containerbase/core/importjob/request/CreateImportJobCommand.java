@@ -15,4 +15,5 @@ public class CreateImportJobCommand {
 	private final ImportJobId id;
 	private final String uploadedFilePath;
 	private final FileFormId fileFormId;
+	private final String remark;
 }

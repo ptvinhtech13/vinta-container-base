@@ -34,7 +34,7 @@
                                     <li>
                                         <a class="dropdown-item" href="#"
                                            onclick="uploadsPage.triggerFileInput('option1FileInput')">
-                                            Demo Form
+                                            Vinta Demo Form
                                         </a>
                                     </li>
                                     <!--                                        <li>-->
@@ -46,8 +46,10 @@
                             </div>
 
                             <!-- Hidden file inputs for each option -->
-                            <input type="file" id="option1FileInput" multiple style="display: none"
-                                   onchange="uploadsPage.handleFileSelect(event, 'demo')">
+                            <input type="file" id="option1FileInput"
+                                   accept=".csv"
+                                   style="display: none"
+                                   onchange="uploadsPage.handleFileSelect(event, 'VINTA_DEMO')">
                             <!--                                <input type="file" id="option2FileInput" multiple style="display: none"-->
                             <!--                                       onchange="uploadsPage.handleFileSelect(event, 'Option 2')">-->
                             <!--                                <input type="file" id="option3FileInput" multiple style="display: none"-->
@@ -55,6 +57,17 @@
                         </div>
                         <div id="fileList" class="file-list">
                             <!-- Files will be listed here -->
+                        </div>
+                        <div class="mb-3 position-relative">
+                            <label for="uploadRemark" class="form-label">Remark</label>
+                            <textarea class="form-control"
+                                      id="uploadRemark"
+                                      maxlength="200"
+                                      rows="3"
+                                      placeholder="Enter remark (optional)"></textarea>
+                            <small class="text-muted position-absolute bottom-0 end-0 pe-2">
+                                <span id="remarkCharCount">0</span>/200
+                            </small>
                         </div>
                         <div class="mt-3">
                             <button type="button" class="btn btn-success" onclick="uploadsPage.handleUpload()"
@@ -104,8 +117,8 @@
             uploadedFiles: [],
             successToast: null,
             errorToast: null,
-            MAX_FILE_SIZE: 50 * 1024 * 1024, // 10MB in bytes
-            MAX_TOTAL_SIZE: 200 * 1024 * 1024, // 50MB in bytes
+            MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB in bytes
+            MAX_TOTAL_SIZE: 200 * 1024 * 1024, // 200MB in bytes
 
             initialize() {
                 // Wait for DOM to be fully loaded
@@ -126,6 +139,17 @@
                     });
                 } else {
                     console.error('Toast elements not found in DOM');
+                }
+
+                // Add remark character counter
+                const remarkTextarea = document.getElementById('uploadRemark');
+                const remarkCharCount = document.getElementById('remarkCharCount');
+
+                if (remarkTextarea && remarkCharCount) {
+                    remarkTextarea.addEventListener('input', function() {
+                        const currentLength = this.value.length;
+                        remarkCharCount.textContent = currentLength;
+                    });
                 }
             },
 
@@ -180,7 +204,17 @@
 
             handleFileSelect(event, formId) {
                 const files = event.target.files;
+                // Clear previous files
+                this.uploadedFiles = [];
+
                 for (let file of files) {
+                    // Validate file type
+                    if (!file.name.toLowerCase().endsWith('.csv')) {
+                        this.showError('Only CSV files are allowed');
+                        event.target.value = '';
+                        return;
+                    }
+
                     if (this.validateFileSize(file)) {
                         this.uploadedFiles.push({
                             file: file,
@@ -208,12 +242,12 @@
                     const fileItem = document.createElement('div');
                     fileItem.className = 'file-item';
                     fileItem.innerHTML = `
-                            <span>
-                                <strong>${fileObj.formId}:</strong>
-                                ${fileObj.file.name} (${this.formatFileSize(fileObj.file.size)})
-                            </span>
-                            <i class="bx bx-x remove-file" onclick="uploadsPage.removeFile(${index})"></i>
-                        `;
+                        <span>
+                            <strong>${fileObj.formId}:</strong>
+                            ${fileObj.file.name} (${this.formatFileSize(fileObj.file.size)})
+                        </span>
+                        <i class="bx bx-x remove-file" onclick="uploadsPage.removeFile(${index})"></i>
+                    `;
                     fileList.appendChild(fileItem);
                 });
 
@@ -226,43 +260,56 @@
                 }
 
                 // Enable/disable upload button based on files
-                document.getElementById('uploadButton').disabled = this.uploadedFiles.length === 0;
+                const uploadButton = document.getElementById('uploadButton');
+                uploadButton.disabled = this.uploadedFiles.length === 0;
+
+                // Disable upload dropdown if files exist
+                const uploadDropdown = document.querySelector('.dropdown-toggle');
+                if (uploadDropdown) {
+                    uploadDropdown.disabled = this.uploadedFiles.length > 0;
+                }
             },
 
             handleUpload() {
                 if (this.uploadedFiles.length === 0) {
-                    this.showError('Please select files to upload');
+                    this.showError('Please select a file to upload');
                     return;
                 }
 
                 const formData = new FormData();
                 this.uploadedFiles.forEach(fileObj => {
-                    formData.append('files', fileObj.file);
-                    formData.append('formIds', fileObj.formId);
+                    formData.append('file', fileObj.file);
+                    formData.append('fileFormId', fileObj.formId);
                 });
+
+                // Add remark to form data
+                const remark = document.getElementById('uploadRemark').value;
+                formData.append('remark', remark || '');
 
                 fetch('/api/import-job/create', {
                     method: 'POST',
                     body: formData
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => {
-                                throw new Error(text || 'Failed to upload files');
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        this.showSuccess('Files uploaded successfully!');
-                        this.uploadedFiles = [];
-                        this.updateFileList();
-                        console.log('Container ID:', data.containerId);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.showError(error.message || 'Failed to upload files. Please try again.');
-                    });
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text || 'Failed to upload files');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    this.showSuccess('Files uploaded successfully!');
+                    this.uploadedFiles = [];
+                    this.updateFileList();
+                    // Clear remark
+                    document.getElementById('uploadRemark').value = '';
+                    document.getElementById('remarkCharCount').textContent = '0';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.showError(error.message || 'Failed to upload files. Please try again.');
+                });
             }
         };
 
