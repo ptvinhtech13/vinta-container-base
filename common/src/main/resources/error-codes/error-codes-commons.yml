@@ -1,0 +1,35 @@
+errorCodes:
+  - code: 1001000
+    message: Informational Root Message
+  - code: 1002000
+    message: Successful Root Message
+  - code: 1003000
+    message: Redirection Root Message
+  - code: 1004000
+    message: Client Error Root Message
+  - code: 1004002
+    message: "Accessing is forbidden."
+  - code: 1004003
+    message: "Authentication has failed."
+  - code: 1004004
+    message: "Parsing token has failed."
+  - code: 1004005
+    message: "Token is invalid."
+  - code: 1004006
+    message: "Token is missing."
+  - code: 1004007
+    message: "Token has expired."
+  - code: 1004008
+    message: "Not Found KMS Key Info: %s"
+  - code: 1004009
+    message: "SecretId: %s must have at least one version"
+  - code: 10004012
+    message: "Token with version: %s invalid"
+  - code: 10004013
+    message: "cache id must be not null."
+  - code: 10004014
+    message: "The process is locked. Locked data %s"
+  - code: 10004015
+    message: "Too Many Requests"
+  - code: 10005000
+    message: "Internal Server Error"

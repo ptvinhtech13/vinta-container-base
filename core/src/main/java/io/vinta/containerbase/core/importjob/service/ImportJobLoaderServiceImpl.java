@@ -1,7 +1,7 @@
 package io.vinta.containerbase.core.importjob.service;
 
 import io.vinta.containerbase.common.enums.ImportJobStatus;
-import io.vinta.containerbase.common.exceptions.ContainerBaseException;
+import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.core.importjob.ImportJobCommandService;
 import io.vinta.containerbase.core.importjob.ImportJobLoaderService;
 import io.vinta.containerbase.core.importjob.entities.ImportJob;
@@ -33,7 +33,7 @@ public class ImportJobLoaderServiceImpl implements ImportJobLoaderService {
 			job = fileFormLoaders.stream()
 					.filter(loader -> loader.hasSupport(fileFormId))
 					.findFirst()
-					.orElseThrow(() -> new ContainerBaseException("No loader found for form: " + fileFormId))
+					.orElseThrow(() -> new NotFoundException("No loader found for form: " + fileFormId))
 					.load(job, recordCommandService::upsertRecords);
 
 			jobCommandService.updateImportJob(job.withStatus(ImportJobStatus.VALIDATED));

@@ -6,7 +6,7 @@ import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.enums.ImportJobStatus;
 import io.vinta.containerbase.common.enums.ImportRecordStatus;
 import io.vinta.containerbase.common.enums.ImportRecordType;
-import io.vinta.containerbase.common.exceptions.ContainerBaseException;
+import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.common.fallback.FallbackFlow;
 import io.vinta.containerbase.core.fileform.entities.FileForm;
@@ -84,7 +84,7 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 
 	protected FileFormSchema buildCsvDataSchemaByHeader(String[] actualHeaders, FileFormSchema defaultSchema) {
 		if (actualHeaders == null || actualHeaders.length == 0) {
-			throw new ContainerBaseException("CSV Header values is required instead of empty.");
+			throw new BadRequestException("CSV Header values is required instead of empty.");
 		}
 		final var headerValues = List.of(actualHeaders);
 		final var columnDefinitions = defaultSchema.getColumDefinitions()
@@ -94,15 +94,16 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 								.withIndex(getIndexOfByIgnoreCase(col.getKey(), headerValues)))
 						.addFallBack(col -> getIndexOfByIgnoreCase(col.getColumnName(), headerValues) != -1, col -> col
 								.withIndex(getIndexOfByIgnoreCase(col.getColumnName(), headerValues)))
-						.addFallBack(col -> getIndexOfByIgnoreCaseContaining(col.getColumnName(), headerValues) != -1, col -> col
-								.withIndex(getIndexOfByIgnoreCaseContaining(col.getColumnName(), headerValues)))
+						.addFallBack(col -> getIndexOfByIgnoreCaseContaining(col.getColumnName(), headerValues) != -1,
+								col -> col.withIndex(getIndexOfByIgnoreCaseContaining(col.getColumnName(),
+										headerValues)))
 						.execute(it))
 				.filter(Objects::nonNull)
 				.toList();
 
 		if (columnDefinitions.size() != defaultSchema.getColumDefinitions()
 				.size()) {
-			throw new ContainerBaseException("CSV Header was not well format. Expected: %s. Actual: %s".formatted(
+			throw new BadRequestException("CSV Header was not well format. Expected: %s. Actual: %s".formatted(
 					defaultSchema.getColumDefinitions()
 							.stream()
 							.map(it -> String.join(",", it.getKey(), it.getColumnName()))
@@ -121,7 +122,9 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 	private static int getIndexOfByIgnoreCaseContaining(String checkingValue, List<String> values) {
 		final var lowerCaseCheckingValue = checkingValue.toLowerCase();
 		for (int i = 0; i < values.size(); i++) {
-			if (values.get(i).toLowerCase().contains(lowerCaseCheckingValue)) {
+			if (values.get(i)
+					.toLowerCase()
+					.contains(lowerCaseCheckingValue)) {
 				return i;
 			}
 		}
@@ -193,7 +196,7 @@ public class VintaDemoImporter extends BaseFileFormInOut implements FileFormImpo
 					.consolidatedErrorMessages(consolidatedErrorMessages.toString())
 					.build();
 		} catch (Exception exception) {
-			throw new ContainerBaseException(exception.getMessage(), exception);
+			throw new BadRequestException(exception.getMessage(), exception);
 		}
 	}
 

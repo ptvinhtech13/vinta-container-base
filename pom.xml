@@ -16,12 +16,13 @@
     <description>Container Base</description>
 
     <modules>
+        <module>api</module>
         <module>app</module>
         <module>common</module>
         <module>core</module>
         <module>data-access</module>
         <module>scheduling</module>
-        <module>web</module>
+        <module>security</module>
     </modules>
 
     <properties>
@@ -47,6 +48,12 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.vinta.containerbase</groupId>
+                <artifactId>api</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.vinta.containerbase</groupId>
@@ -76,12 +83,12 @@
                 <artifactId>scheduling</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>io.vinta.containerbase</groupId>
-                <artifactId>web</artifactId>
+                <artifactId>security</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>net.javacrumbs.shedlock</groupId>
                 <artifactId>shedlock-provider-jdbc-template</artifactId>

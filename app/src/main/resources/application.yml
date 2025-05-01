@@ -158,3 +158,12 @@ io.vinta.containerbase:
       cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT15M
+  jwt-token:
+    issuer: "vinta.containerbase.io"
+    private-key: "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBPmYh8xHg1C68cXPzT9mgdqY31VZBzJ/UuAGk6M0pKRQ=="
+    public-key: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHXdl5xxz4z+FWAZF/sKOXU2ZHyG4ojuNyV12cDepgvPLesLsQ8eLIgZ3bY6n15Gz6b5BbIqgeT/3js8ZwHoy8g=="
+    token-config:
+      - tokenType: ACCESS_TOKEN
+        timeToLive: PT1H
+      - tokenType: REFRESH_TOKEN
+        timeToLive: PT3H

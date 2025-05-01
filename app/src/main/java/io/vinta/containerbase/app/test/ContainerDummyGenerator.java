@@ -2,9 +2,7 @@ package io.vinta.containerbase.app.test;
 
 import io.vinta.containerbase.common.enums.ContainerState;
 import io.vinta.containerbase.common.enums.TransportEquipmentType;
-import io.vinta.containerbase.common.idgenerator.ImportJobIdGenerator;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
-import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.core.containers.ContainerCommandService;
 import io.vinta.containerbase.core.containers.request.CreateContainerCommand;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
 
 // @Component
 @RequiredArgsConstructor
@@ -62,7 +59,8 @@ public class ContainerDummyGenerator {
 			int payloadWeight = maxGrossWeight - tareWeight;
 
 			containers.add(CreateContainerCommand.builder()
-							.importJobId(MapstructCommonDomainMapper.INSTANCE.stringToImportJobId(String.format("%08d", (10000 + random.nextInt(30)))))
+					.importJobId(MapstructCommonDomainMapper.INSTANCE.stringToImportJobId(String.format("%08d", (10000
+							+ random.nextInt(30)))))
 					.containerNumber(containerNumber)
 					.isoEquipmentCode(isoCode)
 					.equipmentReference("REF" + String.format("%06d", i))
