@@ -6,6 +6,9 @@ import io.vinta.containerbase.common.baseid.ExportJobId;
 import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.baseid.ImportRecordId;
+import io.vinta.containerbase.common.baseid.RoleId;
+import io.vinta.containerbase.common.baseid.TenantId;
+import io.vinta.containerbase.common.baseid.UserId;
 import java.util.Optional;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
@@ -131,6 +134,96 @@ public interface MapstructCommonDomainMapper {
 
 	@Named("importRecordIdToLong")
 	default Long importRecordIdToLong(ImportRecordId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringToTenantId")
+	default TenantId stringToTenantId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(TenantId::new)
+				.orElse(null);
+	}
+
+	@Named("longToTenantId")
+	default TenantId longToTenantId(Long source) {
+		return Optional.ofNullable(source)
+				.map(TenantId::new)
+				.orElse(null);
+	}
+
+	@Named("tenantIdToString")
+	default String tenantIdToString(TenantId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("tenantIdToLong")
+	default Long tenantIdToLong(TenantId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringToUserId")
+	default UserId stringToUserId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(UserId::new)
+				.orElse(null);
+	}
+
+	@Named("longToUserId")
+	default UserId longToUserId(Long source) {
+		return Optional.ofNullable(source)
+				.map(UserId::new)
+				.orElse(null);
+	}
+
+	@Named("userIdToString")
+	default String userIdToString(UserId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("userIdToLong")
+	default Long userIdToLong(UserId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringToRoleId")
+	default RoleId stringToRoleId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(RoleId::new)
+				.orElse(null);
+	}
+
+	@Named("longToRoleId")
+	default RoleId longToRoleId(Long source) {
+		return Optional.ofNullable(source)
+				.map(RoleId::new)
+				.orElse(null);
+	}
+
+	@Named("roleIdToString")
+	default String roleIdToString(RoleId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("roleIdToLong")
+	default Long roleIdToLong(RoleId source) {
 		return Optional.ofNullable(source)
 				.map(BaseId::getValue)
 				.orElse(null);

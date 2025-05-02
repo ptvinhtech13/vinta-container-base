@@ -1,10 +1,10 @@
 ---
 server:
   port: 8080
-  error:
-    whitelabel:
-      enabled: false
-    path: /error
+#  error:
+#    whitelabel:
+#      enabled: false
+#    path: /error
 logging:
   level:
     io.vinta.containerbase: INFO
@@ -39,10 +39,10 @@ spring:
   jpa:
     open-in-view: false
     show-sql: false
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: io.vinta.containerbase.common.dialect.ExtendedPostgresDialect
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: io.vinta.containerbase.common.dialect.ExtendedPostgresDialect
         jdbc:
           time_zone: UTC
           batch_size: 50
@@ -60,20 +60,16 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
   datasource:
-    url: jdbc:h2:file:./app-data/db/database;AUTO_SERVER=TRUE;INIT=SET TIME ZONE 'UTC';DATABASE_TO_LOWER=TRUE;MODE=PostgreSQL;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    url: jdbc:postgresql://localhost:5432/containerbase
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
     locations: classpath:db/migration
   sql:
     init:
-      platform: h2
+      platform: postgres
 
 
 io.vinta.containerbase:
@@ -167,3 +163,7 @@ io.vinta.containerbase:
         timeToLive: PT1H
       - tokenType: REFRESH_TOKEN
         timeToLive: PT3H
+  system-user:
+    id: -8888888
+    email: admin@vinta.io
+    password: 8888888

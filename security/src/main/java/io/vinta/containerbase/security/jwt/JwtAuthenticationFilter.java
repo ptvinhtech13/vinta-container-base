@@ -10,6 +10,8 @@ import io.vinta.containerbase.common.exceptions.TokenExpiredException;
 import io.vinta.containerbase.common.exceptions.UnauthorizedException;
 import io.vinta.containerbase.common.exceptions.config.ErrorCodeConfig;
 import io.vinta.containerbase.common.exceptions.constants.CommonErrorConstants;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
+import io.vinta.containerbase.common.security.constants.SecurityConstants;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.common.security.context.HttpSecurityContext;
 import io.vinta.containerbase.common.security.domains.FullTokenClaim;
@@ -17,6 +19,7 @@ import io.vinta.containerbase.security.domains.JwtUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,6 +55,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			AppSecurityContextHolder.setContext(HttpSecurityContext.httpSecurityContextBuilder()
 					.authorizationToken(tokenClaimExtractor.extractToken(request))
 					.fullTokenClaim(fullTokenClaim)
+					.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,
+							SecurityConstants.X_TENANT_ID)))
+					.userId(MapstructCommonDomainMapper.INSTANCE.longToUserId(fullTokenClaim.getTokenClaim()
+							.getUserId()))
+					.userType(fullTokenClaim.getTokenClaim()
+							.getUserType())
 					.build());
 			SecurityContextHolder.getContext()
 					.setAuthentication(authentication);
@@ -83,6 +92,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		} finally {
 			clearLocalThreadData();
 		}
+	}
+
+	private String getHeaderIgnoreCase(HttpServletRequest request, String headerName) {
+		return Collections.list(request.getHeaderNames())
+				.stream()
+				.filter(name -> name.equalsIgnoreCase(headerName))
+				.findFirst()
+				.map(request::getHeader)
+				.orElse(null);
 	}
 
 	private void clearLocalThreadData() {

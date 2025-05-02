@@ -13,6 +13,7 @@ package io.vinta.containerbase.rest.tenant;
 
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.rest.api.TenantApi;
+import io.vinta.containerbase.rest.tenant.request.CreateTenantRequest;
 import io.vinta.containerbase.rest.tenant.request.QueryTenantPaginationRequest;
 import io.vinta.containerbase.rest.tenant.response.TenantResponse;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,12 @@ public class TenantController implements TenantApi {
 	@Override
 	public TenantResponse getTenant(Long tenantId) {
 		return null;//TODO: write method getTenant
+
+	}
+
+	@Override
+	public TenantResponse createTenant(CreateTenantRequest request) {
+		return null;//TODO: write method createTenant
 
 	}
 

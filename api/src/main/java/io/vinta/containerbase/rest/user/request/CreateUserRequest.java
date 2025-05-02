@@ -11,5 +11,44 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.user.request;
 
+import io.vinta.containerbase.common.enums.UserType;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@Builder
 public class CreateUserRequest {
+	@NotNull
+	private final UserType userType;
+
+	@Email
+	@NotEmpty
+	private final String email;
+
+	@NotEmpty
+	@Length(max = 120)
+	private final String fullName;
+
+	@Length(max = 200)
+	private final String avatarPath;
+
+	@Length(max = 20)
+	private final String phoneNumber;
+
+	@NotNull
+	@Valid
+	private CreateUserAccessRequest userAccess;
+
+	@NotNull
+	@Valid
+	private CreateUserRoleRequest userRole;
 }

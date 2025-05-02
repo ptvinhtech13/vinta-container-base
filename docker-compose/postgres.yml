@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-latest}
+    restart: always
+    hostname: postgres
+    ports:
+      - '${POSTGRES_PORT}:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: containerbase
+    command: ['postgres', '-c', 'wal_level=logical']
+    healthcheck:
+      test: ['CMD', 'psql', '-U', 'postgres', '-c', 'SELECT 1']
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    volumes:
+      - ./scripts/postgres-init/init.sql:/docker-entrypoint-initdb.d/10-init.sql
+    networks:
+      - ${GLOBAL_NETWORK:-postgres}

@@ -6,12 +6,6 @@ import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.dialect.PostgresPlusDialect;
 import org.hibernate.type.StandardBasicTypes;
 
-/**
- * By default, JPQL doesn't support database-specific operators, and PostgresPlusDialect was missing GIST Operators used
- * for Ltree query. In below, customization allows to register and GIST operators used for Ltree like a function.
- * Meaning, all JPQL query needing to use Ltree GIST operator would need to use a "mask function" instead directly.
- * Using masking function approach would auto-convert to GIST clause in statement
- */
 @Slf4j
 public class ExtendedPostgresDialect extends PostgresPlusDialect {
 
@@ -19,11 +13,6 @@ public class ExtendedPostgresDialect extends PostgresPlusDialect {
 		super();
 	}
 
-	/**
-	 * This dialect would be injected in spring YAML hibernate configuration. ltree_left_descendant_right({0},{1})
-	 * pattern would be converted to ?1 <@ ?2 in statement. For example: JPQL: * SELECT p * FROM PersonEntity p * WHERE
-	 * ltree_left_descendant_right(p.groupPath, ?2) SQL: * SELECT p * FROM person p * WHERE p.group_path <@ ?2
-	 */
 	@Override
 	public void initializeFunctionRegistry(FunctionContributions functionContributions) {
 		super.initializeFunctionRegistry(functionContributions);
@@ -42,6 +31,15 @@ public class ExtendedPostgresDialect extends PostgresPlusDialect {
 
 		registry.registerPattern(ExtendedPostgresFunctions.JSONB_LEFT_EQUALS_RIGHT.getFuncName(), "?1 ->> ?2 = ?3",
 				types.resolve(StandardBasicTypes.BOOLEAN));
+
+		registry.registerPattern(ExtendedPostgresFunctions.VARCHAR_ARRAY_LEFT_ANY_CONTAINS_RIGHT.getFuncName(),
+				"?1 @> string_to_array(?2, ',')::varchar[]", types.resolve(StandardBasicTypes.BOOLEAN));
+
+		registry.registerPattern(ExtendedPostgresFunctions.ILIKE_LEFT_MATCHING_RIGHT.getFuncName(), "?1 ilike ?2", types
+				.resolve(StandardBasicTypes.BOOLEAN));
+
+		registry.registerPattern(ExtendedPostgresFunctions.ILIKE_LEFT_MATCHING_RIGHT_ESCAPE_SPECIAL_CHARACTER
+				.getFuncName(), "?1 ilike ?2 escape '!'", types.resolve(StandardBasicTypes.BOOLEAN));
 
 	}
 
