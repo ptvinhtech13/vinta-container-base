@@ -3,13 +3,18 @@ package io.vinta.containerbase.common.mapstruct;
 import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.baseid.ContainerId;
 import io.vinta.containerbase.common.baseid.ExportJobId;
+import io.vinta.containerbase.common.baseid.FeatureNodeId;
 import io.vinta.containerbase.common.baseid.FileFormId;
 import io.vinta.containerbase.common.baseid.ImportJobId;
 import io.vinta.containerbase.common.baseid.ImportRecordId;
 import io.vinta.containerbase.common.baseid.RoleId;
 import io.vinta.containerbase.common.baseid.TenantId;
 import io.vinta.containerbase.common.baseid.UserId;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
@@ -226,6 +231,73 @@ public interface MapstructCommonDomainMapper {
 	default Long roleIdToLong(RoleId source) {
 		return Optional.ofNullable(source)
 				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringsToRoleIds")
+	default Set<RoleId> stringsToRoleIds(Set<String> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(Long::valueOf)
+						.map(RoleId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("stringToFeatureNodeId")
+	default FeatureNodeId stringToFeatureNodeId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(FeatureNodeId::new)
+				.orElse(null);
+	}
+
+	@Named("longToFeatureNodeId")
+	default FeatureNodeId longToFeatureNodeId(Long source) {
+		return Optional.ofNullable(source)
+				.map(FeatureNodeId::new)
+				.orElse(null);
+	}
+
+	@Named("longsToFeatureNodeIds")
+	default Set<FeatureNodeId> longsToFeatureNodeIds(Set<Long> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(FeatureNodeId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("featureNodeIdToString")
+	default String featureNodeIdToString(FeatureNodeId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("featureNodeIdToLong")
+	default Long featureNodeIdToLong(FeatureNodeId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("featureNodeIdsToLongArray")
+	default Long[] featureNodeIdsToStrings(List<FeatureNodeId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(BaseId::getValue)
+						.toArray(Long[]::new))
+				.orElse(null);
+	}
+
+	@Named("longArrayToFeatureNodeIds")
+	default List<FeatureNodeId> longArrayToFeatureNodeIds(Long[] source) {
+		return Optional.ofNullable(source)
+				.map(it -> Stream.of(it)
+						.map(FeatureNodeId::new)
+						.collect(Collectors.toList()))
 				.orElse(null);
 	}
 }

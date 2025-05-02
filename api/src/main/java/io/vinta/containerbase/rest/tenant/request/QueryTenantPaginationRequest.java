@@ -11,5 +11,18 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.tenant.request;
 
-public class QueryTenantPaginationRequest {
+import io.vinta.containerbase.common.paging.PaginationQuery;
+import java.util.Collection;
+import lombok.Builder;
+
+public class QueryTenantPaginationRequest extends PaginationQuery<QueryTenantRequest> {
+	@Builder
+	public QueryTenantPaginationRequest(QueryTenantRequest filter, Integer size, Integer page, String sortDirection,
+			Collection<String> sortFields) {
+		super(filter, size, page, sortDirection, sortFields);
+	}
+
+	public QueryTenantPaginationRequest withFilter(QueryTenantRequest newFilter) {
+		return new QueryTenantPaginationRequest(newFilter, size, page, sortDirection, sortFields);
+	}
 }

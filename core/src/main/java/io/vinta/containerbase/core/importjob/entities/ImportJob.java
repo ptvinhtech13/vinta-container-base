@@ -18,6 +18,7 @@ import lombok.With;
 @RequiredArgsConstructor
 @ToString(of = { "id", "status", "fileFormId", "uploadedFilePath", "remark", "metrics", "consolidatedErrorMessages",
 		"createdAt", "updatedAt" })
+
 public class ImportJob extends BaseEntity<ImportJobId> {
 	private final ImportJobId id;
 	private final ImportJobStatus status;

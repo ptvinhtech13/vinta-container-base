@@ -1,5 +1,34 @@
 CREATE
     TABLE
+        IF NOT EXISTS tenants(
+            id BIGSERIAL NOT NULL CONSTRAINT tenants_pk PRIMARY KEY,
+            title VARCHAR(128) NOT NULL,
+            description VARCHAR(500),
+            domain_host VARCHAR(128) NOT NULL,
+            status VARCHAR(50) NOT NULL,
+            created_by BIGINT,
+            updated_by BIGINT,
+            created_at TIMESTAMP(6) DEFAULT NOW(),
+            updated_at TIMESTAMP(6) DEFAULT NOW()
+        );
+
+CREATE
+    UNIQUE INDEX IF NOT EXISTS tenants_domain_host_idx ON
+    tenants(domain_host);
+
+CREATE
+    TABLE
+        IF NOT EXISTS roles(
+            id BIGSERIAL NOT NULL CONSTRAINT roles_pk PRIMARY KEY,
+            title VARCHAR(128) NOT NULL,
+            description VARCHAR(256),
+            feature_node_ids BIGINT [],
+            created_at TIMESTAMP(6) DEFAULT NOW(),
+            updated_at TIMESTAMP(6) DEFAULT NOW()
+        );
+
+CREATE
+    TABLE
         IF NOT EXISTS users(
             id BIGSERIAL NOT NULL CONSTRAINT users_pk PRIMARY KEY,
             user_type VARCHAR(50) NOT NULL,

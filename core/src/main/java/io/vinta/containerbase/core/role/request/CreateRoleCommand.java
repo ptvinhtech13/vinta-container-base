@@ -1,6 +1,8 @@
 package io.vinta.containerbase.core.role.request;
 
-import io.vinta.containerbase.common.baseid.RoleId;
+import io.vinta.containerbase.common.baseid.FeatureNodeId;
+import io.vinta.containerbase.common.baseid.TenantId;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class CreateRoleCommand {
-	private final RoleId id;
-	//TODO: Vinh implements CreateRoleCommand.java
+	private final TenantId tenantId;
+	private final String title;
+	private final String description;
+	private final Set<FeatureNodeId> featureNodeIds;
+
 }

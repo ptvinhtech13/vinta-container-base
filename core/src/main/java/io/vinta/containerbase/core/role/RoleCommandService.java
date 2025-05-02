@@ -1,5 +1,11 @@
 package io.vinta.containerbase.core.role;
 
+import io.vinta.containerbase.core.role.entities.Role;
+import io.vinta.containerbase.core.role.request.CreateRoleCommand;
+import io.vinta.containerbase.core.role.request.UpdateRoleCommand;
+
 public interface RoleCommandService {
-	//TODO: Vinh implements RoleCommandService.java
+	Role createRole(CreateRoleCommand command);
+
+	Role updateRole(UpdateRoleCommand command);
 }
