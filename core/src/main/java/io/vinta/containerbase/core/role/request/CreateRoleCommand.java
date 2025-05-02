@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateRoleCommand {
 	private final TenantId tenantId;
+	private final String roleKey;
 	private final String title;
 	private final String description;
 	private final Set<FeatureNodeId> featureNodeIds;

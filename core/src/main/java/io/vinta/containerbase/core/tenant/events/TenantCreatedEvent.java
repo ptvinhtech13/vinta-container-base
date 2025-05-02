@@ -9,19 +9,16 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.rest.tenant.request;
+package io.vinta.containerbase.core.tenant.events;
 
-import lombok.AllArgsConstructor;
+import io.vinta.containerbase.core.tenant.entities.Tenant;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Setter
-@AllArgsConstructor
 @Builder
-public class CreateTenantRequest {
-	private final String title;
-	private final String description;
-	private final String domainHost;
+@RequiredArgsConstructor
+public class TenantCreatedEvent {
+	private final Tenant tenant;
 }

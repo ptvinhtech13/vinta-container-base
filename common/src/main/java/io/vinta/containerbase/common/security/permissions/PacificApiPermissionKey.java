@@ -24,6 +24,13 @@ public enum PacificApiPermissionKey {
 			UserType.BACK_OFFICE),
 	USER_MGMT_UPDATE(2_1005L, "root.user.update", FeatureNodeType.API, "Update User", 4, UserType.SYSTEM_ADMIN,
 			UserType.BACK_OFFICE),
+
+	ROLE_MGMT(3_1001L, "root.role", FeatureNodeType.MODULE, "Role Management", 2, UserType.SYSTEM_ADMIN),
+	ROLE_MGMT_VIEW(3_1002L, "root.role.view", FeatureNodeType.API, "View Role List", 1, UserType.SYSTEM_ADMIN),
+	ROLE_MGMT_ADD(3_1003L, "root.role.add", FeatureNodeType.API, "Add new role", 2, UserType.SYSTEM_ADMIN),
+	ROLE_MGMT_DELETE(3_1004L, "root.role.delete", FeatureNodeType.API, "Delete Role", 3, UserType.SYSTEM_ADMIN),
+	ROLE_MGMT_UPDATE(3_1005L, "root.role.update", FeatureNodeType.API, "Update Role", 4, UserType.SYSTEM_ADMIN),
+
 	//--END--
 
 	;

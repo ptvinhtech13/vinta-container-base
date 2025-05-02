@@ -46,6 +46,10 @@ public class RoleEntity {
 	@Length(max = 128)
 	private String title;
 
+	@Column(name = "role_key")
+	@Length(max = 128)
+	private String roleKey;
+
 	@Column(name = "tenant_id")
 	@NotNull
 	private Long tenantId;

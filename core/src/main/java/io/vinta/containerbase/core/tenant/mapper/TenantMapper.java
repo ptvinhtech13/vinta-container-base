@@ -20,6 +20,7 @@ public interface TenantMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "status", constant = "CREATED")
 	Tenant toCreate(CreateTenantCommand command);
 
 	@Mapping(target = "id", ignore = true)

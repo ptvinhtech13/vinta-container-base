@@ -21,6 +21,7 @@ public class Role extends BaseEntity<RoleId> {
 	private final RoleId id;
 	private final TenantId tenantId;
 	private final String title;
+	private final String roleKey;
 	private final String description;
 	private final List<FeatureNodeId> featureNodeIds;
 	private final Instant createdAt;

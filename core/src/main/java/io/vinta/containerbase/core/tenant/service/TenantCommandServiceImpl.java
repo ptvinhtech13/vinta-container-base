@@ -6,11 +6,13 @@ import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.core.tenant.TenantCommandService;
 import io.vinta.containerbase.core.tenant.TenantRepository;
 import io.vinta.containerbase.core.tenant.entities.Tenant;
+import io.vinta.containerbase.core.tenant.events.TenantCreatedEvent;
 import io.vinta.containerbase.core.tenant.mapper.TenantMapper;
 import io.vinta.containerbase.core.tenant.request.CreateTenantCommand;
 import io.vinta.containerbase.core.tenant.request.FilterTenantQuery;
 import io.vinta.containerbase.core.tenant.request.UpdateTenantCommand;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TenantCommandServiceImpl implements TenantCommandService {
 	private final TenantRepository repository;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
@@ -29,7 +32,12 @@ public class TenantCommandServiceImpl implements TenantCommandService {
 					+ " already exists");
 		}
 
-		return repository.save(TenantMapper.INSTANCE.toCreate(command));
+		final var tenant = repository.save(TenantMapper.INSTANCE.toCreate(command));
+
+		eventPublisher.publishEvent(TenantCreatedEvent.builder()
+				.tenant(tenant)
+				.build());
+		return tenant;
 	}
 
 	@Override

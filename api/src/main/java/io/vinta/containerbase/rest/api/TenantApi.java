@@ -12,6 +12,8 @@
 package io.vinta.containerbase.rest.api;
 
 import io.vinta.containerbase.common.paging.Paging;
+import io.vinta.containerbase.common.security.permissions.ContainerBaseApiAuthorized;
+import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLevel;
 import io.vinta.containerbase.rest.tenant.request.CreateTenantRequest;
 import io.vinta.containerbase.rest.tenant.request.QueryTenantPaginationRequest;
 import io.vinta.containerbase.rest.tenant.request.UpdateTenantRequest;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 public interface TenantApi {
@@ -33,7 +36,8 @@ public interface TenantApi {
 
 	@PostMapping(path = "/api/tenant/tenants")
 	@ResponseStatus(HttpStatus.OK)
-	TenantResponse createTenant(@Valid CreateTenantRequest request);
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.PUBLIC)
+	TenantResponse createTenant(@RequestBody @Valid CreateTenantRequest request);
 
 	@GetMapping(path = "/api/tenant/tenants")
 	@ResponseStatus(HttpStatus.OK)
@@ -41,7 +45,8 @@ public interface TenantApi {
 
 	@PutMapping(path = "/api/tenant/tenants/{tenantId}")
 	@ResponseStatus(HttpStatus.OK)
-	TenantResponse updateTenant(@PathVariable("tenantId") Long tenantId, @Valid UpdateTenantRequest request);
+	TenantResponse updateTenant(@PathVariable("tenantId") Long tenantId,
+			@RequestBody @Valid UpdateTenantRequest request);
 
 	@DeleteMapping(path = "/api/tenant/tenants/{tenantId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

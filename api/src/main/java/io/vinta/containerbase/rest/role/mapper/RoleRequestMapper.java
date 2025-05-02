@@ -18,6 +18,7 @@ public interface RoleRequestMapper {
 	RoleRequestMapper INSTANCE = Mappers.getMapper(RoleRequestMapper.class);
 
 	@Mapping(target = "featureNodeIds", source = "request.featureNodeIds", qualifiedByName = "longsToFeatureNodeIds")
+	@Mapping(target = "roleKey", ignore = true)
 	CreateRoleCommand toCreate(TenantId tenantId, CreateRoleRequest request);
 
 	@Mapping(target = "featureNodeIds", source = "request.featureNodeIds", qualifiedByName = "longsToFeatureNodeIds")

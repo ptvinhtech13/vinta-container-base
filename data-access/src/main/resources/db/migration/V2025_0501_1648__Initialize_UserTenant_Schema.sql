@@ -20,7 +20,9 @@ CREATE
     TABLE
         IF NOT EXISTS roles(
             id BIGSERIAL NOT NULL CONSTRAINT roles_pk PRIMARY KEY,
+            tenant_id BIGINT NOT NULL,
             title VARCHAR(128) NOT NULL,
+            role_key VARCHAR(128),
             description VARCHAR(256),
             feature_node_ids BIGINT [],
             created_at TIMESTAMP(6) DEFAULT NOW(),
