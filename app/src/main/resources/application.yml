@@ -7,7 +7,7 @@ server:
 #    path: /error
 logging:
   level:
-    io.vinta.containerbase: INFO
+    io.vinta.containerbase: DEBUG
 
 management:
   tracing:
@@ -154,6 +154,8 @@ io.vinta.containerbase:
       cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
       lock-at-least-for: PT15S
       lock-at-most-for: PT15M
+  scanning-apis:
+    base-packages: io.vinta.containerbase.*
   jwt-token:
     issuer: "vinta.containerbase.io"
     private-key: "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBPmYh8xHg1C68cXPzT9mgdqY31VZBzJ/UuAGk6M0pKRQ=="
@@ -167,3 +169,7 @@ io.vinta.containerbase:
     id: -8888888
     email: admin@vinta.io
     password: 8888888
+  security:
+    api:
+      authorization:
+        enabled: false

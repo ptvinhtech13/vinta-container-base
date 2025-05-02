@@ -1,7 +1,9 @@
 package io.vinta.containerbase.data.access.relational;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.querydsl.ExtendedPostgresTemplates;
+import io.vinta.containerbase.common.security.context.AppSecurityContext;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,8 @@ public class ContainerBaseDataAccessConfiguration {
 	@Bean
 	public AuditorAware<Long> auditorProvider() {
 		return () -> AppSecurityContextHolder.getContext()
-				.map(it -> it.getUserId()
-						.getValue());
+				.map(AppSecurityContext::getUserId)
+				.map(BaseId::getValue);
 	}
 
 	@Bean

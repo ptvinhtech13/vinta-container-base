@@ -9,32 +9,42 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.rest.user.response;
+package io.vinta.containerbase.security.apiregistry.entities;
 
-import io.vinta.containerbase.common.enums.UserStatus;
-import io.vinta.containerbase.common.enums.UserType;
-import io.vinta.containerbase.rest.userrole.response.UserRoleResponse;
-import java.time.Instant;
+import io.vinta.containerbase.common.security.permissions.PacificApiPermissionKey;
+import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLevel;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
+import org.springframework.http.HttpMethod;
 
-@Getter
 @Builder
 @RequiredArgsConstructor
-public class UserResponse {
-	private final String id;
-	private final UserType userType;
-	private final UserStatus userStatus;
-	private final String phoneNumber;
-	private final String email;
-	private final String fullName;
-	private final String avatarPath;
+@With
+@Getter
+public class ApiInfo {
+	private final String serviceId;
+	private final String path;
+	private final HttpMethod method;
+	private final PlatformApiSecurityLevel securityLevel;
+	private final Set<PacificApiPermissionKey> permissionKeys;
 
-	private final Set<UserRoleResponse> userRoles;
-	private final Instant createdAt;
-	private final Instant updatedAt;
-	private final String createdBy;
-	private final String updatedBy;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		ApiInfo that = (ApiInfo) o;
+		return Objects.equals(serviceId, that.serviceId) && Objects.equals(path, that.path) && Objects.equals(method,
+				that.method);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(serviceId, path, method);
+	}
 }

@@ -9,32 +9,17 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.rest.user.request;
+package io.vinta.containerbase.security.apiregistry;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import io.vinta.containerbase.common.enums.UserAccessType;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import io.vinta.containerbase.security.apiregistry.entities.ApiInfo;
+import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode(callSuper = false)
-@JsonTypeName("BASIC_AUTH_PASSWORD")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CreateUserAccessBasicAuthRequest extends CreateUserAccessRequest {
+public interface ApiInfoRegistry {
+	List<ApiInfo> getPrivateApis();
 
-	@NotEmpty
-	private String password;
+	List<ApiInfo> getPublicApis();
 
-	@Builder
-	@JsonCreator
-	public CreateUserAccessBasicAuthRequest(@NotEmpty String password) {
-		super(UserAccessType.BASIC_AUTH_PASSWORD);
-		this.password = password;
-	}
+	List<ApiInfo> getAuthorizedRoleApis();
+
+	List<ApiInfo> getAuthenticatedApis();
 }

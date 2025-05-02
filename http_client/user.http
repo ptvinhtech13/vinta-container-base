@@ -1,0 +1,19 @@
+POST localhost:8080/api/user/users
+Content-Type: application/json
+X-Tenant-ID: 123456
+
+{
+    "userType": "BACK_OFFICE",
+    "email": "ptvinhtech13@gmail.com",
+    "fullName": "vinh pham",
+    "userAccess": {
+        "accessType": "BASIC_AUTH_PASSWORD",
+        "password": "0000"
+    },
+    "userRole": {
+        "roleId": 123456
+    }
+}
+
+###
+

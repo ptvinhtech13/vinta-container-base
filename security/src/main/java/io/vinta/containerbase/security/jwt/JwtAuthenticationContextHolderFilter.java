@@ -14,56 +14,59 @@ import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.security.constants.SecurityConstants;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.common.security.context.HttpSecurityContext;
-import io.vinta.containerbase.common.security.domains.FullTokenClaim;
-import io.vinta.containerbase.security.domains.JwtUserDetails;
+import io.vinta.containerbase.common.security.domains.JwtTokenClaim;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+@RequiredArgsConstructor
+public class JwtAuthenticationContextHolderFilter extends OncePerRequestFilter {
 
-	private final HandlerExceptionResolver exceptionResolver;
-	private final JwtTokenClaimExtractor tokenClaimExtractor;
 	private final ErrorCodeConfig errorCodeConfig;
 
-	public JwtAuthenticationFilter(final HandlerExceptionResolver exceptionResolver,
-			final JwtTokenClaimExtractor tokenClaimExtractor, final ErrorCodeConfig errorCodeConfig) {
-		this.exceptionResolver = exceptionResolver;
-		this.tokenClaimExtractor = tokenClaimExtractor;
-		this.errorCodeConfig = errorCodeConfig;
-	}
+	private final HandlerExceptionResolver exceptionResolver;
+
+	private final JwtTokenClaimExtractor tokenClaimExtractor;
 
 	@Override
 	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
 			final FilterChain filterChain) {
-
-		final FullTokenClaim fullTokenClaim;
 		try {
-			log.info("Attempting Authentication: request = {}", request.getRequestURI());
-			fullTokenClaim = parseTokenAndAuthenticate(request);
-			final var userDetails = new JwtUserDetails(fullTokenClaim.getTokenClaim());
-			final var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails
-					.getAuthorities());
+			Authentication authentication = SecurityContextHolder.getContext()
+					.getAuthentication();
 
-			AppSecurityContextHolder.setContext(HttpSecurityContext.httpSecurityContextBuilder()
-					.authorizationToken(tokenClaimExtractor.extractToken(request))
-					.fullTokenClaim(fullTokenClaim)
-					.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,
-							SecurityConstants.X_TENANT_ID)))
-					.userId(MapstructCommonDomainMapper.INSTANCE.longToUserId(fullTokenClaim.getTokenClaim()
-							.getUserId()))
-					.userType(fullTokenClaim.getTokenClaim()
-							.getUserType())
-					.build());
-			SecurityContextHolder.getContext()
-					.setAuthentication(authentication);
+			if (authentication != null && authentication.isAuthenticated() && authentication
+					.getPrincipal() instanceof Jwt jwt) {
+				// Extract the token claim from the JWT
+				final var tokenClaim = (JwtTokenClaim) jwt.getClaims()
+						.get("tokenClaim");
+
+				// Set up the security context
+				AppSecurityContextHolder.setContext(HttpSecurityContext.httpSecurityContextBuilder()
+						.authorizationToken(tokenClaimExtractor.extractToken(request))
+						.tokenClaim(tokenClaim)
+						.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,
+								SecurityConstants.X_TENANT_ID)))
+						.userId(MapstructCommonDomainMapper.INSTANCE.longToUserId(tokenClaim.getUserId()))
+						.userType(tokenClaim.getUserType())
+						.build());
+
+				log.debug("Set up AppSecurityContext for user: {}", tokenClaim.getUserId());
+			} else {
+				AppSecurityContextHolder.setContext(HttpSecurityContext.httpSecurityContextBuilder()
+						.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,
+								SecurityConstants.X_TENANT_ID)))
+						.build());
+			}
 			filterChain.doFilter(request, response);
 		} catch (final TokenExpiredException ex) {
 			log.warn("Token has been expired.");
@@ -90,7 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			exceptionResolver.resolveException(request, response, null, new InternalServerErrorException(errorCodeConfig
 					.getMessage(CommonErrorConstants.INTERNAL_SERVER_ERROR), ex.getCause()));
 		} finally {
-			clearLocalThreadData();
+			AppSecurityContextHolder.clearContext();
 		}
 	}
 
@@ -101,18 +104,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				.findFirst()
 				.map(request::getHeader)
 				.orElse(null);
-	}
-
-	private void clearLocalThreadData() {
-		SecurityContextHolder.clearContext();
-		AppSecurityContextHolder.clearContext();
-	}
-
-	private FullTokenClaim parseTokenAndAuthenticate(final HttpServletRequest request) {
-		try {
-			return tokenClaimExtractor.fromAuthorizationToken(request);
-		} catch (final com.auth0.jwt.exceptions.TokenExpiredException expiredException) {
-			throw new TokenExpiredException(errorCodeConfig.getMessage(CommonErrorConstants.TOKEN_EXPIRED));
-		}
 	}
 }

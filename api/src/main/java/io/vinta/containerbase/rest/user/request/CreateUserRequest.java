@@ -27,22 +27,23 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Builder
 public class CreateUserRequest {
+
 	@NotNull
-	private final UserType userType;
+	private UserType userType;
 
 	@Email
 	@NotEmpty
-	private final String email;
+	private String email;
 
 	@NotEmpty
 	@Length(max = 120)
-	private final String fullName;
+	private String fullName;
 
 	@Length(max = 200)
-	private final String avatarPath;
+	private String avatarPath;
 
 	@Length(max = 20)
-	private final String phoneNumber;
+	private String phoneNumber;
 
 	@NotNull
 	@Valid

@@ -1,6 +1,6 @@
 package io.vinta.containerbase.common.enums;
 
 public enum UserType {
-	ADMIN,
+	SYSTEM_ADMIN,
 	BACK_OFFICE
 }
