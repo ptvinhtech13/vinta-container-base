@@ -59,8 +59,6 @@ public class JwtAuthenticationContextHolderFilter extends OncePerRequestFilter {
 						.userId(MapstructCommonDomainMapper.INSTANCE.longToUserId(tokenClaim.getUserId()))
 						.userType(tokenClaim.getUserType())
 						.build());
-
-				log.debug("Set up AppSecurityContext for user: {}", tokenClaim.getUserId());
 			} else {
 				AppSecurityContextHolder.setContext(HttpSecurityContext.httpSecurityContextBuilder()
 						.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,

@@ -9,6 +9,7 @@ import io.vinta.containerbase.rest.role.request.UpdateRoleRequest;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,11 @@ public interface RoleApi {
 	@ResponseStatus(HttpStatus.OK)
 	RoleResponse getRole(@PathVariable("roleId") Long roleId);
 
+	@GetMapping(path = "/api/role/roles/keys/{roleKey}")
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	@ResponseStatus(HttpStatus.OK)
+	RoleResponse getRoleKey(@PathVariable("roleKey") String roleKey);
+
 	@PostMapping(path = "/api/role/roles")
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -38,5 +44,10 @@ public interface RoleApi {
 	@ResponseStatus(HttpStatus.OK)
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	Paging<RoleResponse> queryRole(@ModelAttribute @Valid QueryRolePaginationRequest request);
+
+	@DeleteMapping(path = "/api/role/roles/{roleId}")
+	@ResponseStatus(HttpStatus.OK)
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	void deleteRole(@PathVariable("roleId") Long roleId);
 
 }

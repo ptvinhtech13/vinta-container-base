@@ -2,6 +2,7 @@ package io.vinta.containerbase.data.access.relational.role.repository;
 
 import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.baseid.RoleId;
+import io.vinta.containerbase.common.baseid.TenantId;
 import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.querydsl.WhereBuilder;
@@ -38,10 +39,11 @@ public class RoleRepositoryImpl implements RoleRepository {
 	}
 
 	@Override
-	public Optional<Role> findRoleById(RoleId roleId) {
+	public Optional<Role> findRoleById(TenantId tenantId, RoleId roleId) {
 		return Optional.ofNullable(roleId)
 				.map(BaseId::getValue)
-				.map(jpaRoleRepository::findById)
+				.map(id -> jpaRoleRepository.findOneWithBase(QRoleEntity.roleEntity.id.eq(id)
+						.and(QRoleEntity.roleEntity.tenantId.eq(tenantId.getValue()))))
 				.flatMap(it -> it.map(RoleEntityMapper.INSTANCE::toModel));
 
 	}
@@ -78,6 +80,19 @@ public class RoleRepositoryImpl implements RoleRepository {
 								.stream()
 								.map(Sort.Order::toString)
 								.toList());
-
 	}
+
+	@Override
+	public Optional<Role> findRoleByKey(TenantId tenantId, String roleKey) {
+		return Optional.ofNullable(roleKey)
+				.map(key -> jpaRoleRepository.findOneWithBase(QRoleEntity.roleEntity.roleKey.eq(key)
+						.and(QRoleEntity.roleEntity.tenantId.eq(tenantId.getValue()))))
+				.flatMap(it -> it.map(RoleEntityMapper.INSTANCE::toModel));
+	}
+
+	@Override
+	public void deleteRole(TenantId tenantId, RoleId roleId) {
+		jpaRoleRepository.deleteByIdAndTenantId(roleId.getValue(), tenantId.getValue());
+	}
+
 }

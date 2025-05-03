@@ -4,4 +4,5 @@ import io.vinta.containerbase.common.querydsl.BaseQuerydslRepository;
 import io.vinta.containerbase.data.access.relational.role.entities.RoleEntity;
 
 public interface JpaRoleRepository extends BaseQuerydslRepository<RoleEntity, Long> {
+	void deleteByIdAndTenantId(Long id, Long tenantId);
 }

@@ -11,5 +11,22 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.role.response;
 
+import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoleResponse {
+	private String id;
+	private String title;
+	private String roleKey;
+	private String description;
+	private Set<FeatureNodeResponse> featureNodes;
 }

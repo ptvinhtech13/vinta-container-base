@@ -7,11 +7,11 @@ import java.util.Set;
 import lombok.Getter;
 
 @Getter
-public enum PacificApiPermissionKey {
+public enum ApiPermissionKey {
 	TENANT_MGMT(1_1001L, "root.tenant", FeatureNodeType.MODULE, "Tenant Management", 0, UserType.SYSTEM_ADMIN),
 	TENANT_MGMT_VIEW(1_1002L, "root.tenant.view", FeatureNodeType.API, "View Tenant", 1, UserType.SYSTEM_ADMIN),
 	TENANT_MGMT_CREATE(1_1003L, "root.tenant.add", FeatureNodeType.API, "Create New Tenant", 2, UserType.SYSTEM_ADMIN),
-	TENANT_MGMT_UPDATE(1_1003L, "root.tenant.update", FeatureNodeType.API, "Create New Tenant", 2,
+	TENANT_MGMT_UPDATE(1_1004L, "root.tenant.update", FeatureNodeType.API, "Create New Tenant", 2,
 			UserType.SYSTEM_ADMIN),
 
 	USER_MGMT(2_1001L, "root.user", FeatureNodeType.MODULE, "User Management", 1, UserType.SYSTEM_ADMIN,
@@ -42,7 +42,7 @@ public enum PacificApiPermissionKey {
 	private final int displayOrder;
 	private final Set<UserType> allowedUserTypes;
 
-	PacificApiPermissionKey(Long id, String nodePath, FeatureNodeType nodeType, String nodeTitle, int displayOrder,
+	ApiPermissionKey(Long id, String nodePath, FeatureNodeType nodeType, String nodeTitle, int displayOrder,
 			UserType... allowedUserTypes) {
 		this.id = new FeatureNodeId(id);
 		this.nodePath = nodePath;

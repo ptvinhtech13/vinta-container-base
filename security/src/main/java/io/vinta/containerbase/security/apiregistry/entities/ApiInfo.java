@@ -1,6 +1,6 @@
 package io.vinta.containerbase.security.apiregistry.entities;
 
-import io.vinta.containerbase.common.security.permissions.PacificApiPermissionKey;
+import io.vinta.containerbase.common.security.permissions.ApiPermissionKey;
 import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLevel;
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class ApiInfo {
 	private final String path;
 	private final HttpMethod method;
 	private final PlatformApiSecurityLevel securityLevel;
-	private final Set<PacificApiPermissionKey> permissionKeys;
+	private final Set<ApiPermissionKey> permissionKeys;
 
 	@Override
 	public boolean equals(Object o) {

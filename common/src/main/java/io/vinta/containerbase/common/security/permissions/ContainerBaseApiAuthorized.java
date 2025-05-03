@@ -11,5 +11,5 @@ public @interface ContainerBaseApiAuthorized {
 
 	PlatformApiSecurityLevel security() default PlatformApiSecurityLevel.AUTHENTICATED;
 
-	PacificApiPermissionKey[] permissions() default {};
+	ApiPermissionKey[] permissions() default {};
 }

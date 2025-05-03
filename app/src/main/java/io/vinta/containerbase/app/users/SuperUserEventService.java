@@ -5,12 +5,15 @@ import io.vinta.containerbase.common.enums.UserAccessType;
 import io.vinta.containerbase.common.enums.UserStatus;
 import io.vinta.containerbase.common.enums.UserType;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
+import io.vinta.containerbase.common.security.permissions.ApiPermissionKey;
 import io.vinta.containerbase.common.security.permissions.DefaultSystemRole;
+import io.vinta.containerbase.common.security.permissions.FeatureNodeType;
 import io.vinta.containerbase.core.role.RoleCommandService;
 import io.vinta.containerbase.core.role.RoleQueryService;
 import io.vinta.containerbase.core.role.request.CreateRoleCommand;
 import io.vinta.containerbase.core.role.request.FilterRoleQuery;
 import io.vinta.containerbase.core.role.request.RolePaginationQuery;
+import io.vinta.containerbase.core.role.request.UpdateRoleCommand;
 import io.vinta.containerbase.core.useraccess.entities.UserAccessBasicAuthData;
 import io.vinta.containerbase.core.useraccess.request.CreateUserAccessCommand;
 import io.vinta.containerbase.core.userrole.request.CreateUserRoleCommand;
@@ -18,8 +21,10 @@ import io.vinta.containerbase.core.users.UserCommandService;
 import io.vinta.containerbase.core.users.UserQueryService;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -38,10 +43,30 @@ public class SuperUserEventService {
 	public void handleUserCreatedEvent() {
 		final var tenantId = MapstructCommonDomainMapper.INSTANCE.longToTenantId(TenantConstants.ADMIN_TENANT_ID);
 
-		if (userQueryService.findSingleUser(FilterUserQuery.builder()
+		final var existingOptional = userQueryService.findSingleUser(FilterUserQuery.builder()
 				.byEmail(superAdminConfigProperties.getEmail())
-				.build())
-				.isPresent()) {
+				.build());
+
+		if (existingOptional.isPresent()) {
+
+			final var userRole = existingOptional.get()
+					.getUserRoles()
+					.stream()
+					.findFirst()
+					.get();
+
+			final var role = roleQueryService.getRole(tenantId, userRole.getRoleId());
+			roleCommandService.updateRole(UpdateRoleCommand.builder()
+					.tenantId(tenantId)
+					.roleId(role.getId())
+					.title(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleTitle())
+					.description(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleTitle())
+					.featureNodeIds(Arrays.stream(ApiPermissionKey.values())
+							.filter(it -> FeatureNodeType.API.equals(it.getNodeType()))
+							.map(ApiPermissionKey::getId)
+							.collect(Collectors.toSet()))
+					.build());
+
 			return;
 		}
 
@@ -62,6 +87,10 @@ public class SuperUserEventService {
 					.title(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleTitle())
 					.description(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleTitle())
 					.roleKey(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleKey())
+					.featureNodeIds(Arrays.stream(ApiPermissionKey.values())
+							.filter(it -> FeatureNodeType.API.equals(it.getNodeType()))
+							.map(ApiPermissionKey::getId)
+							.collect(Collectors.toSet()))
 					.build());
 		}
 

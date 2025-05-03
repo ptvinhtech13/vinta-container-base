@@ -9,19 +9,28 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.rest.role.request;
+package io.vinta.containerbase.rest.role.response;
 
+import io.vinta.containerbase.common.enums.UserType;
+import io.vinta.containerbase.common.security.permissions.FeatureNodeType;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryRoleRequest {
-	private Set<String> byRoleIds;
-	private Set<String> byRoleKeys;
+public class FeatureNodeResponse {
+	private String id;
+	private String nodeTitle;
+	private String nodePath;
+
+	private FeatureNodeType nodeType;
+	private int displayOrder;
+	private Set<UserType> allowedUserTypes;
 }

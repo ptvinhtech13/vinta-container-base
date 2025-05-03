@@ -302,11 +302,21 @@ public interface MapstructCommonDomainMapper {
 	}
 
 	@Named("featureNodeIdsToLongArray")
-	default Long[] featureNodeIdsToStrings(List<FeatureNodeId> source) {
+	default Long[] featureNodeIdsToLongArray(List<FeatureNodeId> source) {
 		return Optional.ofNullable(source)
 				.map(it -> it.stream()
 						.map(BaseId::getValue)
 						.toArray(Long[]::new))
+				.orElse(null);
+	}
+
+	@Named("featureNodeIdsToStrings")
+	default Set<String> featureNodeIdsToStrings(List<FeatureNodeId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(BaseId::getValue)
+						.map(String::valueOf)
+						.collect(Collectors.toSet()))
 				.orElse(null);
 	}
 

@@ -26,6 +26,7 @@ import io.vinta.containerbase.rest.user.request.CreateUserRequest;
 import io.vinta.containerbase.rest.user.request.QueryUserPaginationRequest;
 import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import io.vinta.containerbase.rest.user.response.UserResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +58,9 @@ public class UserController implements UserApi {
 	public Paging<UserResponse> queryUsers(QueryUserPaginationRequest request) {
 		final var pagingQuery = UserPaginationMapper.INSTANCE.toPagingQuery(request);
 		return UserPaginationMapper.INSTANCE.toPagingResponse(userQueryService.queryUsers(pagingQuery.withFilter(
-				pagingQuery.getFilter()
+				Optional.ofNullable(pagingQuery.getFilter())
+						.orElseGet(() -> FilterUserQuery.builder()
+								.build())
 						.withByTenantId(AppSecurityContextHolder.getTenantId()))));
 	}
 

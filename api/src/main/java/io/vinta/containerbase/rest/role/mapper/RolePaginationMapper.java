@@ -15,12 +15,14 @@ import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.common.paging.Paging;
+import io.vinta.containerbase.core.featurenodes.FeatureNodeQueryService;
 import io.vinta.containerbase.core.role.entities.Role;
 import io.vinta.containerbase.core.role.request.FilterRoleQuery;
 import io.vinta.containerbase.core.role.request.RolePaginationQuery;
 import io.vinta.containerbase.rest.role.request.QueryRolePaginationRequest;
 import io.vinta.containerbase.rest.role.request.QueryRoleRequest;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -32,9 +34,10 @@ public interface RolePaginationMapper {
 
 	RolePaginationQuery toPagingQuery(QueryRolePaginationRequest source);
 
-	Paging<RoleResponse> toPagingResponse(Paging<Role> source);
+	Paging<RoleResponse> toPagingResponse(@Context FeatureNodeQueryService featureNodeQueryService,
+			Paging<Role> source);
 
-	@Mapping(target = "byTenantId", source = "byTenantId", qualifiedByName = "stringToTenantId")
 	@Mapping(target = "byRoleIds", source = "byRoleIds", qualifiedByName = "stringsToRoleIds")
+	@Mapping(target = "byTenantId", ignore = true)
 	FilterRoleQuery toFilter(QueryRoleRequest query);
 }
