@@ -7,7 +7,7 @@ import io.vinta.containerbase.core.users.UserCommandService;
 import io.vinta.containerbase.core.users.UserRepository;
 import io.vinta.containerbase.core.users.entities.User;
 import io.vinta.containerbase.core.users.event.UserCreatedEvent;
-import io.vinta.containerbase.core.users.mapper.VintaUserMapper;
+import io.vinta.containerbase.core.users.mapper.UserMapper;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.core.users.request.UpdateUserCommand;
@@ -34,7 +34,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 				.build())) {
 			throw new BadRequestException("User has existed");
 		}
-		final var vintaUser = repository.save(VintaUserMapper.INSTANCE.toCreateModel(command));
+		final var vintaUser = repository.save(UserMapper.INSTANCE.toCreateModel(command));
 		eventPublisher.publishEvent(UserCreatedEvent.builder()
 				.user(vintaUser)
 				.createUserAccessCommand(command.getUserAccess()
@@ -55,7 +55,7 @@ public class UserCommandServiceImpl implements UserCommandService {
 				.build())
 				.orElseThrow(() -> new NotFoundException("User not found"));
 
-		return repository.save(VintaUserMapper.INSTANCE.toUpdateProfile(user, command));
+		return repository.save(UserMapper.INSTANCE.toUpdateProfile(user, command));
 	}
 
 }

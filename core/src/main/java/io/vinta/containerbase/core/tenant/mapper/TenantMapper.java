@@ -8,12 +8,9 @@ import io.vinta.containerbase.core.tenant.request.CreateTenantCommand;
 import io.vinta.containerbase.core.tenant.request.UpdateTenantCommand;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(config = MapstructConfig.class, unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
-		MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
+@Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
 public interface TenantMapper {
 	TenantMapper INSTANCE = Mappers.getMapper(TenantMapper.class);
 
@@ -23,8 +20,12 @@ public interface TenantMapper {
 	@Mapping(target = "status", constant = "CREATED")
 	Tenant toCreate(CreateTenantCommand command);
 
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "createdAt", ignore = true)
-	@Mapping(target = "updatedAt", ignore = true)
-	Tenant toUpdate(@MappingTarget Tenant tenant, UpdateTenantCommand command);
+	@Mapping(target = "id", source = "existing.id")
+	@Mapping(target = "status", source = "command.status")
+	@Mapping(target = "title", source = "command.title")
+	@Mapping(target = "description", source = "command.description")
+	@Mapping(target = "domainHost", source = "command.domainHost")
+	@Mapping(target = "createdAt", source = "existing.createdAt")
+	@Mapping(target = "updatedAt", source = "existing.createdAt")
+	Tenant toUpdate(Tenant existing, UpdateTenantCommand command);
 }

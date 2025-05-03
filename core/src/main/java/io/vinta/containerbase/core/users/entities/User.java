@@ -10,12 +10,14 @@ import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.With;
 
 @Getter
 @Builder
 @With
 @RequiredArgsConstructor
+@ToString(of = { "id", "email", "fullName", "phoneNumber", "userStatus", "userType" })
 public class User extends BaseEntity<UserId> {
 	private final UserId id;
 	private final UserType userType;

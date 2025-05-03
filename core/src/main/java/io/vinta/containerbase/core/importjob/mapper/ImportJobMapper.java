@@ -14,7 +14,6 @@ public interface ImportJobMapper {
 	ImportJobMapper INSTANCE = Mappers.getMapper(ImportJobMapper.class);
 
 	@Mapping(target = "status", constant = "CREATED")
-	@Mapping(target = "remark", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "actualSchema", ignore = true)

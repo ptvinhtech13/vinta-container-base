@@ -2,6 +2,7 @@ package io.vinta.containerbase.tests.http.controller.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vinta.containerbase.app.users.SuperAdminConfigProperties;
+import io.vinta.containerbase.common.enums.UserStatus;
 import io.vinta.containerbase.common.enums.UserType;
 import io.vinta.containerbase.common.security.permissions.DefaultSystemRole;
 import io.vinta.containerbase.core.role.RoleQueryService;
@@ -10,12 +11,17 @@ import io.vinta.containerbase.core.role.request.RolePaginationQuery;
 import io.vinta.containerbase.core.tenant.TenantCommandService;
 import io.vinta.containerbase.core.tenant.TenantQueryService;
 import io.vinta.containerbase.core.useraccess.UserTokenAccessService;
+import io.vinta.containerbase.core.users.UserCommandService;
+import io.vinta.containerbase.core.users.UserQueryService;
+import io.vinta.containerbase.core.users.request.CreateUserCommand;
 import io.vinta.containerbase.rest.user.request.CreateUserAccessBasicAuthRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRoleRequest;
+import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import io.vinta.containerbase.rest.user.response.UserResponse;
 import io.vinta.containerbase.tests.commons.supporter.AccessTokenSupporter;
 import io.vinta.containerbase.tests.commons.supporter.TenantInitializationIntegrationSupporter;
+import io.vinta.containerbase.tests.commons.supporter.UserInitializationIntegrationSupporter;
 import io.vinta.containerbase.tests.commons.utils.GenerateHttpHeader;
 import io.vinta.containerbase.tests.commons.utils.HeaderGenerator;
 import io.vinta.containerbase.tests.config.BaseWebClientWithDbTest;
@@ -52,14 +58,22 @@ class UserControllerIntegrationTest extends BaseWebClientWithDbTest {
 	private UserTokenAccessService userTokenAccessService;
 
 	@Autowired
+	private UserCommandService userCommandService;
+
+	@Autowired
+	private UserQueryService userQueryService;
+
+	@Autowired
 	private SuperAdminConfigProperties superAdminConfigProperties;
 
 	private TenantInitializationIntegrationSupporter tenantSupporter;
 	private AccessTokenSupporter accessTokenSupporter;
+	private UserInitializationIntegrationSupporter userSupporter;
 
 	@BeforeEach
 	void setUp() {
 		tenantSupporter = new TenantInitializationIntegrationSupporter(tenantCommandService, tenantQueryService);
+		userSupporter = new UserInitializationIntegrationSupporter(userCommandService, roleQueryService);
 		accessTokenSupporter = new AccessTokenSupporter(superAdminConfigProperties, userTokenAccessService);
 	}
 
@@ -265,6 +279,70 @@ class UserControllerIntegrationTest extends BaseWebClientWithDbTest {
 							.getValue()
 							.toString(), userRoleResponse.getRoleId());
 					Assertions.assertEquals(userRole.getTenantId()
+							.getValue()
+							.toString(), userRoleResponse.getTenantId());
+				});
+	}
+
+	@Test
+	void testUpdateSaleMemberWhenValidRequestThenReturnUserResponse() {
+		// Arrange
+		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
+		final var saleMember = userSupporter.createUser(tenant.getId(), DefaultSystemRole.SALE_MEMBER_ROLE,
+				CreateUserCommand.builder()
+						.email("salemember-002@vinta.com")
+						.fullName("Full Name")
+						.phoneNumber("1234567890")
+						.userType(UserType.BACK_OFFICE)
+						.build());
+
+		final var request = UpdateUserRequest.builder()
+				.email("salemember-1022@vinta.com")
+				.fullName("Full Name")
+				.phoneNumber("1234567890")
+				.userStatus(UserStatus.ACTIVE)
+				.build();
+
+		// Act & Assert
+		webClient.put()
+				.uri(uri -> uri.path("/api/user/users/{userId}")
+						.build(saleMember.getId()
+								.getValue()))
+				.contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(request)
+				.headers(header -> HeaderGenerator.generateHttpHeaders(GenerateHttpHeader.builder()
+						.header(header)
+						.objectMapper(objectMapper)
+						.accessToken(accessTokenSupporter.loginAsSuperAdmin())
+						.requestId(1L)
+						.tenantId(tenant.getId()
+								.getValue())
+						.build()))
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(UserResponse.class)
+				.consumeWith(response -> {
+					final var userResponse = response.getResponseBody();
+					Assertions.assertNotNull(userResponse);
+					Assertions.assertEquals(UserType.BACK_OFFICE, userResponse.getUserType());
+					Assertions.assertEquals(request.getEmail(), userResponse.getEmail());
+					Assertions.assertEquals(request.getFullName(), userResponse.getFullName());
+					Assertions.assertEquals(request.getPhoneNumber(), userResponse.getPhoneNumber());
+					Assertions.assertEquals(1, userResponse.getUserRoles()
+							.size());
+					final var userRoleResponse = userResponse.getUserRoles()
+							.stream()
+							.toList()
+							.getFirst();
+					final var saleMemberRole = saleMember.getUserRoles()
+							.stream()
+							.toList()
+							.getFirst();
+					Assertions.assertEquals(saleMemberRole.getRoleId()
+							.getValue()
+							.toString(), userRoleResponse.getRoleId());
+					Assertions.assertEquals(saleMemberRole.getTenantId()
 							.getValue()
 							.toString(), userRoleResponse.getTenantId());
 				});

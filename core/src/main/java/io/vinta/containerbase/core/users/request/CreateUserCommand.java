@@ -7,10 +7,12 @@ import io.vinta.containerbase.core.userrole.request.CreateUserRoleCommand;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.With;
 
 @Getter
 @Builder
 @RequiredArgsConstructor
+@With
 public class CreateUserCommand {
 	private final UserType userType;
 	private final String email;
