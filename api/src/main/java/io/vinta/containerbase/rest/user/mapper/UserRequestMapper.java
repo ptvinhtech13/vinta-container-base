@@ -41,7 +41,6 @@ public interface UserRequestMapper {
 				.roleId(MapstructCommonDomainMapper.INSTANCE.longToRoleId(request.getUserRole()
 						.getRoleId()))
 				.tenantId(tenantId)
-				.uniqueKey("%s.%s".formatted(tenantId.getValue(), request.getEmail()))
 				.build());
 
 	}

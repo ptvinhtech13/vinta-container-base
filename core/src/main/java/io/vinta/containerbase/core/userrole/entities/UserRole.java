@@ -18,7 +18,6 @@ public class UserRole extends BaseEntity<UserId> {
 	private final UserId userId;
 	private final TenantId tenantId;
 	private final RoleId roleId;
-	private final String uniqueKey;
 	private final Instant createdAt;
 	private final Instant updatedAt;
 }

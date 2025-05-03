@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -48,10 +47,6 @@ public class UserRoleEntity {
 	@Column(name = "role_id")
 	@NotNull
 	private Long roleId;
-
-	@Column(name = "unique_key")
-	@Length(max = 128)
-	private String uniqueKey;
 
 	@CreatedDate
 	@Column(name = "created_at")

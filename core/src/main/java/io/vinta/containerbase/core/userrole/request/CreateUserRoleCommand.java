@@ -16,5 +16,4 @@ public class CreateUserRoleCommand {
 	private final UserId userId;
 	private final TenantId tenantId;
 	private final RoleId roleId;
-	private final String uniqueKey;
 }

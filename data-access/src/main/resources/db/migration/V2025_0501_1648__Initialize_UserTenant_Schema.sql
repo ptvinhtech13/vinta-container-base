@@ -46,12 +46,15 @@ CREATE
         );
 
 CREATE
+    UNIQUE INDEX IF NOT EXISTS users_email_uidx ON
+    users(email);
+
+CREATE
     TABLE
         IF NOT EXISTS user_roles(
             user_id BIGINT NOT NULL,
             tenant_id BIGINT NOT NULL,
             role_id BIGINT NOT NULL,
-            unique_key VARCHAR(128),
             created_at TIMESTAMP(6) DEFAULT NOW(),
             updated_at TIMESTAMP(6) DEFAULT NOW(),
             CONSTRAINT user_roles_pk PRIMARY KEY(
@@ -64,10 +67,6 @@ CREATE
 CREATE
     INDEX IF NOT EXISTS user_roles_role_id_idx ON
     user_roles(role_id);
-
-CREATE
-    INDEX IF NOT EXISTS user_roles_unique_key_idx ON
-    user_roles(unique_key);
 
 CREATE
     TABLE

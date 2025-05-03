@@ -21,5 +21,4 @@ import lombok.RequiredArgsConstructor;
 public class UserRoleResponse {
 	private final String tenantId;
 	private final String roleId;
-	private final String uniqueKey;
 }
