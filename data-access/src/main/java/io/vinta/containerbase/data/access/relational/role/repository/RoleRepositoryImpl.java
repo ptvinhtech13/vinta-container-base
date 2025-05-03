@@ -63,6 +63,8 @@ public class RoleRepositoryImpl implements RoleRepository {
 								.stream()
 								.map(BaseId::getValue)
 								.collect(Collectors.toSet()))))
+				.applyIf(!CollectionUtils.isEmpty(request.getByRoleKeys()), where -> where.and(
+						QRoleEntity.roleEntity.roleKey.in(request.getByRoleKeys())))
 				.applyIf(request.getByTenantId() != null, where -> where.and(QRoleEntity.roleEntity.tenantId.eq(request
 						.getByTenantId()
 						.getValue())));

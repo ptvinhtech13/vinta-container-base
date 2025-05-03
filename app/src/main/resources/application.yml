@@ -1,10 +1,6 @@
 ---
 server:
   port: 8080
-#  error:
-#    whitelabel:
-#      enabled: false
-#    path: /error
 logging:
   level:
     io.vinta.containerbase: DEBUG
@@ -166,8 +162,8 @@ io.vinta.containerbase:
       - tokenType: REFRESH_TOKEN
         timeToLive: PT3H
   system-user:
-    id: -8888888
     email: admin@vinta.io
+    fullName: "Super Admin"
     password: 8888888
   security:
     api:

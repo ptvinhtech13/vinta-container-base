@@ -11,5 +11,15 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.access.response;
 
+import io.vinta.containerbase.common.accesstoken.UserAccessToken;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@Builder
+@RequiredArgsConstructor
 public class UserAccessResponse {
+	private final UserAccessToken accessToken;
+	private final UserAccessToken refreshToken;
 }

@@ -17,4 +17,5 @@ import lombok.With;
 public class FilterRoleQuery {
 	private TenantId byTenantId;
 	private Set<RoleId> byRoleIds;
+	private Set<String> byRoleKeys;
 }

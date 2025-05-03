@@ -2,6 +2,7 @@ package io.vinta.containerbase.security.jwt;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import io.vinta.containerbase.common.constants.SecurityConstants;
 import io.vinta.containerbase.common.exceptions.AuthenticationException;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.common.exceptions.ForbiddenException;
@@ -11,7 +12,6 @@ import io.vinta.containerbase.common.exceptions.UnauthorizedException;
 import io.vinta.containerbase.common.exceptions.config.ErrorCodeConfig;
 import io.vinta.containerbase.common.exceptions.constants.CommonErrorConstants;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
-import io.vinta.containerbase.common.security.constants.SecurityConstants;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.common.security.context.HttpSecurityContext;
 import io.vinta.containerbase.common.security.domains.JwtTokenClaim;

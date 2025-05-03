@@ -11,10 +11,15 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.user;
 
+import io.vinta.containerbase.common.exceptions.NotFoundException;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.core.users.UserCommandService;
+import io.vinta.containerbase.core.users.UserQueryService;
+import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.rest.api.UserApi;
+import io.vinta.containerbase.rest.user.mapper.UserPaginationMapper;
 import io.vinta.containerbase.rest.user.mapper.UserRequestMapper;
 import io.vinta.containerbase.rest.user.mapper.UserResponseMapper;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
@@ -30,10 +35,15 @@ public class UserController implements UserApi {
 
 	private final UserCommandService userCommandService;
 
+	private final UserQueryService userQueryService;
+
 	@Override
 	public UserResponse getUser(Long userId) {
-		return null;//TODO: write method getUser
-
+		return UserResponseMapper.INSTANCE.toResponse(userQueryService.findSingleUser(FilterUserQuery.builder()
+				.byUserId(MapstructCommonDomainMapper.INSTANCE.longToUserId(userId))
+				.byTenantId(AppSecurityContextHolder.getTenantId())
+				.build())
+				.orElseThrow(() -> new NotFoundException("User not found")));
 	}
 
 	@Override
@@ -45,12 +55,16 @@ public class UserController implements UserApi {
 
 	@Override
 	public Paging<UserResponse> queryUsers(QueryUserPaginationRequest request) {
-		return null;//TODO: write method queryUsers
+		final var pagingQuery = UserPaginationMapper.INSTANCE.toPagingQuery(request);
+		return UserPaginationMapper.INSTANCE.toPagingResponse(userQueryService.queryUsers(pagingQuery.withFilter(
+				pagingQuery.getFilter()
+						.withByTenantId(AppSecurityContextHolder.getTenantId()))));
 	}
 
 	@Override
 	public UserResponse updateUser(Long userId, UpdateUserRequest request) {
-		return null;//TODO: write method updateUser
+		return UserResponseMapper.INSTANCE.toResponse(userCommandService.updateUser(UserRequestMapper.INSTANCE.toUpdate(
+				userId, AppSecurityContextHolder.getTenantId(), request)));
 
 	}
 }

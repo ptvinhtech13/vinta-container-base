@@ -11,5 +11,25 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.access.request;
 
+import io.vinta.containerbase.common.enums.UserAccessType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@Builder
+@RequiredArgsConstructor
 public class LoginUserRequest {
+	@NotNull
+	private final UserAccessType accessType;
+
+	@Email
+	@NotEmpty
+	private final String email;
+
+	@NotEmpty
+	private final String password;
 }

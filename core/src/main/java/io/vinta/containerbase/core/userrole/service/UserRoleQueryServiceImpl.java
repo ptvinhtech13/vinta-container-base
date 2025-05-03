@@ -9,5 +9,5 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserRoleQueryServiceImpl implements UserRoleQueryService {
 	private final UserRoleRepository repository;
-	//TODO: Vinh implements UserRoleQueryServiceImpl.java
+
 }

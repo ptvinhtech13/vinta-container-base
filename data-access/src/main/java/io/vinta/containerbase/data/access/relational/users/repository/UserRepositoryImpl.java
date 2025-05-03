@@ -3,15 +3,19 @@ package io.vinta.containerbase.data.access.relational.users.repository;
 import com.querydsl.core.types.Predicate;
 import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.exceptions.NotFoundException;
+import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.querydsl.WhereBuilder;
 import io.vinta.containerbase.core.users.UserRepository;
 import io.vinta.containerbase.core.users.entities.User;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
+import io.vinta.containerbase.core.users.request.UserPaginationQuery;
 import io.vinta.containerbase.data.access.relational.users.entities.QUserEntity;
 import io.vinta.containerbase.data.access.relational.users.mapper.UserEntityMapper;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -78,5 +82,35 @@ public class UserRepositoryImpl implements UserRepository {
 				.map(UserEntityMapper.INSTANCE::toModel)
 				.orElseGet(() -> UserEntityMapper.INSTANCE.toModel(jpaUserRepository.save(UserEntityMapper.INSTANCE
 						.toCreate(user))));
+	}
+
+	@Override
+	public Optional<User> findSingleUser(FilterUserQuery query) {
+		return jpaUserRepository.findOne(buildUserPredicate(query))
+				.map(UserEntityMapper.INSTANCE::toModel);
+	}
+
+	@Override
+	public Paging<User> queryUsers(UserPaginationQuery query) {
+		final var request = Optional.ofNullable(query.getFilter())
+				.orElseGet(() -> FilterUserQuery.builder()
+						.build());
+
+		final var pageable = PageRequest.of(query.getPage(), query.getSize(), Sort.Direction.valueOf(query
+				.getSortDirection()), query.getSortFields()
+						.toArray(String[]::new));
+
+		final var predicate = buildUserPredicate(request);
+
+		final var pageResult = jpaUserRepository.findAllWithBase(predicate, pageable);
+		return new Paging<>(pageResult.getContent()
+				.stream()
+				.map(UserEntityMapper.INSTANCE::toModel)
+				.toList(), pageResult.getTotalElements(), pageResult.getTotalPages(), pageResult.getPageable()
+						.getPageNumber(), pageResult.getSort()
+								.stream()
+								.map(Sort.Order::toString)
+								.toList());
+
 	}
 }

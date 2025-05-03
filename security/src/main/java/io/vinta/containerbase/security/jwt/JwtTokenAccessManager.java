@@ -5,11 +5,13 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vinta.containerbase.common.accesstoken.UserAccessToken;
+import io.vinta.containerbase.common.accesstoken.UserTokenGenerator;
+import io.vinta.containerbase.common.constants.SecurityConstants;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.common.exceptions.config.ErrorCodeConfig;
 import io.vinta.containerbase.common.exceptions.constants.CommonErrorConstants;
 import io.vinta.containerbase.common.idgenerator.SnowflakeIdGenerator;
-import io.vinta.containerbase.common.security.constants.SecurityConstants;
 import io.vinta.containerbase.common.security.domains.FullTokenClaim;
 import io.vinta.containerbase.common.security.domains.JwtTokenClaim;
 import io.vinta.containerbase.common.security.domains.JwtTokenType;
@@ -20,7 +22,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class JwtTokenAccessManager {
+public class JwtTokenAccessManager implements UserTokenGenerator {
 
 	private static final Base64.Decoder DECODER = Base64.getUrlDecoder();
 
@@ -76,27 +77,28 @@ public class JwtTokenAccessManager {
 		}
 	}
 
-	public String generateToken(final JwtTokenClaim tokenClaim) {
-		final var insNow = Instant.now();
-		final var now = new Date(insNow.toEpochMilli());
+	public UserAccessToken generateToken(final JwtTokenClaim tokenClaim) {
+		final var now = Instant.now();
 		final var livedTimeInMillis = Optional.ofNullable(tokenConfigMap.get(tokenClaim.getType()))
 				.orElseThrow(() -> new UnsupportedOperationException(String.format("Unsupported the TokenType %s",
 						tokenClaim.getType())))
 				.getTimeToLive()
 				.toMillis();
-		final var expiredAt = new Date(insNow.plus(livedTimeInMillis, ChronoUnit.MILLIS)
-				.toEpochMilli());
+		final var expiredAt = now.plus(livedTimeInMillis, ChronoUnit.MILLIS);
 
 		final Map<String, Object> userClaims = MapUtils.stripNullValue(objectMapper.convertValue(tokenClaim,
 				Map.class));
 		final var claims = Map.of("tokenClaim", userClaims);
-		return JWT.create()
-				.withJWTId(createJTI())
-				.withPayload(claims)
-				.withIssuedAt(now)
-				.withIssuer(jwtTokenConfigProperties.getIssuer())
-				.withExpiresAt(expiredAt)
-				.sign(algorithm);
+		return UserAccessToken.builder()
+				.token(JWT.create()
+						.withJWTId(createJTI())
+						.withPayload(claims)
+						.withIssuedAt(now)
+						.withIssuer(jwtTokenConfigProperties.getIssuer())
+						.withExpiresAt(expiredAt)
+						.sign(algorithm))
+				.expiresAt(expiredAt)
+				.build();
 	}
 
 	private String createJTI() {

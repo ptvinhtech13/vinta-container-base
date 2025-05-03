@@ -1,9 +1,12 @@
 package io.vinta.containerbase.data.access.relational.useraccess.repository;
 
 import io.vinta.containerbase.common.baseid.BaseId;
+import io.vinta.containerbase.common.baseid.UserId;
+import io.vinta.containerbase.common.enums.UserAccessType;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.core.useraccess.UserAccessRepository;
 import io.vinta.containerbase.core.useraccess.entities.UserAccess;
+import io.vinta.containerbase.data.access.relational.useraccess.entities.QUserAccessEntity;
 import io.vinta.containerbase.data.access.relational.useraccess.mapper.UserAccessEntityMapper;
 import io.vinta.containerbase.data.access.relational.users.repository.JpaUserRepository;
 import java.util.Optional;
@@ -29,6 +32,12 @@ public class UserAccessRepositoryImpl implements UserAccessRepository {
 				})
 				.map(UserAccessEntityMapper.INSTANCE::toModel)
 				.orElseThrow(() -> new BadRequestException("User Id is required"));
+	}
 
+	@Override
+	public Optional<UserAccess> findUserAccess(UserAccessType accessType, UserId userId) {
+		return jpaUserAccessRepository.findOneWithBase(QUserAccessEntity.userAccessEntity.userId.eq(userId.getValue())
+				.and(QUserAccessEntity.userAccessEntity.accessType.eq(accessType)))
+				.map(UserAccessEntityMapper.INSTANCE::toModel);
 	}
 }

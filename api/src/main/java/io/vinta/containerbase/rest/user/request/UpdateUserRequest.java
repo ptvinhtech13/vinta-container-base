@@ -41,6 +41,5 @@ public class UpdateUserRequest {
 	private final String phoneNumber;
 
 	@NotNull
-	private final UserStatus status;
-
+	private final UserStatus userStatus;
 }

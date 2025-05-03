@@ -1,13 +1,17 @@
 package io.vinta.containerbase.data.access.relational.userrole.repository;
 
 import io.vinta.containerbase.common.baseid.BaseId;
+import io.vinta.containerbase.common.baseid.UserId;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.core.userrole.UserRoleRepository;
 import io.vinta.containerbase.core.userrole.entities.UserRole;
+import io.vinta.containerbase.data.access.relational.userrole.entities.QUserRoleEntity;
 import io.vinta.containerbase.data.access.relational.userrole.entities.UserRoleId;
 import io.vinta.containerbase.data.access.relational.userrole.mapper.UserRoleEntityMapper;
 import io.vinta.containerbase.data.access.relational.users.repository.JpaUserRepository;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,5 +39,13 @@ public class UserRoleRepositoryImpl implements UserRoleRepository {
 				})
 				.map(UserRoleEntityMapper.INSTANCE::toModel)
 				.orElseThrow(() -> new BadRequestException("User Id is required"));
+	}
+
+	@Override
+	public Set<UserRole> findSingleUserRoleByUserId(UserId userId) {
+		return jpaUserRoleRepository.findAllWithBase(QUserRoleEntity.userRoleEntity.user.id.eq(userId.getValue()))
+				.stream()
+				.map(UserRoleEntityMapper.INSTANCE::toModel)
+				.collect(Collectors.toSet());
 	}
 }

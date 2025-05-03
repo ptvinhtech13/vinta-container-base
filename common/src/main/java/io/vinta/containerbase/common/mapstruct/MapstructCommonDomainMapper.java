@@ -189,6 +189,15 @@ public interface MapstructCommonDomainMapper {
 				.orElse(null);
 	}
 
+	@Named("longsToUserIds")
+	default Set<UserId> longsToUserIds(Set<Long> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(UserId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
 	@Named("userIdToString")
 	default String userIdToString(UserId source) {
 		return Optional.ofNullable(source)
@@ -239,6 +248,15 @@ public interface MapstructCommonDomainMapper {
 		return Optional.ofNullable(source)
 				.map(it -> it.stream()
 						.map(Long::valueOf)
+						.map(RoleId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("longsToRoleIds")
+	default Set<RoleId> longsToRoleIds(Set<Long> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
 						.map(RoleId::new)
 						.collect(Collectors.toSet()))
 				.orElse(null);

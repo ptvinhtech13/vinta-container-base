@@ -16,5 +16,4 @@ public class CreateRoleCommand {
 	private final String title;
 	private final String description;
 	private final Set<FeatureNodeId> featureNodeIds;
-
 }

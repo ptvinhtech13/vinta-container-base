@@ -6,25 +6,23 @@ import lombok.Getter;
 
 @Getter
 public enum DefaultSystemRole {
-	SYSTEM_ADMIN_ROLE(1L, "SYSTEM_ADMIN", "System Admin", true),
+	SYSTEM_ADMIN_ROLE("SYSTEM_ADMIN", "System Admin", true),
 
-	TENANT_OWNER_ROLE(null, "TENANT_OWNER", "Tenant Owner", false, PacificApiPermissionKey.USER_MGMT,
+	TENANT_OWNER_ROLE("TENANT_OWNER", "Tenant Owner", false, PacificApiPermissionKey.USER_MGMT,
 			PacificApiPermissionKey.ROLE_MGMT),
 
-	SALE_MANAGER_ROLE(null, "SALE_MANAGER_ROLE", "Sale Manager", false, PacificApiPermissionKey.USER_MGMT,
+	SALE_MANAGER_ROLE("SALE_MANAGER_ROLE", "Sale Manager", false, PacificApiPermissionKey.USER_MGMT,
 			PacificApiPermissionKey.ROLE_MGMT),
 
-	SALE_MEMBER_ROLE(null, "SALE_MEMBER_ROLE", "Sale Member", false, PacificApiPermissionKey.TENANT_MGMT_VIEW);
+	SALE_MEMBER_ROLE("SALE_MEMBER_ROLE", "Sale Member", false, PacificApiPermissionKey.TENANT_MGMT_VIEW);
 
-	private final Long fixedRoleId;
 	private final String roleKey;
 	private final String roleTitle;
 	private final boolean isDefaultSystemTenant;
 	private final Set<PacificApiPermissionKey> allowedPermissions;
 
-	DefaultSystemRole(Long roleId, String roleKey, String roleTitle, boolean isDefaultSystemTenant,
+	DefaultSystemRole(String roleKey, String roleTitle, boolean isDefaultSystemTenant,
 			PacificApiPermissionKey... allowedPermissions) {
-		this.fixedRoleId = roleId;
 		this.roleKey = roleKey;
 		this.roleTitle = roleTitle;
 		this.isDefaultSystemTenant = isDefaultSystemTenant;

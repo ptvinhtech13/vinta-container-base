@@ -8,8 +8,10 @@ import io.vinta.containerbase.core.useraccess.entities.UserAccessBasicAuthData;
 import io.vinta.containerbase.core.useraccess.request.CreateUserAccessCommand;
 import io.vinta.containerbase.core.userrole.request.CreateUserRoleCommand;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
+import io.vinta.containerbase.core.users.request.UpdateUserCommand;
 import io.vinta.containerbase.rest.user.request.CreateUserAccessBasicAuthRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
+import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -23,6 +25,7 @@ public interface UserRequestMapper {
 
 	@Mapping(target = "userAccess", ignore = true)
 	@Mapping(target = "userRole", ignore = true)
+	@Mapping(target = "userStatus", ignore = true)
 	CreateUserCommand toCreate(@Context TenantId tenantId, CreateUserRequest request);
 
 	@AfterMapping
@@ -44,4 +47,8 @@ public interface UserRequestMapper {
 				.build());
 
 	}
+
+	@Mapping(target = "userId", source = "userId", qualifiedByName = "longToUserId")
+	@Mapping(target = "tenantId", source = "tenantId")
+	UpdateUserCommand toUpdate(Long userId, TenantId tenantId, UpdateUserRequest request);
 }

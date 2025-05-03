@@ -1,9 +1,9 @@
 package io.vinta.containerbase.security.jwt;
 
+import io.vinta.containerbase.common.constants.SecurityConstants;
 import io.vinta.containerbase.common.exceptions.AuthenticationException;
 import io.vinta.containerbase.common.exceptions.config.ErrorCodeConfig;
 import io.vinta.containerbase.common.exceptions.constants.CommonErrorConstants;
-import io.vinta.containerbase.common.security.constants.SecurityConstants;
 import io.vinta.containerbase.common.security.domains.FullTokenClaim;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;

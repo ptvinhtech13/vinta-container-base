@@ -111,6 +111,7 @@ public class JwtSecurityConfig {
 				return new Jwt(token, Instant.ofEpochSecond(fullTokenClaim.getIat()), Instant.ofEpochSecond(
 						fullTokenClaim.getExp()), Map.of("alg", "ECDSA512", "typ", "JWT"), claims);
 			} catch (Exception e) {
+				log.warn("Failed to decode JWT token", e);
 				throw new JwtException("Invalid JWT token", e);
 			}
 		};

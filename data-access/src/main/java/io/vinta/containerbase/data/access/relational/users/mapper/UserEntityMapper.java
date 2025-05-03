@@ -4,13 +4,15 @@ import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.users.entities.User;
+import io.vinta.containerbase.data.access.relational.userrole.mapper.UserRoleEntityMapper;
 import io.vinta.containerbase.data.access.relational.users.entities.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
+@Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class,
+		UserRoleEntityMapper.class })
 public interface UserEntityMapper {
 	UserEntityMapper INSTANCE = Mappers.getMapper(UserEntityMapper.class);
 
@@ -23,7 +25,6 @@ public interface UserEntityMapper {
 	UserEntity toUpdate(@MappingTarget UserEntity existing, User user);
 
 	@Mapping(target = "id", source = "id", qualifiedByName = "longToUserId")
-	@Mapping(target = "userRoles", ignore = true)
 	@Mapping(target = "createdBy", source = "createdBy", qualifiedByName = "longToUserId")
 	@Mapping(target = "updatedBy", source = "updatedBy", qualifiedByName = "longToUserId")
 	User toModel(UserEntity userEntity);
