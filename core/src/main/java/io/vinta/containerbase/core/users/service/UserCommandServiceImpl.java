@@ -9,6 +9,7 @@ import io.vinta.containerbase.core.users.entities.User;
 import io.vinta.containerbase.core.users.event.UserCreatedEvent;
 import io.vinta.containerbase.core.users.mapper.UserMapper;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
+import io.vinta.containerbase.core.users.request.DeleteUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.core.users.request.UpdateUserCommand;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,12 @@ public class UserCommandServiceImpl implements UserCommandService {
 				.orElseThrow(() -> new NotFoundException("User not found"));
 
 		return repository.save(UserMapper.INSTANCE.toUpdateProfile(user, command));
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteUsers(DeleteUserCommand command) {
+		repository.deleteUsers(command);
 	}
 
 }

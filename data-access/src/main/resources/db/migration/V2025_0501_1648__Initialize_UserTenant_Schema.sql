@@ -41,13 +41,25 @@ CREATE
             avatar_path VARCHAR(256),
             created_by BIGINT,
             updated_by BIGINT,
+            deleted_at TIMESTAMP(6),
             created_at TIMESTAMP(6) DEFAULT NOW(),
             updated_at TIMESTAMP(6) DEFAULT NOW()
         );
 
 CREATE
     UNIQUE INDEX IF NOT EXISTS users_email_uidx ON
-    users(email);
+    users(email)
+WHERE
+    deleted_at IS NULL;
+
+CREATE
+    INDEX IF NOT EXISTS users_user_status_idx ON
+    users(
+        user_status,
+        email
+    )
+WHERE
+    deleted_at IS NULL;
 
 CREATE
     TABLE

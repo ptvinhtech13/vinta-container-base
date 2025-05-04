@@ -4,6 +4,6 @@ public enum UserStatus {
 	CREATED,
 	ACTIVE,
 	ARCHIVED,
-	DELETING,
+	DELETED,
 	BLOCKED
 }

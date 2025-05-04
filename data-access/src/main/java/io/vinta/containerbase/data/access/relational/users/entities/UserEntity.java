@@ -77,6 +77,9 @@ public class UserEntity {
 	@Builder.Default
 	private Set<UserRoleEntity> userRoles = new HashSet<>();
 
+	@Column(name = "deleted_at")
+	private Instant deletedAt;
+
 	@CreatedBy
 	@Column(name = "created_by")
 	private Long createdBy;

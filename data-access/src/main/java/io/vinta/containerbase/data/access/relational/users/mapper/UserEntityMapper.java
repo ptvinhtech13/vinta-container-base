@@ -22,6 +22,7 @@ public interface UserEntityMapper {
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "deletedAt", ignore = true)
 	UserEntity toUpdate(@MappingTarget UserEntity existing, User user);
 
 	@Mapping(target = "id", source = "id", qualifiedByName = "longToUserId")
@@ -35,5 +36,6 @@ public interface UserEntityMapper {
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "deletedAt", ignore = true)
 	UserEntity toCreate(User user);
 }

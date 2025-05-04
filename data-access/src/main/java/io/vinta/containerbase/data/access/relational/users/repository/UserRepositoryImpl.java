@@ -7,6 +7,7 @@ import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.querydsl.WhereBuilder;
 import io.vinta.containerbase.core.users.UserRepository;
 import io.vinta.containerbase.core.users.entities.User;
+import io.vinta.containerbase.core.users.request.DeleteUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.core.users.request.UserPaginationQuery;
 import io.vinta.containerbase.data.access.relational.users.entities.QUserEntity;
@@ -74,8 +75,9 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public User save(User user) {
 		return Optional.ofNullable(user.getId())
-				.map(BaseId::getValue)
-				.map(jpaUserRepository::findById)
+				.map(it -> jpaUserRepository.findOne(buildUserPredicate((FilterUserQuery.builder()
+						.byUserId(it)
+						.build()))))
 				.map(it -> it.orElseThrow(() -> new NotFoundException("User not found")))
 				.map(existing -> UserEntityMapper.INSTANCE.toUpdate(existing, user))
 				.map(jpaUserRepository::save)
@@ -112,5 +114,14 @@ public class UserRepositoryImpl implements UserRepository {
 								.map(Sort.Order::toString)
 								.toList());
 
+	}
+
+	@Override
+	public void deleteUsers(DeleteUserCommand command) {
+		jpaUserRepository.deleteUserByTenantIdAndUserIds(command.getTenantId()
+				.getValue(), command.getByUserIds()
+						.stream()
+						.map(BaseId::getValue)
+						.collect(Collectors.toList()));
 	}
 }

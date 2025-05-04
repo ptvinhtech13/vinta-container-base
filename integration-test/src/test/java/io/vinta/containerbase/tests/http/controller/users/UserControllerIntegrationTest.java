@@ -7,9 +7,11 @@ import io.vinta.containerbase.common.security.permissions.DefaultSystemRole;
 import io.vinta.containerbase.core.role.request.FilterRoleQuery;
 import io.vinta.containerbase.core.role.request.RolePaginationQuery;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
+import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.rest.user.request.CreateUserAccessBasicAuthRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRoleRequest;
+import io.vinta.containerbase.rest.user.request.DeleteUserRequest;
 import io.vinta.containerbase.rest.user.request.QueryUserPaginationRequest;
 import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import io.vinta.containerbase.rest.user.response.UserResponse;
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
@@ -477,6 +480,63 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 					Assertions.assertEquals(saleMemberRole.getTenantId()
 							.getValue()
 							.toString(), userRoleResponse.getTenantId());
+				});
+	}
+
+	@Test
+	void testDeleteUsersWhenValidRequestThenReturnSuccessfully() {
+		// Arrange
+		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
+		final var saleMember = userSupporter.createUser(tenant.getId(), DefaultSystemRole.SALE_MEMBER_ROLE,
+				CreateUserCommand.builder()
+						.email("salemember-00333@vinta.com")
+						.fullName("Full Name")
+						.phoneNumber("1234567890")
+						.userType(UserType.BACK_OFFICE)
+						.build());
+
+		final var request = DeleteUserRequest.builder()
+				.byUserIds(Set.of(saleMember.getId()
+						.getValue()))
+				.build();
+
+		final Map<String, String> requestParamMap = new HashMap<>();
+		requestParamMap.put("byUserIds", request.getByUserIds()
+				.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(",")));
+
+		// Act & Assert
+		webClient.delete()
+				.uri(uriBuilder -> {
+					final LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>(requestParamMap
+							.entrySet()
+							.stream()
+							.filter(it -> StringUtils.isNotBlank(it.getValue()))
+							.collect(Collectors.toMap(Map.Entry::getKey, it -> List.of(it.getValue()))));
+
+					uriBuilder.path("/api/user/users");
+					uriBuilder.queryParams(requestParams);
+					return uriBuilder.build();
+				})
+				.headers(header -> HeaderGenerator.generateHttpHeaders(GenerateHttpHeader.builder()
+						.header(header)
+						.objectMapper(objectMapper)
+						.accessToken(accessTokenSupporter.loginAsSuperAdmin())
+						.requestId(1L)
+						.tenantId(tenant.getId()
+								.getValue())
+						.build()))
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(Void.class)
+				.consumeWith(response -> {
+					Assertions.assertTrue(true);
+					Assertions.assertTrue(userQueryService.findSingleUser(FilterUserQuery.builder()
+							.byUserId(saleMember.getId())
+							.build())
+							.isEmpty());
 				});
 	}
 }

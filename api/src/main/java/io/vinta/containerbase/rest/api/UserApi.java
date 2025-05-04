@@ -4,11 +4,13 @@ import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.security.permissions.ContainerBaseApiAuthorized;
 import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLevel;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
+import io.vinta.containerbase.rest.user.request.DeleteUserRequest;
 import io.vinta.containerbase.rest.user.request.QueryUserPaginationRequest;
 import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import io.vinta.containerbase.rest.user.response.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,4 +39,9 @@ public interface UserApi {
 	@ResponseStatus(HttpStatus.OK)
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	Paging<UserResponse> queryUsers(@ModelAttribute @Valid QueryUserPaginationRequest request);
+
+	@DeleteMapping(path = "/api/user/users")
+	@ResponseStatus(HttpStatus.OK)
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	void deleteUsers(@ModelAttribute @Valid DeleteUserRequest request);
 }

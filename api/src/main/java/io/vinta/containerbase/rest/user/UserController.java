@@ -17,16 +17,19 @@ import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.core.users.UserCommandService;
 import io.vinta.containerbase.core.users.UserQueryService;
+import io.vinta.containerbase.core.users.request.DeleteUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.rest.api.UserApi;
 import io.vinta.containerbase.rest.user.mapper.UserPaginationMapper;
 import io.vinta.containerbase.rest.user.mapper.UserRequestMapper;
 import io.vinta.containerbase.rest.user.mapper.UserResponseMapper;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
+import io.vinta.containerbase.rest.user.request.DeleteUserRequest;
 import io.vinta.containerbase.rest.user.request.QueryUserPaginationRequest;
 import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
 import io.vinta.containerbase.rest.user.response.UserResponse;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,6 +71,16 @@ public class UserController implements UserApi {
 	public UserResponse updateUser(Long userId, UpdateUserRequest request) {
 		return UserResponseMapper.INSTANCE.toResponse(userCommandService.updateUser(UserRequestMapper.INSTANCE.toUpdate(
 				userId, AppSecurityContextHolder.getTenantId(), request)));
+	}
 
+	@Override
+	public void deleteUsers(DeleteUserRequest request) {
+		userCommandService.deleteUsers(DeleteUserCommand.builder()
+				.tenantId(AppSecurityContextHolder.getTenantId())
+				.byUserIds(request.getByUserIds()
+						.stream()
+						.map(MapstructCommonDomainMapper.INSTANCE::longToUserId)
+						.collect(Collectors.toSet()))
+				.build());
 	}
 }
