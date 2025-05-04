@@ -11,8 +11,10 @@
  ******************************************************************************/
 package io.vinta.containerbase.rest.access;
 
+import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
 import io.vinta.containerbase.core.useraccess.UserTokenAccessService;
 import io.vinta.containerbase.core.useraccess.request.LoginCommand;
+import io.vinta.containerbase.core.useraccess.request.RefreshTokenCommand;
 import io.vinta.containerbase.rest.access.mapper.UserAccessResponseMapper;
 import io.vinta.containerbase.rest.access.request.LoginUserRequest;
 import io.vinta.containerbase.rest.access.response.UserAccessResponse;
@@ -32,6 +34,13 @@ public class UserAccessController implements UserAccessApi {
 				.email(request.getEmail())
 				.password(request.getPassword())
 				.build()));
+	}
 
+	@Override
+	public UserAccessResponse refreshToken() {
+		return UserAccessResponseMapper.INSTANCE.toResponse(userTokenAccessService.refreshToken(RefreshTokenCommand
+				.builder()
+				.userId(AppSecurityContextHolder.getUserId())
+				.build()));
 	}
 }

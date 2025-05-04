@@ -18,7 +18,7 @@ Future<void> main() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
       await AppBindings().dependencies();
-      await Get.find<UserAuthenticationService>().checkUserAuthentication();
+      await Get.find<UserAuthenticationService>().evaluateUserAuthentication();
       await Get.find<NavigationItemConfigService>().loadNavigationItemConfig();
 
       runApp(

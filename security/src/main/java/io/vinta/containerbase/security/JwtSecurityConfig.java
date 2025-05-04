@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -81,7 +82,19 @@ public class JwtSecurityConfig {
 								.permitAll()))
 				.authorizeHttpRequests(authorize -> apiInfoRegistry.getAuthenticatedApis()
 						.forEach(apiInfo -> authorize.requestMatchers(apiInfo.getMethod(), apiInfo.getPath())
-								.authenticated()))
+								.access((authentication, context) -> {
+									if (authentication.get() != null && authentication.get()
+											.getPrincipal() instanceof Jwt jwt) {
+										final var tokenClaim = (JwtTokenClaim) jwt.getClaims()
+												.get("tokenClaim");
+										return apiInfo.getAllowedTokenTypes()
+												.contains(tokenClaim.getType())
+														? new AuthorizationDecision(true)
+														: new AuthorizationDecision(false);
+									}
+									return new AuthorizationDecision(false);
+								})))
+
 				.authorizeHttpRequests(authorize -> {
 					if (isEnabledAuthorization) {
 						authorize.anyRequest()
@@ -109,7 +122,6 @@ public class JwtSecurityConfig {
 
 	@Bean
 	public JwtDecoder jwtDecoder() {
-		// Create a custom JwtDecoder that uses your JwtTokenAccessManager
 		return token -> {
 			try {
 				FullTokenClaim fullTokenClaim = jwtTokenAccessManager.verifyAndDecodeToken(token);

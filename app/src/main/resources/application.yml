@@ -158,9 +158,9 @@ io.vinta.containerbase:
     public-key: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHXdl5xxz4z+FWAZF/sKOXU2ZHyG4ojuNyV12cDepgvPLesLsQ8eLIgZ3bY6n15Gz6b5BbIqgeT/3js8ZwHoy8g=="
     token-config:
       - tokenType: ACCESS_TOKEN
-        timeToLive: PT1H
+        timeToLive: PT5M
       - tokenType: REFRESH_TOKEN
-        timeToLive: PT3H
+        timeToLive: PT5M
   system-user:
     email: admin@vinta.io
     fullName: "Super Admin"

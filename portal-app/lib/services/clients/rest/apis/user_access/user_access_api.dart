@@ -11,4 +11,7 @@ abstract class UserAccessApiClient {
 
   @POST("/api/user/access/login")
   Future<LoginResponse> login(@Body() LoginRequest request);
+
+  @POST("/api/user/access/refresh")
+  Future<LoginResponse> refreshToken();
 }

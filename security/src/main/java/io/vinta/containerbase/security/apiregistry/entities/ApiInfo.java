@@ -1,5 +1,6 @@
 package io.vinta.containerbase.security.apiregistry.entities;
 
+import io.vinta.containerbase.common.security.domains.JwtTokenType;
 import io.vinta.containerbase.common.security.permissions.ApiPermissionKey;
 import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLevel;
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class ApiInfo {
 	private final String serviceId;
 	private final String path;
 	private final HttpMethod method;
+	private final Set<JwtTokenType> allowedTokenTypes;
 	private final PlatformApiSecurityLevel securityLevel;
 	private final Set<ApiPermissionKey> permissionKeys;
 
@@ -28,12 +30,14 @@ public class ApiInfo {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		ApiInfo that = (ApiInfo) o;
-		return Objects.equals(serviceId, that.serviceId) && Objects.equals(path, that.path) && Objects.equals(method,
-				that.method);
+		return Objects.equals(serviceId, that.serviceId) && Objects.equals(path, that.path) && Objects.equals(
+				allowedTokenTypes, that.allowedTokenTypes)
+
+				&& Objects.equals(method, that.method);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(serviceId, path, method);
+		return Objects.hash(serviceId, path, allowedTokenTypes, method);
 	}
 }

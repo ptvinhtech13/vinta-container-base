@@ -23,7 +23,7 @@ class AppBindings extends Bindings {
     );
     final containerBaseDioService = Get.put<ContainerBaseDioService>(ContainerBaseDioService(Get.find<SimpleRepository>()), permanent: true);
     final userAccessApiClient = Get.put<UserAccessApiClient>(
-      UserAccessApiClient(containerBaseDioService.containerBaseDioServer, baseUrl: EnvConfig.apiHost),
+      UserAccessApiClient(containerBaseDioService.containerBaseDioTokenAccessServer, baseUrl: EnvConfig.apiHost),
       permanent: true,
     );
 

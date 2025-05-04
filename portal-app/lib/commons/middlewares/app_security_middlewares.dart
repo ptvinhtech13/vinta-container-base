@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,13 +15,17 @@ class UserAccessCheckerMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     final userAuthService = Get.find<UserAuthenticationService>();
+    userAuthService.evaluateUserAuthentication();
+
+    log("redirect route $route ${userAuthService.state.isAuthenticated.value}");
+
     if (userAuthService.state.isAuthenticated.value) {
       if (route == AppRoutes.welcome) {
-        Future.delayed(const Duration(milliseconds: 1), () async => {Get.offNamed(AppRoutes.home)});
+        Future.delayed(const Duration(milliseconds: 100), () async => {Get.offNamed(AppRoutes.home)});
       }
       return null;
     } else {
-      Future.delayed(const Duration(milliseconds: 1), () async => {Get.offNamed(AppRoutes.welcome)});
+      Future.delayed(const Duration(milliseconds: 100), () async => {Get.offNamed(AppRoutes.welcome)});
       return null;
     }
   }

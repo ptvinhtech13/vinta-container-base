@@ -3,6 +3,7 @@ package io.vinta.containerbase.core.useraccess.service;
 import io.vinta.containerbase.common.accesstoken.UserTokenGenerator;
 import io.vinta.containerbase.common.enums.UserStatus;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
+import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.common.security.domains.JwtTokenClaim;
 import io.vinta.containerbase.common.security.domains.JwtTokenType;
 import io.vinta.containerbase.core.useraccess.UserAccessRepository;
@@ -10,6 +11,7 @@ import io.vinta.containerbase.core.useraccess.UserTokenAccessService;
 import io.vinta.containerbase.core.useraccess.entities.UserAccessBasicAuthData;
 import io.vinta.containerbase.core.useraccess.entities.UserAccessTokenPair;
 import io.vinta.containerbase.core.useraccess.request.LoginCommand;
+import io.vinta.containerbase.core.useraccess.request.RefreshTokenCommand;
 import io.vinta.containerbase.core.users.UserQueryService;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import java.util.Set;
@@ -60,5 +62,29 @@ public class UserTokenAccessServiceImpl implements UserTokenAccessService {
 						.type(JwtTokenType.REFRESH_TOKEN)
 						.build()))
 				.build();
+	}
+
+	@Override
+	public UserAccessTokenPair refreshToken(RefreshTokenCommand command) {
+		final var user = userQueryService.findSingleUser(FilterUserQuery.builder()
+				.byUserId(command.getUserId())
+				.byUserStatuses(Set.of(UserStatus.ACTIVE))
+				.build())
+				.orElseThrow(() -> new NotFoundException("User Not Found"));
+		return UserAccessTokenPair.builder()
+				.accessToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
+						.userId(user.getId()
+								.getValue())
+						.userType(user.getUserType())
+						.type(JwtTokenType.ACCESS_TOKEN)
+						.build()))
+				.refreshToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
+						.userId(user.getId()
+								.getValue())
+						.userType(user.getUserType())
+						.type(JwtTokenType.REFRESH_TOKEN)
+						.build()))
+				.build();
+
 	}
 }

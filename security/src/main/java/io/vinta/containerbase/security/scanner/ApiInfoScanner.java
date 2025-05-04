@@ -24,7 +24,8 @@ public interface ApiInfoScanner {
 	default List<ApiInfo> buildApiInfo(Method method) {
 		final List<ApiInfo> apiInfoList = Arrays.stream(method.getDeclaredAnnotations())
 				.map(annotation -> {
-					if (annotation instanceof GetMapping get) {
+					switch (annotation) {
+					case GetMapping get -> {
 						final var paths = handleRequestMappingPaths(get.path(), get.name(), get.value());
 
 						return paths.stream()
@@ -35,7 +36,7 @@ public interface ApiInfoScanner {
 										.build())
 								.toList();
 					}
-					if (annotation instanceof PutMapping put) {
+					case PutMapping put -> {
 						final var paths = handleRequestMappingPaths(put.path(), put.name(), put.value());
 
 						return paths.stream()
@@ -46,7 +47,7 @@ public interface ApiInfoScanner {
 										.build())
 								.toList();
 					}
-					if (annotation instanceof PostMapping post) {
+					case PostMapping post -> {
 						final var paths = handleRequestMappingPaths(post.path(), post.name(), post.value());
 						return paths.stream()
 								.map(path -> ApiInfo.builder()
@@ -56,7 +57,7 @@ public interface ApiInfoScanner {
 										.build())
 								.toList();
 					}
-					if (annotation instanceof DeleteMapping delete) {
+					case DeleteMapping delete -> {
 						final var paths = handleRequestMappingPaths(delete.path(), delete.name(), delete.value());
 
 						return paths.stream()
@@ -67,7 +68,7 @@ public interface ApiInfoScanner {
 										.build())
 								.toList();
 					}
-					if (annotation instanceof PatchMapping patch) {
+					case PatchMapping patch -> {
 						final var paths = handleRequestMappingPaths(patch.path(), patch.name(), patch.value());
 
 						return paths.stream()
@@ -78,7 +79,7 @@ public interface ApiInfoScanner {
 										.build())
 								.toList();
 					}
-					if (annotation instanceof RequestMapping requestMapping) {
+					case RequestMapping requestMapping -> {
 						final var paths = handleRequestMappingPaths(requestMapping.path(), requestMapping.name(),
 								requestMapping.value());
 
@@ -92,6 +93,9 @@ public interface ApiInfoScanner {
 										.toList())
 								.flatMap(List::stream)
 								.toList();
+					}
+					default -> {
+					}
 					}
 					return List.<ApiInfo>of();
 				})
@@ -110,6 +114,8 @@ public interface ApiInfoScanner {
 		return apiInfoList.stream()
 				.map(apiInfo -> apiInfo.withSecurityLevel(apiAuthorizedAnnotation.security())
 						.withPermissionKeys(Arrays.stream(apiAuthorizedAnnotation.permissions())
+								.collect(Collectors.toSet()))
+						.withAllowedTokenTypes(Arrays.stream(apiAuthorizedAnnotation.allowedTokenTypes())
 								.collect(Collectors.toSet())))
 				.toList();
 	}
