@@ -14,6 +14,7 @@ import io.vinta.containerbase.security.jwt.JwtTokenClaimExtractor;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,12 @@ public class JwtSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 						.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::none))
+
+				.authorizeHttpRequests(authorize -> List.of("/actuator/**", "/v3/api-docs/**", "/swagger-ui/**",
+						"/swagger-ui.html", "/webjars/**")
+						.forEach(path -> authorize.requestMatchers(path)
+								.permitAll()))
+
 				.authorizeHttpRequests(authorize -> apiInfoRegistry.getPublicApis()
 						.forEach(apiInfo -> authorize.requestMatchers(apiInfo.getMethod(), apiInfo.getPath())
 								.permitAll()))

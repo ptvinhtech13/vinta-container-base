@@ -15,7 +15,7 @@ public class AccessTokenSupporter {
 		final var tokenPair = userTokenAccessService.login(
 
 				LoginCommand.builder()
-						.accessType(UserAccessType.BASIC_AUTH_PASSWORD)
+						.accessType(UserAccessType.BASIC_AUTH)
 						.email(superAdminConfigProperties.getEmail())
 						.password(superAdminConfigProperties.getPassword())
 						.build());

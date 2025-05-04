@@ -1,0 +1,173 @@
+---
+server:
+  port: 8080
+logging:
+  level:
+    io.vinta.containerbase: DEBUG
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      metrics:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: Container Base
+  profiles:
+    active: local
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 200MB
+  jpa:
+    open-in-view: false
+    show-sql: false
+    database-platform: io.vinta.containerbase.common.dialect.ExtendedPostgresDialect
+    properties:
+      hibernate:
+        dialect: io.vinta.containerbase.common.dialect.ExtendedPostgresDialect
+        jdbc:
+          time_zone: UTC
+          batch_size: 50
+        format_sql: false
+        generate_statistics: false
+        order_inserts: true
+        order_updates: true
+        query:
+          enable_lazy_load_no_trans: true
+          fail_on_pagination_over_collection_fetch: true
+          in_clause_parameter_padding: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  datasource:
+    url: jdbc:postgresql://localhost:5432/containerbase
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  sql:
+    init:
+      platform: postgres
+
+
+io.vinta.containerbase:
+  supported-file-forms:
+    - fileFormId: VINTA_DEMO
+      fileFormName: Demo Container Form
+      actions:
+        - EXPORT
+        - IMPORT
+      schema:
+        headerRowIndex: 1
+        columDefinitions:
+          - index: 0
+            key: containerNumber
+            columnName: Container Number
+          - index: 1
+            key: isoEquipmentCode
+            columnName: ISO Equipment Code
+          - index: 2
+            key: equipmentReference
+            columnName: Equipment Reference
+          - index: 3
+            key: transportEquipmentType
+            columnName: Transport Equipment Type
+          - index: 4
+            key: tareWeightKg
+            columnName: Tare Weight (kg)
+          - index: 5
+            key: maxGrossWeightKg
+            columnName: Max Gross Weight (kg)
+          - index: 6
+            key: payloadWeightKg
+            columnName: Payload Weight (kg)
+          - index: 7
+            key: state
+            columnName: State
+          - index: 8
+            key: damageDescription
+            columnName: Damage Description
+          - index: 9
+            key: bookingReference
+            columnName: Booking Reference
+          - index: 10
+            key: shipmentReference
+            columnName: Shipment Reference
+          - index: 11
+            key: contentsDescription
+            columnName: Contents Description
+          - index: 12
+            key: sealNumber
+            columnName: Seal Number
+          - index: 13
+            key: sealSource
+            columnName: Seal Source
+          - index: 14
+            key: ownerShippingLineCode
+            columnName: Owner Shipping Line Code
+          - index: 15
+            key: ownerShippingSCAC
+            columnName: Owner Shipping SCAC
+          - index: 16
+            key: ownerName
+            columnName: Owner Name
+          - index: 17
+            key: ownerAddress
+            columnName: Owner Address
+  export-job:
+    scheduling:
+      enabled: true
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT15M
+  import-job-importer:
+    scheduling:
+      enabled: true
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT15M
+  import-job-processor:
+    scheduling:
+      enabled: true
+      cron-expression: "*/30 * * * * *" ## Every 30 seconds for check
+      lock-at-least-for: PT15S
+      lock-at-most-for: PT15M
+  scanning-apis:
+    base-packages: io.vinta.containerbase.*
+  jwt-token:
+    issuer: "vinta.containerbase.io"
+    private-key: "MEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCBPmYh8xHg1C68cXPzT9mgdqY31VZBzJ/UuAGk6M0pKRQ=="
+    public-key: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHXdl5xxz4z+FWAZF/sKOXU2ZHyG4ojuNyV12cDepgvPLesLsQ8eLIgZ3bY6n15Gz6b5BbIqgeT/3js8ZwHoy8g=="
+    token-config:
+      - tokenType: ACCESS_TOKEN
+        timeToLive: PT1H
+      - tokenType: REFRESH_TOKEN
+        timeToLive: PT3H
+  system-user:
+    email: admin@vinta.io
+    fullName: "Super Admin"
+    password: 8888888
+  security:
+    api:
+      authorization:
+        enabled: false

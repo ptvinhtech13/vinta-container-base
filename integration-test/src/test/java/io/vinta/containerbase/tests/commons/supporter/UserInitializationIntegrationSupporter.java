@@ -24,7 +24,7 @@ public class UserInitializationIntegrationSupporter {
 
 	public User createUser(TenantId tenantId, DefaultSystemRole userRole, CreateUserCommand command) {
 		command = command.withUserAccess(CreateUserAccessCommand.builder()
-				.accessType(UserAccessType.BASIC_AUTH_PASSWORD)
+				.accessType(UserAccessType.BASIC_AUTH)
 				.accessData(UserAccessBasicAuthData.builder()
 						.password("0000")
 						.build())

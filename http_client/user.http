@@ -7,7 +7,7 @@ X-Tenant-ID: 123456
     "email": "ptvinhtech13@gmail.com",
     "fullName": "vinh pham",
     "userAccess": {
-        "accessType": "BASIC_AUTH_PASSWORD",
+        "accessType": "BASIC_AUTH",
         "password": "0000"
     },
     "userRole": {

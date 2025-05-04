@@ -1,5 +1,5 @@
 package io.vinta.containerbase.common.enums;
 
 public enum UserAccessType {
-	BASIC_AUTH_PASSWORD
+	BASIC_AUTH
 }

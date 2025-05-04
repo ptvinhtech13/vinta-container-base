@@ -100,7 +100,7 @@ public class SuperUserEventService {
 				.fullName(superAdminConfigProperties.getFullName())
 				.userStatus(UserStatus.ACTIVE)
 				.userAccess(CreateUserAccessCommand.builder()
-						.accessType(UserAccessType.BASIC_AUTH_PASSWORD)
+						.accessType(UserAccessType.BASIC_AUTH)
 						.accessData(UserAccessBasicAuthData.builder()
 								.password(superAdminConfigProperties.getPassword())
 								.build())

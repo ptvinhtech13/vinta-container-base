@@ -24,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-@JsonTypeName("BASIC_AUTH_PASSWORD")
+@JsonTypeName("BASIC_AUTH")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateUserAccessBasicAuthRequest extends CreateUserAccessRequest {
 
@@ -34,7 +34,7 @@ public class CreateUserAccessBasicAuthRequest extends CreateUserAccessRequest {
 	@Builder
 	@JsonCreator
 	public CreateUserAccessBasicAuthRequest(@NotEmpty String password) {
-		super(UserAccessType.BASIC_AUTH_PASSWORD);
+		super(UserAccessType.BASIC_AUTH);
 		this.password = password;
 	}
 }

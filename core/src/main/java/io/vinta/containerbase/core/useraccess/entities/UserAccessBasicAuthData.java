@@ -14,7 +14,7 @@ import lombok.With;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-@JsonTypeName("BASIC_AUTH_PASSWORD")
+@JsonTypeName("BASIC_AUTH")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @With
 public class UserAccessBasicAuthData extends UserAccessData {
@@ -25,7 +25,7 @@ public class UserAccessBasicAuthData extends UserAccessData {
 	@JsonCreator
 	public UserAccessBasicAuthData(@JsonProperty("password") String password,
 			@JsonProperty("encodedPassword") String encodedPassword) {
-		super(UserAccessType.BASIC_AUTH_PASSWORD);
+		super(UserAccessType.BASIC_AUTH);
 		this.password = password;
 		this.encodedPassword = encodedPassword;
 	}
