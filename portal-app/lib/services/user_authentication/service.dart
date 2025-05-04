@@ -2,28 +2,47 @@ import 'package:get/get.dart';
 import 'package:vinta_shared_commons/repository/index.dart';
 
 import '../../commons/constants/storage.dart';
+import '../user_access/service.dart';
 import 'state.dart';
 
 class UserAuthenticationService extends GetxService {
   final state = UserAuthenticationState();
-  final simpleRepository = Get.find<SimpleRepository>();
+  final UserAccessService _userAccessService;
+  final SimpleRepository _simpleRepository;
+
+  UserAuthenticationService({required SimpleRepository simpleRepository, required UserAccessService userAccessService})
+    : _simpleRepository = simpleRepository,
+      _userAccessService = userAccessService;
 
   @override
-  void onReady() {
+  Future<void> onReady() async {
     super.onReady();
   }
 
   Future<void> login(String username, String password) {
-    return Future.delayed(const Duration(seconds: 1), () {
+    return _userAccessService.login(username, password).then((value) {
       state.isAuthenticated.value = true;
-      simpleRepository.saveString(SharePreferenceKeys.userAuthEmailKey, username);
-      simpleRepository.saveString(SharePreferenceKeys.userAuthPasswordKey, password);
     });
   }
 
   Future<void> checkUserAuthentication() {
-    final email = simpleRepository.getString(SharePreferenceKeys.userAuthEmailKey);
-    final password = simpleRepository.getString(SharePreferenceKeys.userAuthPasswordKey);
-    return Future.delayed(Duration(seconds: 2), () => state.isAuthenticated.value = email.isNotEmpty && password.isNotEmpty);
+    final accessTokenExpiredAt = _simpleRepository.getString(SharePreferenceKeys.userAuthTokenExpiredAtKey);
+    if (accessTokenExpiredAt.isNotEmpty) {
+      final expiredAt = DateTime.parse(accessTokenExpiredAt).millisecondsSinceEpoch;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      state.isAuthenticated.value = expiredAt > now;
+    } else {
+      logout();
+      state.isAuthenticated.value = false;
+    }
+    return Future.value();
+  }
+
+  void logout() {
+    _simpleRepository.remove(SharePreferenceKeys.userAuthTokenKey);
+    _simpleRepository.remove(SharePreferenceKeys.userAuthTokenExpiredAtKey);
+    _simpleRepository.remove(SharePreferenceKeys.userAuthRefreshTokenKey);
+    _simpleRepository.remove(SharePreferenceKeys.userAuthRefreshTokenExpiredAtKey);
+    state.isAuthenticated.value = false;
   }
 }

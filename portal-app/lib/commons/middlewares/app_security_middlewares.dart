@@ -13,13 +13,14 @@ class UserAccessCheckerMiddleware extends GetMiddleware {
   @override
   RouteSettings? redirect(String? route) {
     final userAuthService = Get.find<UserAuthenticationService>();
-
     if (userAuthService.state.isAuthenticated.value) {
-      Future.delayed(const Duration(milliseconds: 700), () async => {Get.offNamed(AppRoutes.home)});
+      if (route == AppRoutes.welcome) {
+        Future.delayed(const Duration(milliseconds: 1), () async => {Get.offNamed(AppRoutes.home)});
+      }
+      return null;
+    } else {
+      Future.delayed(const Duration(milliseconds: 1), () async => {Get.offNamed(AppRoutes.welcome)});
       return null;
     }
-
-    Future.delayed(const Duration(milliseconds: 700), () async => {Get.offNamed(AppRoutes.welcome)});
-    return null;
   }
 }

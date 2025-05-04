@@ -8,11 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 public interface UserAccessApi {
 	@PostMapping(path = "/api/user/access/login")
 	@ResponseStatus(HttpStatus.OK)
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.PUBLIC)
-	UserAccessResponse login(@ModelAttribute @Valid LoginUserRequest request);
+	UserAccessResponse login(@RequestBody @Valid LoginUserRequest request);
 }

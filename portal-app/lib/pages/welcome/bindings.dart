@@ -1,5 +1,3 @@
-
-
 import 'package:get/get.dart';
 
 import 'controller.dart';
@@ -9,6 +7,4 @@ class WelcomePageBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<WelcomeController>(() => WelcomeController());
   }
-
 }
-

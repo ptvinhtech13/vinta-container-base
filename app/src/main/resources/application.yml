@@ -164,7 +164,7 @@ io.vinta.containerbase:
   system-user:
     email: admin@vinta.io
     fullName: "Super Admin"
-    password: 8888888
+    password: 12345
   security:
     api:
       authorization:

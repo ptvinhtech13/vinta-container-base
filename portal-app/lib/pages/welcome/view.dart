@@ -1,8 +1,8 @@
+import 'package:containerbase/commons/constants/colors.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:containerbase/commons/constants/colors.dart';
 import 'package:vinta_shared_commons/components/index.dart';
 import 'package:vinta_shared_commons/constants/radii.dart';
 import 'package:vinta_shared_commons/constants/spaces.dart';
@@ -26,7 +26,7 @@ class WelcomePage extends AppPage<WelcomeController> {
   final isValidPassword = false.obs;
   final isEnabledLoginButton = false.obs;
 
-  WelcomePage({super.key}) {
+  WelcomePage({super.key, super.showNavigationSideBar = false, super.showAppBar = false}) {
     controller.hydrate();
   }
 

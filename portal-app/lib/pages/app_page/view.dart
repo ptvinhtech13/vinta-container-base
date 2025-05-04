@@ -10,12 +10,13 @@ import '../../generated/assets.gen.dart';
 import 'controller.dart';
 
 abstract class AppPage<T extends GetxController> extends GetView<T> {
-  final bool isBorderedBox;
+  final bool showNavigationSideBar;
+  final bool showAppBar;
   final Color? backgroundWhiteColor;
 
   late final AppPageController appPageController;
 
-  AppPage({super.key, this.isBorderedBox = false, this.backgroundWhiteColor}) {
+  AppPage({super.key, this.showNavigationSideBar = true, this.showAppBar = true, this.backgroundWhiteColor}) {
     appPageController = Get.put(AppPageController());
   }
 
@@ -29,11 +30,17 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
         children: [
           Row(
             children: [
-              SizedBox(width: 250, height: double.infinity, child: SideNavigationDrawer()),
+              showNavigationSideBar ? SizedBox(width: 250, height: double.infinity, child: SideNavigationDrawer()) : const SizedBox.shrink(),
               Expanded(
                 child: Stack(
                   children: [
-                    Positioned(top: 0, left: 0, right: 0, height: 50, child: Container(color: Colors.amber, child: Text("data"))),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 50,
+                      child: showNavigationSideBar ? Container(color: Colors.amber, child: Text("data")) : const SizedBox.shrink(),
+                    ),
                     Positioned.fill(top: 50, bottom: 0, child: Column(children: [Expanded(child: buildUI(context)), AppFooter()])),
                   ],
                 ),
@@ -47,7 +54,7 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: backgroundWhiteColor ?? Colors.white54,
-                      borderRadius: isBorderedBox ? const BorderRadius.all(Radius.circular(40)) : const BorderRadius.all(Radius.circular(0)),
+                      borderRadius: const BorderRadius.all(Radius.circular(0)),
                     ),
                     child: Center(
                       child: VintaLoadingProgress(

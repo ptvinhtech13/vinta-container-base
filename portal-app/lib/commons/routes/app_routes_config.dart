@@ -18,9 +18,8 @@ class AppRoutingConfigurations {
       name: AppRoutes.home,
       page: () => HomePage(),
       binding: HomePageBinding(),
-      middlewares: [],
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(milliseconds: 850),
+      middlewares: [UserAccessCheckerMiddleware(priority: 1)],
+      transition: Transition.noTransition,
     ),
   ];
 }
