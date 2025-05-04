@@ -24,6 +24,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.CreatedBy;
@@ -95,4 +97,47 @@ public class UserEntity {
 	@Column(name = "updated_at")
 	private Instant updatedAt;
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		UserEntity that = (UserEntity) o;
+
+		return new EqualsBuilder().append(id, that.id)
+				.append(userType, that.userType)
+				.append(userStatus, that.userStatus)
+				.append(email, that.email)
+				.append(phoneNumber, that.phoneNumber)
+				.append(fullName, that.fullName)
+				.append(avatarPath, that.avatarPath)
+				.append(userRoles, that.userRoles)
+				.append(deletedAt, that.deletedAt)
+				.append(createdBy, that.createdBy)
+				.append(updatedBy, that.updatedBy)
+				.append(createdAt, that.createdAt)
+				.append(updatedAt, that.updatedAt)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37).append(id)
+				.append(userType)
+				.append(userStatus)
+				.append(email)
+				.append(phoneNumber)
+				.append(fullName)
+				.append(avatarPath)
+				.append(userRoles)
+				.append(deletedAt)
+				.append(createdBy)
+				.append(updatedBy)
+				.append(createdAt)
+				.append(updatedAt)
+				.toHashCode();
+	}
 }

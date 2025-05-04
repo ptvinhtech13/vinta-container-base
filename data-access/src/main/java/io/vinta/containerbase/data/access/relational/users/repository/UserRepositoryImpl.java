@@ -82,8 +82,12 @@ public class UserRepositoryImpl implements UserRepository {
 				.map(existing -> UserEntityMapper.INSTANCE.toUpdate(existing, user))
 				.map(jpaUserRepository::save)
 				.map(UserEntityMapper.INSTANCE::toModel)
-				.orElseGet(() -> UserEntityMapper.INSTANCE.toModel(jpaUserRepository.save(UserEntityMapper.INSTANCE
-						.toCreate(user))));
+				.orElseGet(() -> {
+					final var newUser = UserEntityMapper.INSTANCE.toCreate(user);
+					newUser.getUserRoles()
+							.forEach(it -> it.setUser(newUser));
+					return UserEntityMapper.INSTANCE.toModel(jpaUserRepository.save(newUser));
+				});
 	}
 
 	@Override

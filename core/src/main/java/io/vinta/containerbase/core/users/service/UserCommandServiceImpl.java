@@ -40,8 +40,6 @@ public class UserCommandServiceImpl implements UserCommandService {
 				.user(vintaUser)
 				.createUserAccessCommand(command.getUserAccess()
 						.withUserId(vintaUser.getId()))
-				.createUserRoleCommand(command.getUserRole()
-						.withUserId(vintaUser.getId()))
 				.build());
 
 		return vintaUser.withUserRoles(userRoleRepository.findSingleUserRoleByUserId(vintaUser.getId()));

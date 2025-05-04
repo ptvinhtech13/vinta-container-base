@@ -6,6 +6,8 @@ import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.users.entities.User;
 import io.vinta.containerbase.data.access.relational.userrole.mapper.UserRoleEntityMapper;
 import io.vinta.containerbase.data.access.relational.users.entities.UserEntity;
+import java.util.stream.Collectors;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -31,11 +33,19 @@ public interface UserEntityMapper {
 	User toModel(UserEntity userEntity);
 
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "userRoles", ignore = true)
 	@Mapping(target = "createdBy", ignore = true)
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "deletedAt", ignore = true)
+	@Mapping(target = "userRoles", ignore = true)
 	UserEntity toCreate(User user);
+
+	@AfterMapping
+	default void afterMappingCreateEntity(@MappingTarget UserEntity.UserEntityBuilder existing, User user) {
+		existing.userRoles(user.getUserRoles()
+				.stream()
+				.map(userRole -> UserRoleEntityMapper.INSTANCE.toNewEntity(null, userRole))
+				.collect(Collectors.toSet()));
+	}
 }

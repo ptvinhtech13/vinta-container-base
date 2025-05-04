@@ -3,11 +3,15 @@ package io.vinta.containerbase.core.users.mapper;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructConfig;
+import io.vinta.containerbase.core.userrole.mapper.UserRoleMapper;
 import io.vinta.containerbase.core.users.entities.User;
 import io.vinta.containerbase.core.users.request.CreateUserCommand;
 import io.vinta.containerbase.core.users.request.UpdateUserCommand;
+import java.util.Set;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(config = MapstructConfig.class, uses = { MapstructCommonMapper.class, MapstructCommonDomainMapper.class })
@@ -21,6 +25,11 @@ public interface UserMapper {
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "userRoles", ignore = true)
 	User toCreateModel(CreateUserCommand command);
+
+	@AfterMapping
+	default void afterMappingCreateModel(@MappingTarget User.UserBuilder builder, CreateUserCommand command) {
+		builder.userRoles(Set.of(UserRoleMapper.INSTANCE.toCreate(command.getUserRole())));
+	}
 
 	@Mapping(target = "id", source = "existing.id")
 	@Mapping(target = "email", source = "command.email")
