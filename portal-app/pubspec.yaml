@@ -1,0 +1,99 @@
+name: containerbase
+description: "ContainerBase App"
+publish_to: 'none'
+version: 2025.0.1+0
+
+environment:
+  sdk: ^3.7.2
+
+scripts:
+  all: "flutter clean && flutter pub get && flutter packages pub run build_runner build --delete-conflicting-outputs && cd ios && pod deintegrate && pod install && cd .."
+  build: "flutter clean && flutter pub get && flutter pub run environment_config:generate && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  gen: "flutter pub run environment_config:generate && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  gen_prod: "flutter pub run environment_config:generate --config-extension=prod && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  local: "flutter clean && flutter pub get && flutter pub run flutter_launcher_icons && flutter pub run environment_config:generate --config-extension=non_prod && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  dev: "flutter clean && flutter pub get && flutter pub run environment_config:generate --config-extension=non_prod --apiHost=https://localhostxxx.com && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  prod: "flutter clean && flutter pub get && flutter pub run environment_config:generate --config-extension=prod --apiHost=http://10.104.10.10:8080 && flutter packages pub run build_runner build --delete-conflicting-outputs"
+  icon: "flutter pub run flutter_launcher_icons && flutter pub run flutter_launcher_name:main"
+  get: "flutter pub get"
+  ios: "git pull origin master && flutter clean && flutter pub get && flutter pub run environment_config:generate && flutter packages pub run build_runner build --delete-conflicting-outputs && cd ios && pod install && cd .."
+  bios: "flutter clean && flutter pub get && flutter pub run environment_config:generate && flutter packages pub run build_runner build --delete-conflicting-outputs && cd ios && pod install && cd .."
+  build-ios: "cd ios && fastlane beta --env default"
+  build-android: "flutter build apk"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  dio: ^5.8.0+1
+  environment_config: ^4.0.0+1
+  logger: ^2.5.0
+  json_annotation: ^4.9.0
+  get: ^4.7.2
+  get_it: ^8.0.3
+  shared_preferences: ^2.5.3
+  collection: ^1.19.1
+  jiffy: ^6.4.3
+  flutter_screenutil: ^5.9.3
+  lottie: ^3.3.1
+  flutter_svg: ^2.1.0
+  simple_animations: ^5.1.0
+  hexcolor: ^3.0.1
+  loading_animation_widget: ^1.3.0
+  cron: ^0.6.1
+  retrofit: ^4.4.2
+  async: ^2.13.0
+  json_serializable: ^6.9.5
+  shimmer: ^3.0.0
+  intl: ^0.20.2
+  buttons_tabbar: ^1.3.15
+  scroll_to_index: ^3.0.1
+  animated_widgets: ^1.1.0
+  copy_with_extension: ^6.0.1
+  http: ^1.3.0
+  retry: ^3.1.2
+  rxdart: ^0.28.0
+  flutter_smart_dialog: ^4.9.8+7
+  auto_size_text: ^3.0.0
+  flutter_expanded_tile: ^0.4.0
+  synchronized: ^3.3.1
+  animated_text_kit: ^4.2.3
+  badges: ^3.1.2
+  flutter_animate: ^4.5.2
+  objectid: ^4.0.0
+  visibility_detector: ^0.4.0+2
+  pretty_dio_logger: ^1.4.0
+  easy_debounce: ^2.0.3
+#  vinta_shared_commons:
+#    git:
+#      url: https://github.com/ptvinhtech13/vinta-shared-components.git
+#      ref: v1.0.1-dev#
+  vinta_shared_commons:
+    path: ../../vinta-shared-components
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  flutter_gen_runner: ^5.10.0
+  copy_with_extension_gen: ^6.0.1
+  will_it_run: ^1.0.4
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
+    - assets/json/
+
+flutter_gen:
+  output: lib/generated/
+  line_length: 80
+  integrations:
+    flutter_svg: true
+    lottie: true
+
+environment_config:
+  path: config/env_config.dart
+  fields:
+    apiHost:
+      default: test
