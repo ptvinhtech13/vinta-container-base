@@ -15,36 +15,41 @@ class DemoMetabasePage extends AppPage<DemoMetabaseController> {
 
   @override
   Widget buildUI(BuildContext context) {
-    return Container(
-      height: 1.sh,
-      color: Colors.red,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final minHeight = 1.sh - 50;
-            return Column(
-              children: [
-                HtmlWidget(
-                  '''
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final minHeight = 1.sh - 50;
+          return Column(
+            children: [
+              HtmlWidget(
+                '''
              <iframe 
                   title="dashboard" 
-                  style="flex: 1; border: none; min-height: ${minHeight}px;"
-                  src="$iframeUrl#bordered=false&titled=false"
+                  style="flex: 1; border: none; min-height: ${minHeight}px; background-color: transparent;"
+                  src="$iframeUrl#bordered=false&titled=false&theme=transparent"
                           ></iframe>
                         ''',
-                  customStylesBuilder: (element) {
-                    if (element.localName == 'iframe') {
-                      return {'display': 'block', 'width': '100%', 'height': '100vh', 'min-height': '${minHeight}px', 'border': 'none'};
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            );
-          },
-        ),
+                customStylesBuilder: (element) {
+                  if (element.localName == 'iframe') {
+                    return {
+                      'background-color': 'transparent !important',
+                      '-webkit-background-color': 'transparent !important',
+                      'background': 'none transparent !important',
+                      'display': 'block',
+                      'width': '100%',
+                      'height': '100vh',
+                      'min-height': '${minHeight}px',
+                      'border': 'none',
+                    };
+                  }
+                  return null;
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }
