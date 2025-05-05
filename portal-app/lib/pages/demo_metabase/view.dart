@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -25,25 +23,20 @@ class DemoMetabasePage extends AppPage<DemoMetabaseController> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final minHeight = 1.sh - 150;
-            log("buildUI ${1.sh} - $minHeight");
-            log("maxHeight ${constraints.maxHeight}");
-            log("minHeight ${constraints.minHeight}");
+            final minHeight = 1.sh - 50;
             return Column(
               children: [
                 HtmlWidget(
                   '''
              <iframe 
                   title="dashboard" 
-                  width="100%" 
-                  height="100%" 
                   style="flex: 1; border: none; min-height: ${minHeight}px;"
                   src="$iframeUrl#bordered=false&titled=false"
                           ></iframe>
                         ''',
                   customStylesBuilder: (element) {
                     if (element.localName == 'iframe') {
-                      return {'display': 'block', 'width': '100%', 'height': '100%', 'min-height': '${minHeight}px', 'border': 'none'};
+                      return {'display': 'block', 'width': '100%', 'height': '100vh', 'min-height': '${minHeight}px', 'border': 'none'};
                     }
                     return null;
                   },
