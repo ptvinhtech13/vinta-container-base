@@ -5,4 +5,6 @@ class AppRoutes {
   static const logout = '/logout';
 
   static const notFoundPage = '/not-found';
+
+  static var demoMetabase = "/dashboard-report/demo-metabase";
 }

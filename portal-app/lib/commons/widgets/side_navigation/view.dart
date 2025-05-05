@@ -4,13 +4,13 @@ import 'package:vinta_shared_commons/components/vinta_application_license/view.d
 import 'package:vinta_shared_commons/constants/spaces.dart';
 
 import '../../../generated/assets.gen.dart';
-import '../../../services/navigation_config/models/navigation_item_config.dart';
-import '../../../services/navigation_config/service.dart';
+import '../../../services/navigation/models/navigation_item_config.dart';
+import '../../../services/navigation/service.dart';
 import '../../constants/index.dart';
 
 class SideNavigationDrawer extends GetView {
   final VoidCallback? logoutCallBack;
-  final navigationItemConfigService = Get.find<NavigationItemConfigService>();
+  final navigationItemConfigService = Get.find<NavigationItemService>();
 
   SideNavigationDrawer({super.key, this.logoutCallBack});
 
@@ -57,7 +57,7 @@ class SideNavigationItemView extends GetView {
   final double? borderRadius;
   late final bool isSingle;
   final bool isChild;
-  final NavigationItemConfig navItemConfig;
+  final NavigationItem navItemConfig;
   final isExpanded = false.obs;
   final VoidCallback? logoutCallBack;
 
@@ -85,10 +85,6 @@ class SideNavigationItemView extends GetView {
                 isSingle
                     ? () async {
                       await Future.delayed(const Duration(milliseconds: 150));
-                      if (logoutCallBack != null && (navItemConfig.isLogout ?? false)) {
-                        logoutCallBack!();
-                        return;
-                      }
                       Get.offNamed(navItemConfig.route!);
                     }
                     : () {

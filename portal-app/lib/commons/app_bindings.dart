@@ -9,7 +9,7 @@ import 'package:vinta_shared_commons/repository/simple_repository.dart';
 
 import '../services/clients/rest/apis/user_access/user_access_api.dart';
 import '../services/clients/rest/config/dio_service.dart';
-import '../services/navigation_config/bindings.dart';
+import '../services/navigation/bindings.dart';
 import '../services/user_access/service.dart';
 import '../services/user_authentication/index.dart';
 

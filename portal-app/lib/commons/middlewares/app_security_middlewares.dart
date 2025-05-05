@@ -21,11 +21,11 @@ class UserAccessCheckerMiddleware extends GetMiddleware {
 
     if (userAuthService.state.isAuthenticated.value) {
       if (route == AppRoutes.welcome) {
-        Future.delayed(const Duration(milliseconds: 100), () async => {Get.offNamed(AppRoutes.home)});
+        Future.delayed(const Duration(milliseconds: 20), () async => {Get.offNamed(AppRoutes.home)});
       }
       return null;
     } else {
-      Future.delayed(const Duration(milliseconds: 100), () async => {Get.offNamed(AppRoutes.welcome)});
+      Future.delayed(const Duration(milliseconds: 20), () async => {Get.offNamed(AppRoutes.welcome)});
       return null;
     }
   }

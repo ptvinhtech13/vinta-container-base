@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:containerbase/services/navigation_config/index.dart';
+import 'package:containerbase/services/navigation/service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -19,7 +19,7 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
       await AppBindings().dependencies();
       await Get.find<UserAuthenticationService>().evaluateUserAuthentication();
-      await Get.find<NavigationItemConfigService>().loadNavigationItemConfig();
+      await Get.find<NavigationItemService>().loadNavigationItem();
 
       runApp(
         GetMaterialApp(

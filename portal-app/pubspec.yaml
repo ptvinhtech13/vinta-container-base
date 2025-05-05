@@ -64,12 +64,14 @@ dependencies:
   visibility_detector: ^0.4.0+2
   pretty_dio_logger: ^1.4.0
   easy_debounce: ^2.0.3
-#  vinta_shared_commons:
-#    git:
-#      url: https://github.com/ptvinhtech13/vinta-shared-components.git
-#      ref: v1.0.1-dev#
+  #  vinta_shared_commons:
+  #    git:
+  #      url: https://github.com/ptvinhtech13/vinta-shared-components.git
+  #      ref: v1.0.1-dev#
   vinta_shared_commons:
     path: ../../vinta-shared-components
+  flutter_html: ^3.0.0
+  flutter_widget_from_html: ^0.16.0
 
 dev_dependencies:
   flutter_lints: ^5.0.0

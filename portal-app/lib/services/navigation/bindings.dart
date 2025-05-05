@@ -5,6 +5,6 @@ import 'service.dart';
 class NavigationItemConfigBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put(NavigationItemConfigService());
+    Get.put(NavigationItemService());
   }
 }

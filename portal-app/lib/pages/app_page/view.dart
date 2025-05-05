@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:vinta_shared_commons/components/vinta_loading/view.dart';
 
 import '../../commons/constants/colors.dart';
-import '../../commons/widgets/footer/view.dart';
 import '../../commons/widgets/side_navigation/view.dart';
 import '../../generated/assets.gen.dart';
 import 'controller.dart';
@@ -41,7 +40,7 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                       height: 50,
                       child: showNavigationSideBar ? Container(color: Colors.amber, child: Text("data")) : const SizedBox.shrink(),
                     ),
-                    Positioned.fill(top: 50, bottom: 0, child: Column(children: [Expanded(child: buildUI(context)), AppFooter()])),
+                    Positioned(top: 50, left: 0, right: 0, child: buildUI(context)),
                   ],
                 ),
               ),
