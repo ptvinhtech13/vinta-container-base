@@ -32,6 +32,9 @@ public class ExtendedPostgresDialect extends PostgresPlusDialect {
 		registry.registerPattern(ExtendedPostgresFunctions.JSONB_LEFT_EQUALS_RIGHT.getFuncName(), "?1 ->> ?2 = ?3",
 				types.resolve(StandardBasicTypes.BOOLEAN));
 
+		registry.registerPattern(ExtendedPostgresFunctions.JSONB_LEFT_CONTAINS_RIGHT.getFuncName(), "?1 -> ?2 @> ?3",
+				types.resolve(StandardBasicTypes.BOOLEAN));
+
 		registry.registerPattern(ExtendedPostgresFunctions.VARCHAR_ARRAY_LEFT_ANY_CONTAINS_RIGHT.getFuncName(),
 				"?1 @> string_to_array(?2, ',')::varchar[]", types.resolve(StandardBasicTypes.BOOLEAN));
 

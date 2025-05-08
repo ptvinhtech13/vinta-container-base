@@ -54,6 +54,18 @@ public class ExtendedPostgresOperators {
 		}
 	};
 
+	public static final Operator JSONB_LEFT_CONTAINS_RIGHT = new Operator() {
+		@Override
+		public String name() {
+			return ExtendedPostgresFunctions.JSONB_LEFT_CONTAINS_RIGHT.name();
+		}
+
+		@Override
+		public Class<?> getType() {
+			return Boolean.class;
+		}
+	};
+
 	public static final Operator VARCHAR_ARRAY_LEFT_ANY_CONTAINS_RIGHT = new Operator() {
 		@Override
 		public String name() {

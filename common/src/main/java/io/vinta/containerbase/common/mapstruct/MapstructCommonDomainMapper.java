@@ -2,6 +2,7 @@ package io.vinta.containerbase.common.mapstruct;
 
 import io.vinta.containerbase.common.baseid.BaseId;
 import io.vinta.containerbase.common.baseid.ContainerId;
+import io.vinta.containerbase.common.baseid.DashboardId;
 import io.vinta.containerbase.common.baseid.ExportJobId;
 import io.vinta.containerbase.common.baseid.FeatureNodeId;
 import io.vinta.containerbase.common.baseid.FileFormId;
@@ -174,6 +175,42 @@ public interface MapstructCommonDomainMapper {
 				.orElse(null);
 	}
 
+	@Named("stringsToTenantIds")
+	default Set<TenantId> stringsToTenantIds(Set<String> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::stringToTenantId)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("tenantIdsToStrings")
+	default Set<String> tenantIdsToStrings(Set<TenantId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::tenantIdToString)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("longsToTenantIds")
+	default Set<TenantId> longsToTenantIds(Set<Long> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::longToTenantId)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("tenantIdsToLongs")
+	default Set<Long> tenantIdsToLongs(Set<TenantId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::tenantIdToLong)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
 	@Named("stringToUserId")
 	default UserId stringToUserId(String source) {
 		return Optional.ofNullable(source)
@@ -194,6 +231,33 @@ public interface MapstructCommonDomainMapper {
 		return Optional.ofNullable(source)
 				.map(it -> it.stream()
 						.map(UserId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("stringsToUserIds")
+	default Set<UserId> stringsToUserIds(Set<String> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::stringToUserId)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("userIdsToStrings")
+	default Set<String> userIdsToStrings(Set<UserId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::userIdToString)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("userIdsToLongs")
+	default Set<Long> userIdsToLongs(Set<UserId> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(this::userIdToLong)
 						.collect(Collectors.toSet()))
 				.orElse(null);
 	}
@@ -328,4 +392,54 @@ public interface MapstructCommonDomainMapper {
 						.collect(Collectors.toList()))
 				.orElse(null);
 	}
+
+	@Named("stringToDashboardId")
+	default DashboardId stringToDashboardId(String source) {
+		return Optional.ofNullable(source)
+				.map(Long::valueOf)
+				.map(DashboardId::new)
+				.orElse(null);
+	}
+
+	@Named("longToDashboardId")
+	default DashboardId longToDashboardId(Long source) {
+		return Optional.ofNullable(source)
+				.map(DashboardId::new)
+				.orElse(null);
+	}
+
+	@Named("dashboardIdToString")
+	default String dashboardIdToString(DashboardId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.map(String::valueOf)
+				.orElse(null);
+	}
+
+	@Named("dashboardIdToLong")
+	default Long dashboardIdToLong(DashboardId source) {
+		return Optional.ofNullable(source)
+				.map(BaseId::getValue)
+				.orElse(null);
+	}
+
+	@Named("stringsToDashboardIds")
+	default Set<DashboardId> stringsToDashboardIds(Set<String> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(Long::valueOf)
+						.map(DashboardId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
+	@Named("longsToDashboardIds")
+	default Set<DashboardId> longsToDashboardIds(Set<Long> source) {
+		return Optional.ofNullable(source)
+				.map(it -> it.stream()
+						.map(DashboardId::new)
+						.collect(Collectors.toSet()))
+				.orElse(null);
+	}
+
 }

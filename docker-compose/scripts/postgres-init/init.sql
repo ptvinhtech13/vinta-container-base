@@ -1,1 +1,2 @@
 CREATE EXTENSION ltree SCHEMA pg_catalog;
+CREATE DATABASE metabase;

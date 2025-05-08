@@ -17,6 +17,9 @@ public enum ExtendedPostgresFunctions {
 	JSONB_LEFT_EQUALS_RIGHT(ExtendedPostgresOperators.JSONB_LEFT_EQUALS_RIGHT, "jsonb_left_equals_right",
 			"jsonb_left_equals_right({0},{1},{2})"),
 
+	JSONB_LEFT_CONTAINS_RIGHT(ExtendedPostgresOperators.JSONB_LEFT_CONTAINS_RIGHT, "jsonb_left_contains_right",
+			"jsonb_left_contains_right({0},{1},{2})"),
+
 	VARCHAR_ARRAY_LEFT_ANY_CONTAINS_RIGHT(ExtendedPostgresOperators.VARCHAR_ARRAY_LEFT_ANY_CONTAINS_RIGHT,
 			"varchar_array_left_contains_any_right", "varchar_array_left_contains_any_right({0},{1})"),
 
