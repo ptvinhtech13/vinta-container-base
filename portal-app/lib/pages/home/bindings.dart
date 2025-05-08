@@ -1,4 +1,4 @@
-import 'package:containerbase/pages/home_page/controller.dart';
+import 'package:containerbase/pages/home/controller.dart';
 import 'package:get/get.dart';
 
 class HomePageBinding extends Bindings {

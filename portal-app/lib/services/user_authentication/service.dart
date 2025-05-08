@@ -19,6 +19,9 @@ class UserAuthenticationService extends GetxService {
   final UserAccessService _userAccessService;
   final SimpleRepository _simpleRepository;
 
+  final _tokenAuditIntervalDuration = Duration(minutes: 3);
+  final _tokenRefreshDifferenceDuration = Duration(minutes: 6); // > =2x of tokenAuditIntervalDuration
+
   UserAuthenticationService({required SimpleRepository simpleRepository, required UserAccessService userAccessService})
     : _simpleRepository = simpleRepository,
       _userAccessService = userAccessService;
@@ -27,10 +30,9 @@ class UserAuthenticationService extends GetxService {
   Future<void> onReady() async {
     super.onReady();
     await evaluateUserAuthentication();
-    Timer.periodic(Duration(seconds: 5), (timer) {
+    Timer.periodic(_tokenAuditIntervalDuration, (timer) {
       evaluateUserAuthentication();
     });
-
   }
 
   Future<void> login(String username, String password) {
@@ -41,13 +43,10 @@ class UserAuthenticationService extends GetxService {
 
   Future<void> evaluateUserAuthentication() async {
     final hasAuthenticated =
-        _simpleRepository.getString(SharePreferenceKeys.userAuthTokenKey).isNotEmpty
-        && _simpleRepository.getString(SharePreferenceKeys.userAuthTokenExpiredAtKey)
-            .isNotEmpty
-            && _simpleRepository.getString(SharePreferenceKeys.userAuthRefreshTokenKey)
-            .isNotEmpty
-            && _simpleRepository.getString(SharePreferenceKeys.userAuthRefreshTokenExpiredAtKey)
-            .isNotEmpty;
+        _simpleRepository.getString(SharePreferenceKeys.userAuthTokenKey).isNotEmpty &&
+        _simpleRepository.getString(SharePreferenceKeys.userAuthTokenExpiredAtKey).isNotEmpty &&
+        _simpleRepository.getString(SharePreferenceKeys.userAuthRefreshTokenKey).isNotEmpty &&
+        _simpleRepository.getString(SharePreferenceKeys.userAuthRefreshTokenExpiredAtKey).isNotEmpty;
     state.isAuthenticated.value = true;
     if (!hasAuthenticated) {
       logout();
@@ -61,7 +60,7 @@ class UserAuthenticationService extends GetxService {
       return Future.value();
     }
 
-    if (differenceRefreshTokenExpired.inMinutes < 3) {
+    if (differenceRefreshTokenExpired.inMinutes < _tokenRefreshDifferenceDuration.inMinutes) {
       await refreshToken().catchError((error) {
         log("Error refreshing token");
         logout();

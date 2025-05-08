@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:containerbase/pages/not_found/index.dart';
 import 'package:containerbase/services/navigation/service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,12 @@ Future<void> main() async {
           translations: AppTranslations(),
           navigatorObservers: [FlutterSmartDialog.observer],
           builder: FlutterSmartDialog.init(),
+          unknownRoute: GetPage(
+            name: AppRoutes.notFoundPage,
+            page: () => NotFoundPage(),
+            binding: NotFoundPageBindings(),
+            transition: Transition.noTransition,
+          ),
         ),
       );
     },

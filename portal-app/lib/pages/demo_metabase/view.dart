@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
-import '../app_page/index.dart';
+import '../app_layout/view.dart';
 import 'controller.dart';
 
 class DemoMetabasePage extends AppPage<DemoMetabaseController> {

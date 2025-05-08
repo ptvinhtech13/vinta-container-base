@@ -65,13 +65,13 @@ class ContainerBaseDioService extends GetxService {
 
   Dio setupContainerBaseTokenAccessServer(SimpleRepository repository) {
     return Dio(
-      BaseOptions(
-        receiveDataWhenStatusError: true,
-        connectTimeout: const Duration(minutes: 2),
-        receiveTimeout: const Duration(minutes: 2),
-        sendTimeout: const Duration(minutes: 2),
-      ),
-    )
+        BaseOptions(
+          receiveDataWhenStatusError: true,
+          connectTimeout: const Duration(minutes: 2),
+          receiveTimeout: const Duration(minutes: 2),
+          sendTimeout: const Duration(minutes: 2),
+        ),
+      )
       ..interceptors.addAll([
         InterceptorsWrapper(
           onRequest: (options, handler) async {

@@ -13,7 +13,7 @@ import 'package:vinta_shared_commons/utils/index.dart';
 import '../../commons/routes/app_routes.dart';
 import '../../generated/assets.gen.dart' as app;
 import '../../services/user_authentication/service.dart';
-import '../app_page/index.dart';
+import '../app_layout/view.dart';
 import 'controller.dart';
 
 class WelcomePage extends AppPage<WelcomeController> {

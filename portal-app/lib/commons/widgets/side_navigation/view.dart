@@ -4,7 +4,7 @@ import 'package:vinta_shared_commons/components/vinta_application_license/view.d
 import 'package:vinta_shared_commons/constants/spaces.dart';
 
 import '../../../generated/assets.gen.dart';
-import '../../../services/navigation/models/navigation_item_config.dart';
+import '../../../services/navigation/models/navigation_item.dart';
 import '../../../services/navigation/service.dart';
 import '../../constants/index.dart';
 

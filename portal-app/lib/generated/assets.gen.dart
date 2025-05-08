@@ -14,32 +14,25 @@ class $AssetsIconsGen {
   const $AssetsIconsGen();
 
   /// File path: assets/icons/button_state_error.json
-  LottieGenImage get buttonStateError =>
-      const LottieGenImage('assets/icons/button_state_error.json');
+  LottieGenImage get buttonStateError => const LottieGenImage('assets/icons/button_state_error.json');
 
   /// File path: assets/icons/button_state_info.json
-  LottieGenImage get buttonStateInfo =>
-      const LottieGenImage('assets/icons/button_state_info.json');
+  LottieGenImage get buttonStateInfo => const LottieGenImage('assets/icons/button_state_info.json');
 
   /// File path: assets/icons/button_state_success.json
-  LottieGenImage get buttonStateSuccess =>
-      const LottieGenImage('assets/icons/button_state_success.json');
+  LottieGenImage get buttonStateSuccess => const LottieGenImage('assets/icons/button_state_success.json');
 
   /// File path: assets/icons/button_state_warning.json
-  LottieGenImage get buttonStateWarning =>
-      const LottieGenImage('assets/icons/button_state_warning.json');
+  LottieGenImage get buttonStateWarning => const LottieGenImage('assets/icons/button_state_warning.json');
 
   /// File path: assets/icons/lottie-ship-container.json
-  LottieGenImage get lottieShipContainer =>
-      const LottieGenImage('assets/icons/lottie-ship-container.json');
+  LottieGenImage get lottieShipContainer => const LottieGenImage('assets/icons/lottie-ship-container.json');
 
   /// File path: assets/icons/progress_loading.json
-  LottieGenImage get progressLoading =>
-      const LottieGenImage('assets/icons/progress_loading.json');
+  LottieGenImage get progressLoading => const LottieGenImage('assets/icons/progress_loading.json');
 
   /// File path: assets/icons/progress_loading_2.json
-  LottieGenImage get progressLoading2 =>
-      const LottieGenImage('assets/icons/progress_loading_2.json');
+  LottieGenImage get progressLoading2 => const LottieGenImage('assets/icons/progress_loading_2.json');
 
   /// List of all assets
   List<LottieGenImage> get values => [
@@ -77,8 +70,7 @@ class LottieGenImage {
     _lottie.LottieImageProviderFactory? imageProviderFactory,
     Key? key,
     AssetBundle? bundle,
-    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)?
-    frameBuilder,
+    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)? frameBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
     double? width,
     double? height,

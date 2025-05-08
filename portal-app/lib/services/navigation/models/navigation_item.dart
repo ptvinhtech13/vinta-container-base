@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'navigation_item_config.g.dart';
+part 'navigation_item.g.dart';
 
 @JsonSerializable()
 class NavigationItem {
