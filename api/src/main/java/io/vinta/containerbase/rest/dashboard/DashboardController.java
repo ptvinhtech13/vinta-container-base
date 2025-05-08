@@ -26,6 +26,7 @@ import io.vinta.containerbase.rest.dashboard.mapper.DashboardResponseMapper;
 import io.vinta.containerbase.rest.dashboard.request.CreateDashboardRequest;
 import io.vinta.containerbase.rest.dashboard.request.QueryDashboardPaginationRequest;
 import io.vinta.containerbase.rest.dashboard.request.UpdateDashboardRequest;
+import io.vinta.containerbase.rest.dashboard.response.DashboardAccessResponse;
 import io.vinta.containerbase.rest.dashboard.response.DashboardResponse;
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -56,7 +57,13 @@ public class DashboardController implements DashboardApi {
 	public DashboardResponse createDashboard(@Valid CreateDashboardRequest request) {
 		return DashboardResponseMapper.INSTANCE.toResponse(commandService.createDashboard(
 				DashboardRequestMapper.INSTANCE.toCreate(request)));
+	}
 
+	@Override
+	public DashboardAccessResponse generateDashboardAccess(Long dashboardId) {
+		return DashboardResponseMapper.INSTANCE.toAccessResponse(queryService.getDashboardAccess(
+				AppSecurityContextHolder.getTenantId(), MapstructCommonDomainMapper.INSTANCE.longToDashboardId(
+						dashboardId)));
 	}
 
 	@Override

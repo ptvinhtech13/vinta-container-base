@@ -17,6 +17,7 @@ import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLev
 import io.vinta.containerbase.rest.dashboard.request.CreateDashboardRequest;
 import io.vinta.containerbase.rest.dashboard.request.QueryDashboardPaginationRequest;
 import io.vinta.containerbase.rest.dashboard.request.UpdateDashboardRequest;
+import io.vinta.containerbase.rest.dashboard.response.DashboardAccessResponse;
 import io.vinta.containerbase.rest.dashboard.response.DashboardResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public interface DashboardApi {
 	@ResponseStatus(HttpStatus.CREATED)
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	DashboardResponse createDashboard(@RequestBody @Valid CreateDashboardRequest request);
+
+	@PostMapping(path = "/api/dashboard/dashboards/{dashboardId}/access")
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	@ResponseStatus(HttpStatus.OK)
+	DashboardAccessResponse generateDashboardAccess(@PathVariable("dashboardId") Long dashboardId);
 
 	@GetMapping(path = "/api/dashboard/dashboards")
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)

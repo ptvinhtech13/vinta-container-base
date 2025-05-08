@@ -9,20 +9,22 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.dashboard;
+package io.vinta.containerbase.core.dashboard.config;
 
-import io.vinta.containerbase.common.baseid.DashboardId;
-import io.vinta.containerbase.common.baseid.TenantId;
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.dashboard.entities.Dashboard;
-import io.vinta.containerbase.core.dashboard.entities.DashboardAccess;
-import io.vinta.containerbase.core.dashboard.request.FindDashboardQuery;
-import java.util.Optional;
+import java.time.Duration;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
-public interface DashboardQueryService {
-	Paging<Dashboard> queryDashboard(FindDashboardQuery query);
-
-	Optional<Dashboard> getDashboard(DashboardId dashboardId);
-
-	DashboardAccess getDashboardAccess(TenantId tenantId, DashboardId dashboardId);
+@Getter
+@Setter
+@Component
+@ConfigurationProperties(prefix = "io.vinta.containerbase.metabase")
+@RequiredArgsConstructor
+public class MetabaseConfigProperties {
+	private String hostUrl;
+	private String accessSecret;
+	private Duration accessTokenTimeToLive;
 }

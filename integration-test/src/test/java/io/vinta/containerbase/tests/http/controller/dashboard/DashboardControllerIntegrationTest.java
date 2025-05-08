@@ -16,6 +16,7 @@ import io.vinta.containerbase.rest.dashboard.request.DashboardAccessPolicyReques
 import io.vinta.containerbase.rest.dashboard.request.QueryDashboardPaginationRequest;
 import io.vinta.containerbase.rest.dashboard.request.QueryDashboardRequest;
 import io.vinta.containerbase.rest.dashboard.request.UpdateDashboardRequest;
+import io.vinta.containerbase.rest.dashboard.response.DashboardAccessResponse;
 import io.vinta.containerbase.rest.dashboard.response.DashboardResponse;
 import io.vinta.containerbase.tests.commons.BaseIntegrationTest;
 import io.vinta.containerbase.tests.commons.utils.GenerateHttpHeader;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -43,6 +45,7 @@ import org.springframework.util.LinkedMultiValueMap;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = IntegrationTestConfiguration.class)
+@Slf4j
 class DashboardControllerIntegrationTest extends BaseIntegrationTest {
 
 	@Autowired
@@ -378,6 +381,44 @@ class DashboardControllerIntegrationTest extends BaseIntegrationTest {
 				.consumeWith(response -> {
 					Assertions.assertTrue(dashboardQueryService.getDashboard(dashboard.getId())
 							.isEmpty());
+				});
+	}
+
+	@Test
+	void testGenerateDashboardAccessWhenValidRequest() {
+		// Arrange
+		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
+		final var dashboard = dashboardCommandService.createDashboard(CreateDashboardCommand.builder()
+				.name("New Dashboard 1")
+				.description("New Dashboard 1")
+				.dashboardType(DashboardType.DASHBOARD)
+				.metabaseId(2L)
+				.status(DashboardStatus.ENABLED)
+				.accessPolicy(DashboardAccessPolicy.builder()
+						.allowedTenantIds(Set.of(tenant.getId()))
+						.build())
+				.build());
+
+		// Act & Assert
+		webClient.post()
+				.uri(uriBuilder -> uriBuilder.path("/api/dashboard/dashboards/{dashboardId}/access")
+						.build(dashboard.getId()
+								.getValue()))
+				.headers(header -> HeaderGenerator.generateHttpHeaders(GenerateHttpHeader.builder()
+						.header(header)
+						.objectMapper(objectMapper)
+						.accessToken(accessTokenSupporter.loginAsSuperAdmin())
+						.requestId(1L)
+						.tenantId(TenantConstants.ADMIN_TENANT_ID)
+						.build()))
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(DashboardAccessResponse.class)
+				.consumeWith(response -> {
+					final var accessResponse = response.getResponseBody();
+					Assertions.assertNotNull(accessResponse);
+					log.info(accessResponse.getAccessDashboardUrl());
 				});
 	}
 }

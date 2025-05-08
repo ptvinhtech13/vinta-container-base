@@ -15,8 +15,10 @@ import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.dashboard.entities.Dashboard;
+import io.vinta.containerbase.core.dashboard.entities.DashboardAccess;
 import io.vinta.containerbase.core.dashboard.entities.DashboardAccessPolicy;
 import io.vinta.containerbase.rest.dashboard.response.DashboardAccessPolicyResponse;
+import io.vinta.containerbase.rest.dashboard.response.DashboardAccessResponse;
 import io.vinta.containerbase.rest.dashboard.response.DashboardResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,4 +34,6 @@ public interface DashboardResponseMapper {
 	@Mapping(target = "allowedTenantIds", source = "allowedTenantIds", qualifiedByName = "tenantIdsToStrings")
 	@Mapping(target = "allowedUserIds", source = "allowedUserIds", qualifiedByName = "userIdsToStrings")
 	DashboardAccessPolicyResponse toResponse(DashboardAccessPolicy source);
+
+	DashboardAccessResponse toAccessResponse(DashboardAccess dashboardAccess);
 }

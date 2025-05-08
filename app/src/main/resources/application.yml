@@ -169,3 +169,7 @@ io.vinta.containerbase:
     api:
       authorization:
         enabled: false
+  metabase:
+    access-secret: "275903392fcb72c57e121f110d595682ee1f0206c2a213ae11899c91e6d66581"
+    access-token-time-to-live: PT5H
+    host-url: "http://localhost:8888/embed/dashboard"

@@ -11,12 +11,20 @@
  ******************************************************************************/
 package io.vinta.containerbase.core.dashboard.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import io.vinta.containerbase.common.baseid.DashboardId;
+import io.vinta.containerbase.common.baseid.TenantId;
+import io.vinta.containerbase.common.exceptions.NotFoundException;
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.core.dashboard.DashboardQueryService;
 import io.vinta.containerbase.core.dashboard.DashboardRepository;
+import io.vinta.containerbase.core.dashboard.config.MetabaseConfigProperties;
 import io.vinta.containerbase.core.dashboard.entities.Dashboard;
+import io.vinta.containerbase.core.dashboard.entities.DashboardAccess;
 import io.vinta.containerbase.core.dashboard.request.FindDashboardQuery;
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +34,8 @@ import org.springframework.stereotype.Service;
 public class DashboardQueryServiceImpl implements DashboardQueryService {
 	private final DashboardRepository repository;
 
+	private final MetabaseConfigProperties metabaseConfigProperties;
+
 	@Override
 	public Paging<Dashboard> queryDashboard(FindDashboardQuery query) {
 		return repository.queryDashboard(query);
@@ -34,5 +44,26 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
 	@Override
 	public Optional<Dashboard> getDashboard(DashboardId dashboardId) {
 		return repository.findOneByDashboardId(dashboardId);
+	}
+
+	@Override
+	public DashboardAccess getDashboardAccess(TenantId tenantId, DashboardId dashboardId) {
+
+		final var dashboard = repository.findOneByDashboardId(dashboardId)
+				.orElseThrow(() -> new NotFoundException("Dashboard not found"));
+
+		final var livedTimeInMillis = Instant.now()
+				.plus(metabaseConfigProperties.getAccessTokenTimeToLive());
+
+		final var algorithm = Algorithm.HMAC256(metabaseConfigProperties.getAccessSecret());
+		final var token = JWT.create()
+				.withPayload(Map.of("resource", Map.of("dashboard", dashboard.getMetabaseId()), "params", Map.of(
+						"tenant_id", tenantId.getValue())))
+				.withExpiresAt(livedTimeInMillis)
+				.sign(algorithm);
+
+		return DashboardAccess.builder()
+				.accessDashboardUrl("%s/%s".formatted(metabaseConfigProperties.getHostUrl(), token))
+				.build();
 	}
 }

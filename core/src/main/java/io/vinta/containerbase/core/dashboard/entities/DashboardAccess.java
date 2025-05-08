@@ -9,20 +9,19 @@
  *  limited by the confidential information provisions of the Agreement        *
  *  referenced above.                                                          *
  ******************************************************************************/
-package io.vinta.containerbase.core.dashboard;
+package io.vinta.containerbase.core.dashboard.entities;
 
-import io.vinta.containerbase.common.baseid.DashboardId;
-import io.vinta.containerbase.common.baseid.TenantId;
-import io.vinta.containerbase.common.paging.Paging;
-import io.vinta.containerbase.core.dashboard.entities.Dashboard;
-import io.vinta.containerbase.core.dashboard.entities.DashboardAccess;
-import io.vinta.containerbase.core.dashboard.request.FindDashboardQuery;
-import java.util.Optional;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.With;
 
-public interface DashboardQueryService {
-	Paging<Dashboard> queryDashboard(FindDashboardQuery query);
-
-	Optional<Dashboard> getDashboard(DashboardId dashboardId);
-
-	DashboardAccess getDashboardAccess(TenantId tenantId, DashboardId dashboardId);
+@Getter
+@Builder
+@With
+@RequiredArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DashboardAccess {
+	private final String accessDashboardUrl;
 }
