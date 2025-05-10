@@ -14,7 +14,8 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
 
   // Add scroll controllers
   final ScrollController _verticalScrollController = ScrollController();
-  final ScrollController _horizontalScrollController = ScrollController();
+  final ScrollController _bodyHorizontalController = ScrollController();
+  final ScrollController _headerHorizontalController = ScrollController();
 
   @override
   Widget buildUI(BuildContext context) {
@@ -45,15 +46,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                               // Sticky header
                               Container(
                                 color: Colors.grey.shade100,
-                                child: Scrollbar(
-                                  thumbVisibility: true,
-                                  controller: _horizontalScrollController,
-                                  scrollbarOrientation: ScrollbarOrientation.bottom,
-                                  child: SingleChildScrollView(
-                                    controller: _horizontalScrollController,
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(children: _buildHeaderRow()),
-                                  ),
+                                child: SingleChildScrollView(
+                                  controller: _headerHorizontalController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(children: _buildHeaderRow()),
                                 ),
                               ),
                               // Table body with scrolling
@@ -67,10 +63,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                                     scrollDirection: Axis.vertical,
                                     child: Scrollbar(
                                       thumbVisibility: true,
-                                      controller: _horizontalScrollController,
+                                      controller: _bodyHorizontalController,
                                       scrollbarOrientation: ScrollbarOrientation.bottom,
                                       child: SingleChildScrollView(
-                                        controller: _horizontalScrollController,
+                                        controller: _bodyHorizontalController,
                                         scrollDirection: Axis.horizontal,
                                         child: DataTable(
                                           columns: _buildDataColumns(),
@@ -229,6 +225,7 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                 ],
               ),
               SizedBox(height: 16),
+              // Use separate controllers for this table if it's ever used
               SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: SingleChildScrollView(
@@ -426,30 +423,61 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
   }
 
   Widget _buildDataTable() {
+    // Create separate controllers for this table if it's ever used
+    final ScrollController verticalController = ScrollController();
+    final ScrollController horizontalController = ScrollController();
+
     return Container(
       width: 400,
       height: 500,
       decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(4)),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: double.infinity),
-            child: DataTable(
-              columns: _buildDataColumns(),
-              rows: _buildDataRows(),
-              columnSpacing: 20,
-              headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-              dataRowMinHeight: 48,
-              dataRowMaxHeight: 64,
-              sortColumnIndex: controller.state.sortColumnIndex.value,
-              sortAscending: controller.state.sortAscending.value,
-              headingRowHeight: 56,
-              border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
+      child: Column(
+        children: [
+          // Sticky header
+          Container(
+            color: Colors.grey.shade100,
+            child: SingleChildScrollView(
+              controller: horizontalController,
+              scrollDirection: Axis.horizontal,
+              child: Row(children: _buildHeaderRow()),
             ),
           ),
-        ),
+          // Table body
+          Expanded(
+            child: Scrollbar(
+              thumbVisibility: true,
+              controller: verticalController,
+              child: SingleChildScrollView(
+                controller: verticalController,
+                scrollDirection: Axis.vertical,
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  controller: horizontalController,
+                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                  child: SingleChildScrollView(
+                    controller: horizontalController,
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: _buildDataColumns(),
+                      rows: _buildDataRows(),
+                      columnSpacing: 20,
+                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                      dataRowMinHeight: 48,
+                      dataRowMaxHeight: 64,
+                      sortColumnIndex: controller.state.sortColumnIndex.value,
+                      sortAscending: controller.state.sortAscending.value,
+                      headingRowHeight: 0, // Hide the original header
+                      border: TableBorder(
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        horizontalInside: BorderSide(color: Colors.grey.shade200),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
