@@ -40,7 +40,7 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                       height: 50,
                       child: showNavigationSideBar ? Container(color: Colors.amber, child: Text("data")) : const SizedBox.shrink(),
                     ),
-                    Positioned(top: 50, left: 0, right: 0, child: buildUI(context)),
+                    Positioned(top: 50, left: 0, right: 0, bottom: 0, child: buildUI(context)),
                   ],
                 ),
               ),

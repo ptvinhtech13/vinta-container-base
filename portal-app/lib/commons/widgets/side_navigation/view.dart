@@ -32,7 +32,7 @@ class SideNavigationDrawer extends GetView {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildDrawerHeader(),
+          // _buildDrawerHeader(),
           Expanded(
             child: Obx(
               () => ListView.builder(
