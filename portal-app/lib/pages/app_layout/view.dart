@@ -29,7 +29,7 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
         children: [
           Row(
             children: [
-              showNavigationSideBar ? SizedBox(width: 250, height: double.infinity, child: SideNavigationDrawer()) : const SizedBox.shrink(),
+              showNavigationSideBar ? SizedBox(width: 280, height: double.infinity, child: SideNavigationDrawer()) : const SizedBox.shrink(),
               Expanded(
                 child: Stack(
                   children: [

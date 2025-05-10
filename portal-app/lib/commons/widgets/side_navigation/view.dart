@@ -17,7 +17,17 @@ class SideNavigationDrawer extends GetView {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.colorPrimary11,
+      decoration: BoxDecoration(
+        color: AppColors.colorPrimary11,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: const Offset(2, 0), // Shadow positioned to the right
+          ),
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -47,8 +57,8 @@ class SideNavigationDrawer extends GetView {
   Widget _buildDrawerHeader() {
     return DrawerHeader(
       padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-      decoration: const BoxDecoration(color: AppColors.colorPrimary01),
-      child: Center(child: Assets.icons.progressLoading.lottie(height: 70, width: 70, repeat: true)),
+      // decoration: const BoxDecoration(color: AppColors.colorPrimary01),
+      child: Center(child: Assets.icons.lottieShipContainer.lottie(height: 120, width: 120, repeat: true)),
     );
   }
 }
