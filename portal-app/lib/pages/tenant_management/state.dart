@@ -18,6 +18,10 @@ class TenantManagementPageState {
   final pageSizeOptions = [10, 100, 500];
   final totalPages = 1.obs;
 
+  // Sorting states
+  final sortColumnIndex = Rx<int?>(null);
+  final sortAscending = true.obs;
+
   // Available statuses for filter
   final availableStatuses = ['ACTIVE', 'CREATED', 'IN-ACTIVE'];
 }

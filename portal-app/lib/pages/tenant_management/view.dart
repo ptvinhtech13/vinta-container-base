@@ -40,31 +40,60 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                       Expanded(
                         child: Align(
                           alignment: Alignment.topLeft,
-                          child: Scrollbar(
-                            thumbVisibility: true,
-                            controller: _verticalScrollController,
-                            child: SingleChildScrollView(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              controller: _verticalScrollController,
-                              scrollDirection: Axis.vertical,
-                              child: Scrollbar(
-                                thumbVisibility: true,
-                                controller: _horizontalScrollController,
-                                scrollbarOrientation: ScrollbarOrientation.bottom,
-                                child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              // Sticky header
+                              Container(
+                                color: Colors.grey.shade100,
+                                child: Scrollbar(
+                                  thumbVisibility: true,
                                   controller: _horizontalScrollController,
-                                  scrollDirection: Axis.horizontal,
-                                  child: DataTable(
-                                    columns: _buildDataColumns(),
-                                    rows: _buildDataRows(),
-                                    columnSpacing: 20,
-                                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                                    dataRowMinHeight: 48,
-                                    dataRowMaxHeight: 64,
+                                  scrollbarOrientation: ScrollbarOrientation.bottom,
+                                  child: SingleChildScrollView(
+                                    controller: _horizontalScrollController,
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(children: _buildHeaderRow()),
                                   ),
                                 ),
                               ),
-                            ),
+                              // Table body with scrolling
+                              Expanded(
+                                child: Scrollbar(
+                                  thumbVisibility: true,
+                                  controller: _verticalScrollController,
+                                  child: SingleChildScrollView(
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    controller: _verticalScrollController,
+                                    scrollDirection: Axis.vertical,
+                                    child: Scrollbar(
+                                      thumbVisibility: true,
+                                      controller: _horizontalScrollController,
+                                      scrollbarOrientation: ScrollbarOrientation.bottom,
+                                      child: SingleChildScrollView(
+                                        controller: _horizontalScrollController,
+                                        scrollDirection: Axis.horizontal,
+                                        child: DataTable(
+                                          columns: _buildDataColumns(),
+                                          rows: _buildDataRows(),
+                                          columnSpacing: 20,
+                                          headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                                          dataRowMinHeight: 48,
+                                          dataRowMaxHeight: 64,
+                                          sortColumnIndex: controller.state.sortColumnIndex.value,
+                                          sortAscending: controller.state.sortAscending.value,
+                                          headingRowHeight: 0,
+                                          // Hide the original header
+                                          border: TableBorder(
+                                            bottom: BorderSide(color: Colors.grey.shade300),
+                                            horizontalInside: BorderSide(color: Colors.grey.shade200),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -211,6 +240,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
                     dataRowMinHeight: 48,
                     dataRowMaxHeight: 64,
+                    sortColumnIndex: controller.state.sortColumnIndex.value,
+                    sortAscending: controller.state.sortAscending.value,
+                    headingRowHeight: 56,
+                    border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
                   ),
                 ),
               ),
@@ -410,6 +443,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
               headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
               dataRowMinHeight: 48,
               dataRowMaxHeight: 64,
+              sortColumnIndex: controller.state.sortColumnIndex.value,
+              sortAscending: controller.state.sortAscending.value,
+              headingRowHeight: 56,
+              border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
             ),
           ),
         ),
@@ -419,53 +456,146 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
 
   List<DataColumn> _buildDataColumns() {
     final List<DataColumn> columns = [];
+    int columnIndex = 0;
 
     // Always visible columns
     if (controller.isColumnVisible('tenantId')) {
-      columns.add(DataColumn(label: Text('Tenant ID', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Tenant ID', 'tenantId', columnIndex++));
     }
 
     if (controller.isColumnVisible('tenantName')) {
-      columns.add(DataColumn(label: Text('Tenant Name', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Tenant Name', 'tenantName', columnIndex++));
     }
 
     if (controller.isColumnVisible('createdAt')) {
-      columns.add(DataColumn(label: Text('Created At', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Created At', 'createdAt', columnIndex++));
     }
 
     // Optional columns
     if (controller.isColumnVisible('creator')) {
-      columns.add(DataColumn(label: Text('Creator', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Creator', 'creator', columnIndex++));
     }
 
     if (controller.isColumnVisible('domainUrl')) {
-      columns.add(DataColumn(label: Text('Domain URL', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Domain URL', 'domainUrl', columnIndex++));
     }
 
     if (controller.isColumnVisible('description')) {
-      columns.add(DataColumn(label: Text('Description', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Description', 'description', columnIndex++));
     }
 
     if (controller.isColumnVisible('contactEmail')) {
-      columns.add(DataColumn(label: Text('Contact Email', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Contact Email', 'contactEmail', columnIndex++));
     }
 
     if (controller.isColumnVisible('contactPhone')) {
-      columns.add(DataColumn(label: Text('Contact Phone', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Contact Phone', 'contactPhone', columnIndex++));
     }
 
     if (controller.isColumnVisible('industry')) {
-      columns.add(DataColumn(label: Text('Industry', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Industry', 'industry', columnIndex++));
     }
 
     if (controller.isColumnVisible('subscriptionType')) {
-      columns.add(DataColumn(label: Text('Subscription Type', style: TextStyle(fontWeight: FontWeight.bold))));
+      columns.add(_buildSortableColumn('Subscription Type', 'subscriptionType', columnIndex++));
     }
 
     // Status column
-    columns.add(DataColumn(label: Text('Status', style: TextStyle(fontWeight: FontWeight.bold))));
+    columns.add(_buildSortableColumn('Status', 'status', columnIndex++));
 
     return columns;
+  }
+
+  DataColumn _buildSortableColumn(String label, String columnName, int index) {
+    return DataColumn(
+      label: Container(padding: EdgeInsets.symmetric(vertical: 8.0), child: Text(label, style: TextStyle(fontWeight: FontWeight.bold))),
+      onSort: (columnIndex, ascending) {
+        controller.sortByColumn(columnIndex, ascending);
+      },
+    );
+  }
+
+  List<Widget> _buildHeaderRow() {
+    final List<Widget> headerCells = [];
+    int columnIndex = 0;
+    final double columnSpacing = 20;
+    final double cellPadding = 16;
+
+    // Function to create a header cell
+    Widget createHeaderCell(String label, String columnName, int index) {
+      final bool isCurrentSortColumn = controller.state.sortColumnIndex.value == index;
+      final bool isAscending = controller.state.sortAscending.value;
+
+      return InkWell(
+        onTap: () {
+          if (isCurrentSortColumn) {
+            controller.sortByColumn(index, !isAscending);
+          } else {
+            controller.sortByColumn(index, true);
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: cellPadding, vertical: 16),
+          decoration: BoxDecoration(
+            border: Border(right: BorderSide(color: Colors.grey.shade300, width: 1), bottom: BorderSide(color: Colors.grey.shade300, width: 1)),
+          ),
+          child: Row(
+            children: [
+              Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+              SizedBox(width: 4),
+              if (isCurrentSortColumn) Icon(isAscending ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: Colors.grey.shade700),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Always visible columns
+    if (controller.isColumnVisible('tenantId')) {
+      headerCells.add(createHeaderCell('Tenant ID', 'tenantId', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('tenantName')) {
+      headerCells.add(createHeaderCell('Tenant Name', 'tenantName', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('createdAt')) {
+      headerCells.add(createHeaderCell('Created At', 'createdAt', columnIndex++));
+    }
+
+    // Optional columns
+    if (controller.isColumnVisible('creator')) {
+      headerCells.add(createHeaderCell('Creator', 'creator', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('domainUrl')) {
+      headerCells.add(createHeaderCell('Domain URL', 'domainUrl', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('description')) {
+      headerCells.add(createHeaderCell('Description', 'description', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('contactEmail')) {
+      headerCells.add(createHeaderCell('Contact Email', 'contactEmail', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('contactPhone')) {
+      headerCells.add(createHeaderCell('Contact Phone', 'contactPhone', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('industry')) {
+      headerCells.add(createHeaderCell('Industry', 'industry', columnIndex++));
+    }
+
+    if (controller.isColumnVisible('subscriptionType')) {
+      headerCells.add(createHeaderCell('Subscription Type', 'subscriptionType', columnIndex++));
+    }
+
+    // Status column
+    headerCells.add(createHeaderCell('Status', 'status', columnIndex++));
+
+    return headerCells;
   }
 
   List<DataRow> _buildDataRows() {
