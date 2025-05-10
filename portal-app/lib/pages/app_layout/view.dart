@@ -25,47 +25,47 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.colorPrimary11,
-      body: Stack(
+      body: Column(
         children: [
-          Row(
+          showNavigationSideBar ? Row(
             children: [
-              showNavigationSideBar ? SizedBox(width: 280, height: double.infinity, child: SideNavigationDrawer()) : const SizedBox.shrink(),
-              Expanded(
-                child: Stack(
+              Container(height: 50, width: 1.sw, color: Colors.amber, child: Text("AppBar")),
+            ],
+          ) : const SizedBox.shrink(),
+          Expanded(
+            child: Stack(
+              children: [
+                Row(
                   children: [
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: 50,
-                      child: showNavigationSideBar ? Container(color: Colors.amber, child: Text("data")) : const SizedBox.shrink(),
+                    showNavigationSideBar ? SizedBox(width: 280, height: double.infinity, child: SideNavigationDrawer()) : const SizedBox.shrink(),
+                    Expanded(
+                      child: buildUI(context),
                     ),
-                    Positioned(top: 50, left: 0, right: 0, bottom: 0, child: buildUI(context)),
                   ],
                 ),
-              ),
-            ],
+                Obx(() {
+                  return appPageController.state.isShowLoadingCounter.value > 0
+                      ? Visibility(
+                        visible: true,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: backgroundWhiteColor ?? Colors.white54,
+                            borderRadius: const BorderRadius.all(Radius.circular(0)),
+                          ),
+                          child: Center(
+                            child: VintaLoadingProgress(
+                              height: 130,
+                              width: 130,
+                              loadingWidget: Assets.icons.lottieShipContainer.lottie(height: 130, width: 130, repeat: true),
+                            ),
+                          ),
+                        ),
+                      )
+                      : const SizedBox.shrink();
+                }),
+              ],
+            ),
           ),
-          Obx(() {
-            return appPageController.state.isShowLoadingCounter.value > 0
-                ? Visibility(
-                  visible: true,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: backgroundWhiteColor ?? Colors.white54,
-                      borderRadius: const BorderRadius.all(Radius.circular(0)),
-                    ),
-                    child: Center(
-                      child: VintaLoadingProgress(
-                        height: 130,
-                        width: 130,
-                        loadingWidget: Assets.icons.lottieShipContainer.lottie(height: 130, width: 130, repeat: true),
-                      ),
-                    ),
-                  ),
-                )
-                : const SizedBox.shrink();
-          }),
         ],
       ),
     );
