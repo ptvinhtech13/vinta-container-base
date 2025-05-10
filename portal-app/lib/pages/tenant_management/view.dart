@@ -12,6 +12,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
     TenantManagementPageBindings().dependencies();
   }
 
+  // Add scroll controllers
+  final ScrollController _verticalScrollController = ScrollController();
+  final ScrollController _horizontalScrollController = ScrollController();
+
   @override
   Widget buildUI(BuildContext context) {
     return Padding(
@@ -35,19 +39,30 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     children: [
                       Expanded(
                         child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: SingleChildScrollView(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
+                          alignment: Alignment.topLeft,
+                          child: Scrollbar(
+                            thumbVisibility: true,
+                            controller: _verticalScrollController,
                             child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: DataTable(
-                                columns: _buildDataColumns(),
-                                rows: _buildDataRows(),
-                                columnSpacing: 20,
-                                headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                                dataRowMinHeight: 48,
-                                dataRowMaxHeight: 64,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              controller: _verticalScrollController,
+                              scrollDirection: Axis.vertical,
+                              child: Scrollbar(
+                                thumbVisibility: true,
+                                controller: _horizontalScrollController,
+                                scrollbarOrientation: ScrollbarOrientation.bottom,
+                                child: SingleChildScrollView(
+                                  controller: _horizontalScrollController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: DataTable(
+                                    columns: _buildDataColumns(),
+                                    rows: _buildDataRows(),
+                                    columnSpacing: 20,
+                                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                                    dataRowMinHeight: 48,
+                                    dataRowMaxHeight: 64,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
