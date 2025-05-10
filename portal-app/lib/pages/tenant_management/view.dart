@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:vinta_shared_commons/constants/spaces.dart';
 
 import '../../commons/constants/colors.dart';
+import '../../commons/widgets/content_layout/view.dart';
+import '../../services/navigation/constants.dart';
 import '../app_layout/view.dart';
 import 'bindings.dart';
 import 'controller.dart';
@@ -19,110 +21,87 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
 
   @override
   Widget buildUI(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildPageHeader(),
-          AppSpaces.spaceH16,
-          _buildBreadcrumbs(),
-          AppSpaces.spaceH16,
-          _buildFilterPanel(),
-          AppSpaces.spaceH16,
-          Expanded(
-            child: Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () => Column(
-                    children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Column(
-                            children: [
-                              // Sticky header
-                              Container(
-                                color: Colors.grey.shade100,
-                                child: SingleChildScrollView(
-                                  controller: _headerHorizontalController,
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(children: _buildHeaderRow()),
-                                ),
+    return ContentLayout(
+      title: 'Tenant Management',
+      breadcrumbPaths: [AppNavigationItemConfig.home, AppNavigationItemConfig.tenantManagement, AppNavigationItemConfig.userManagement],
+      content: [
+        _buildFilterPanel(),
+        AppSpaces.spaceH16,
+        Expanded(
+          child: Card(
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Obx(
+                () => Column(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                          children: [
+                            // Sticky header
+                            Container(
+                              color: Colors.grey.shade100,
+                              child: SingleChildScrollView(
+                                controller: _headerHorizontalController,
+                                scrollDirection: Axis.horizontal,
+                                child: Row(children: _buildHeaderRow()),
                               ),
-                              // Table body with scrolling
-                              Expanded(
-                                child: Scrollbar(
-                                  thumbVisibility: true,
+                            ),
+                            // Table body with scrolling
+                            Expanded(
+                              child: Scrollbar(
+                                thumbVisibility: true,
+                                controller: _verticalScrollController,
+                                child: SingleChildScrollView(
+                                  physics: AlwaysScrollableScrollPhysics(),
                                   controller: _verticalScrollController,
-                                  child: SingleChildScrollView(
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    controller: _verticalScrollController,
-                                    scrollDirection: Axis.vertical,
-                                    child: Scrollbar(
-                                      thumbVisibility: true,
+                                  scrollDirection: Axis.vertical,
+                                  child: Scrollbar(
+                                    thumbVisibility: true,
+                                    controller: _bodyHorizontalController,
+                                    scrollbarOrientation: ScrollbarOrientation.bottom,
+                                    child: SingleChildScrollView(
                                       controller: _bodyHorizontalController,
-                                      scrollbarOrientation: ScrollbarOrientation.bottom,
-                                      child: SingleChildScrollView(
-                                        controller: _bodyHorizontalController,
-                                        scrollDirection: Axis.horizontal,
-                                        child: DataTable(
-                                          columns: _buildDataColumns(),
-                                          rows: _buildDataRows(),
-                                          columnSpacing: 20,
-                                          headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                                          dataRowMinHeight: 48,
-                                          dataRowMaxHeight: 64,
-                                          sortColumnIndex: controller.state.sortColumnIndex.value,
-                                          sortAscending: controller.state.sortAscending.value,
-                                          headingRowHeight: 0,
-                                          // Hide the original header
-                                          border: TableBorder(
-                                            bottom: BorderSide(color: Colors.grey.shade300),
-                                            horizontalInside: BorderSide(color: Colors.grey.shade200),
-                                          ),
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                        columns: _buildDataColumns(),
+                                        rows: _buildDataRows(),
+                                        columnSpacing: 20,
+                                        headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                                        dataRowMinHeight: 48,
+                                        dataRowMaxHeight: 64,
+                                        sortColumnIndex: controller.state.sortColumnIndex.value,
+                                        sortAscending: controller.state.sortAscending.value,
+                                        headingRowHeight: 0,
+                                        // Hide the original header
+                                        border: TableBorder(
+                                          bottom: BorderSide(color: Colors.grey.shade300),
+                                          horizontalInside: BorderSide(color: Colors.grey.shade200),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(children: [_buildPaginationControls(), SizedBox(width: 16), _buildColumnOptionsMenu()]),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Row(children: [_buildPaginationControls(), SizedBox(width: 16), _buildColumnOptionsMenu()]),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPageHeader() {
-    return Text('Tenant Management', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.colorPrimary01));
-  }
-
-  Widget _buildBreadcrumbs() {
-    return Row(
-      children: [
-        InkWell(
-          onTap: () => Get.toNamed('/home'),
-          child: Text('Home', style: TextStyle(color: AppColors.colorPrimary01, fontWeight: FontWeight.w500)),
         ),
-        Padding(padding: EdgeInsets.symmetric(horizontal: 8.0), child: Icon(Icons.chevron_right, size: 16, color: Colors.grey)),
-        Text('Tenant Management', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -436,11 +415,7 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
           // Sticky header
           Container(
             color: Colors.grey.shade100,
-            child: SingleChildScrollView(
-              controller: horizontalController,
-              scrollDirection: Axis.horizontal,
-              child: Row(children: _buildHeaderRow()),
-            ),
+            child: SingleChildScrollView(controller: horizontalController, scrollDirection: Axis.horizontal, child: Row(children: _buildHeaderRow())),
           ),
           // Table body
           Expanded(
@@ -466,11 +441,9 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                       dataRowMaxHeight: 64,
                       sortColumnIndex: controller.state.sortColumnIndex.value,
                       sortAscending: controller.state.sortAscending.value,
-                      headingRowHeight: 0, // Hide the original header
-                      border: TableBorder(
-                        bottom: BorderSide(color: Colors.grey.shade300),
-                        horizontalInside: BorderSide(color: Colors.grey.shade200),
-                      ),
+                      headingRowHeight: 0,
+                      // Hide the original header
+                      border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
                     ),
                   ),
                 ),

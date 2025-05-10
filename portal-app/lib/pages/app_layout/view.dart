@@ -39,15 +39,17 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
               children: [
                 Row(
                   children: [
-                    showNavigationSideBar ? Obx(() => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      width: isSideNavOpen.value ? 280 : 0,
-                      height: double.infinity,
-                      child: isSideNavOpen.value ? SideNavigationDrawer() : const SizedBox.shrink(),
-                    )) : const SizedBox.shrink(),
-                    Expanded(
-                      child: buildUI(context),
-                    ),
+                    showNavigationSideBar
+                        ? Obx(
+                          () => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: isSideNavOpen.value ? 280 : 0,
+                            height: double.infinity,
+                            child: isSideNavOpen.value ? SideNavigationDrawer() : const SizedBox.shrink(),
+                          ),
+                        )
+                        : const SizedBox.shrink(),
+                    Expanded(child: buildUI(context)),
                   ],
                 ),
                 Obx(() {
@@ -83,58 +85,49 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
   Widget _buildAppBar() {
     return Container(
       height: 60,
-      width: 1.sw,
       color: AppColors.colorPrimary01,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              // Toggle button for side navigation
-              if (showNavigationSideBar)
+      child: Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                // Toggle button for side navigation
+                if (showNavigationSideBar)
+                  IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
+                if (showNavigationSideBar) const SizedBox(width: 16),
+                // ContainerBase logo
+                TextButton(
+                  onPressed: () => Get.offAllNamed('/home'),
+                  style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
+                  child: Row(
+                    children: [
+                      Assets.icons.appLogo.image(height: 30, width: 30),
+                      const SizedBox(width: 8),
+                      const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                // Notification button
                 IconButton(
-                  icon: const Icon(Icons.menu, color: Colors.white),
-                  onPressed: toggleSideNav,
-                  tooltip: 'Toggle navigation',
+                  icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+                  onPressed: () {
+                    // Handle notification button press
+                  },
+                  tooltip: 'Notifications',
                 ),
-              if (showNavigationSideBar)
-                const SizedBox(width: 16),
-              // ContainerBase logo
-              TextButton(
-                onPressed: () => Get.offAllNamed('/home'),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-                child: Row(
-                  children: [
-                    Assets.icons.appLogo.image(height: 30, width: 30),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'ContainerBase',
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              // Notification button
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                onPressed: () {
-                  // Handle notification button press
-                },
-                tooltip: 'Notifications',
-              ),
-              const SizedBox(width: 8),
-              // User profile avatar with dropdown
-              _buildUserProfileDropdown(),
-            ],
-          ),
-        ],
+                const SizedBox(width: 8),
+                // User profile avatar with dropdown
+                _buildUserProfileDropdown(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -150,76 +143,69 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: [
-            const CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 16,
-              child: Icon(Icons.person, color: AppColors.colorPrimary01),
-            ),
+            const CircleAvatar(backgroundColor: Colors.white, radius: 16, child: Icon(Icons.person, color: AppColors.colorPrimary01)),
             const SizedBox(width: 8),
             const Icon(Icons.arrow_drop_down, color: Colors.white),
           ],
         ),
       ),
-      itemBuilder: (context) => [
-        // User info header
-        PopupMenuItem<String>(
-          enabled: false,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          height: 150,
-          child: SizedBox(
-            width: 220,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Row(
+      itemBuilder:
+          (context) => [
+            // User info header
+            PopupMenuItem<String>(
+              enabled: false,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              height: 150,
+              child: SizedBox(
+                width: 220,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.colorPrimary01,
-                      radius: 24,
-                      child: Icon(Icons.person, color: Colors.white, size: 32),
+                    const Row(
+                      children: [
+                        CircleAvatar(backgroundColor: AppColors.colorPrimary01, radius: 24, child: Icon(Icons.person, color: Colors.white, size: 32)),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('John Doe', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              Text('Administrator', style: TextStyle(color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('John Doe', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          Text('Administrator', style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    ),
+                    const SizedBox(height: 12),
+                    const Text('Account ID: ACC123456', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    const Text('john.doe@example.com', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    const SizedBox(height: 8),
+                    const Divider(),
                   ],
                 ),
-                const SizedBox(height: 12),
-                const Text('Account ID: ACC123456', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                const Text('john.doe@example.com', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                const SizedBox(height: 8),
-                const Divider(),
-              ],
+              ),
             ),
-          ),
-        ),
-        // Logout option
-        PopupMenuItem<String>(
-          value: 'logout',
-          height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-          child: Row(
-            children: [
-              const Icon(Icons.logout, color: AppColors.colorError03),
-              const SizedBox(width: 8),
-              const Text('Logout', style: TextStyle(color: AppColors.colorError03)),
-            ],
-          ),
-          onTap: () {
-            // Add a small delay to allow the popup to close before logging out
-            Future.delayed(const Duration(milliseconds: 100), () {
-              userAuthService.logout();
-            });
-          },
-        ),
-      ],
+            // Logout option
+            PopupMenuItem<String>(
+              value: 'logout',
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+              child: Row(
+                children: [
+                  const Icon(Icons.logout, color: AppColors.colorError03),
+                  const SizedBox(width: 8),
+                  const Text('Logout', style: TextStyle(color: AppColors.colorError03)),
+                ],
+              ),
+              onTap: () {
+                // Add a small delay to allow the popup to close before logging out
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  userAuthService.logout();
+                });
+              },
+            ),
+          ],
     );
   }
 }

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../commons/routes/app_routes.dart';
+import 'constants.dart';
 import 'models/navigation_item.dart';
 import 'state.dart';
 
@@ -12,25 +11,13 @@ class NavigationItemService extends GetxService {
   Future<List<NavigationItem>> loadNavigationItem() {
     return Future.delayed(const Duration(seconds: 1), () {
       return <NavigationItem>[
-        NavigationItem("Home", displayOrder: 0, route: AppRoutes.home, iconCode: Icons.home.codePoint),
-        NavigationItem("Tenant Management", displayOrder: 1, route: AppRoutes.tenantManagement, iconCode: Icons.business.codePoint),
-        NavigationItem(
-          "User Management",
-          displayOrder: 2,
-          route: AppRoutes.userManagement,
-          iconCode: Icons.contacts.codePoint,
-          children: [
-            NavigationItem("Users", displayOrder: 1, route: AppRoutes.userManagementUsers, iconCode: Icons.supervisor_account.codePoint),
-            NavigationItem("Groups", displayOrder: 2, route: AppRoutes.userManagementGroups, iconCode: Icons.groups.codePoint),
-          ],
-        ),
-        NavigationItem("Role & Permissions", displayOrder: 3, route: AppRoutes.rolePermissions, iconCode: Icons.security.codePoint),
-        NavigationItem("Quotations"),
-        NavigationItem(
-          "Dashboard & Reports",
-          children: [NavigationItem("Demo Metabase", route: AppRoutes.demoMetabase), NavigationItem("Dashboards"), NavigationItem("Reports")],
-        ),
-        NavigationItem("Settings"),
+        AppNavigationItemConfig.home,
+        AppNavigationItemConfig.tenantManagement,
+        AppNavigationItemConfig.rolePermissions,
+        AppNavigationItemConfig.userManagementGroups,
+        AppNavigationItemConfig.quotations,
+        AppNavigationItemConfig.dashboardReports,
+        AppNavigationItemConfig.settings,
       ];
     }).then((configs) {
       state.userNavigationItems.clear();
