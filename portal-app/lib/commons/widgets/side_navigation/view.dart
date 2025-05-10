@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vinta_shared_commons/components/vinta_application_license/view.dart';
@@ -82,8 +83,8 @@ class SideNavigationItemView extends GetView {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Material(
           color: AppColors.colorPrimary11,
@@ -101,28 +102,30 @@ class SideNavigationItemView extends GetView {
                       isExpanded.value = !isExpanded.value;
                     },
             onLongPress: () {},
-            child: Container(
-              height: 50,
-              decoration: borderRadius != null ? BoxDecoration(borderRadius: BorderRadius.circular(borderRadius!)) : null,
-              padding: isChild ? const EdgeInsets.only(left: 20) : const EdgeInsets.only(left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(padding: const EdgeInsets.only(right: 20), child: Icon(IconData(navItemConfig.iconCode!, fontFamily: "MaterialIcons"))),
-                  Expanded(
-                    child: Text(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Container(
+                width: double.infinity,
+                decoration: borderRadius != null ? BoxDecoration(borderRadius: BorderRadius.circular(borderRadius!)) : null,
+                padding: isChild ? const EdgeInsets.only(left: 20) : const EdgeInsets.only(left: 10),
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    Padding(padding: const EdgeInsets.only(right: 20), child: Icon(IconData(navItemConfig.iconCode!, fontFamily: "MaterialIcons"))),
+                    AutoSizeText(
                       navItemConfig.title.tr,
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: AppColors.colorPrimary06B),
                     ),
-                  ),
-                  if (!isSingle)
-                    Obx(
-                      () => Transform.rotate(
-                        angle: isExpanded.isTrue ? angleToRad(90) : 0,
-                        child: const Padding(padding: EdgeInsets.only(right: 5), child: Icon(Icons.chevron_right)),
+                    if (!isSingle)
+                      Obx(
+                            () => Transform.rotate(
+                          angle: isExpanded.isTrue ? angleToRad(90) : 0,
+                          child: const Padding(padding: EdgeInsets.only(right: 5), child: Icon(Icons.chevron_right)),
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
