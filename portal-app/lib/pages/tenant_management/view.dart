@@ -1,9 +1,13 @@
+import 'package:collection/collection.dart';
+import 'package:containerbase/pages/tenant_management/state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vinta_shared_commons/constants/spaces.dart';
 
 import '../../commons/constants/colors.dart';
 import '../../commons/widgets/content_layout/view.dart';
+import '../../commons/widgets/vinta_paging_datatable/models.dart';
+import '../../commons/widgets/vinta_paging_datatable/view.dart';
 import '../../services/navigation/constants.dart';
 import '../app_layout/view.dart';
 import 'bindings.dart';
@@ -33,70 +37,69 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Obx(
-                () => Column(
-                  children: [
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Column(
-                          children: [
-                            // Sticky header
-                            Container(
-                              color: Colors.grey.shade100,
-                              child: SingleChildScrollView(
-                                controller: _headerHorizontalController,
-                                scrollDirection: Axis.horizontal,
-                                child: Row(children: _buildHeaderRow()),
-                              ),
-                            ),
-                            // Table body with scrolling
-                            Expanded(
-                              child: Scrollbar(
-                                thumbVisibility: true,
-                                controller: _verticalScrollController,
-                                child: SingleChildScrollView(
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  controller: _verticalScrollController,
-                                  scrollDirection: Axis.vertical,
-                                  child: Scrollbar(
-                                    thumbVisibility: true,
-                                    controller: _bodyHorizontalController,
-                                    scrollbarOrientation: ScrollbarOrientation.bottom,
-                                    child: SingleChildScrollView(
-                                      controller: _bodyHorizontalController,
-                                      scrollDirection: Axis.horizontal,
-                                      child: DataTable(
-                                        columns: _buildDataColumns(),
-                                        rows: _buildDataRows(),
-                                        columnSpacing: 20,
-                                        headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                                        dataRowMinHeight: 48,
-                                        dataRowMaxHeight: 64,
-                                        sortColumnIndex: controller.state.sortColumnIndex.value,
-                                        sortAscending: controller.state.sortAscending.value,
-                                        headingRowHeight: 0,
-                                        // Hide the original header
-                                        border: TableBorder(
-                                          bottom: BorderSide(color: Colors.grey.shade300),
-                                          horizontalInside: BorderSide(color: Colors.grey.shade200),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(children: [_buildPaginationControls(), SizedBox(width: 16), _buildColumnOptionsMenu()]),
-                      ],
-                    ),
+                () => VintaPagingDataTable<TenantModel>(
+                  verticalScrollController: _verticalScrollController,
+                  bodyHorizontalScrollController: _bodyHorizontalController,
+                  headerHorizontalScrollController: _headerHorizontalController,
+                  dataFilter: controller.state.tenantFilter.value,
+                  // dataSorter: controller.state.tenantFilter,
+                  columnSettings: [
+                    DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'tenantId', isVisible: true, isSortable: true),
+                    DataColumnSetting(index: 1, label: 'Tenant Name', columnKey: 'tenantName'),
+                    DataColumnSetting(index: 2, label: 'Created At', columnKey: 'createdAt'),
+                    DataColumnSetting(index: 3, label: 'Creator', columnKey: 'creator'),
+                    DataColumnSetting(index: 4, label: 'Domain URL', columnKey: 'domainUrl'),
+                    DataColumnSetting(index: 5, label: 'Description', columnKey: 'description'),
+                    DataColumnSetting(index: 6, label: 'Contact Email', columnKey: 'contactEmail'),
+                    DataColumnSetting(index: 7, label: 'Contact Phone', columnKey: 'contactPhone'),
+                    DataColumnSetting(index: 8, label: 'Industry', columnKey: 'industry'),
+                    DataColumnSetting(index: 9, label: 'Subscription Type', columnKey: 'subscriptionType'),
+                    DataColumnSetting(index: 10, label: 'Status', columnKey: 'status'),
                   ],
+                  dataRowBuilder: (tenant, columnSettings) {
+                    final cells =
+                        columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((column) {
+                          switch (column.columnKey) {
+                            case 'tenantId':
+                              return DataCell(Text(tenant.tenantId));
+                            case 'tenantName':
+                              return DataCell(Text(tenant.tenantName));
+                            case 'createdAt':
+                              return DataCell(Text(controller.formatDate(tenant.createdAt)));
+                            case 'creator':
+                              return DataCell(Text(tenant.creator));
+                            case 'domainUrl':
+                              return DataCell(Text(tenant.domainUrl));
+                            case 'description':
+                              return DataCell(Text(tenant.description));
+                            case 'contactEmail':
+                              return DataCell(Text(tenant.contactEmail));
+                            case 'contactPhone':
+                              return DataCell(Text(tenant.contactPhone));
+                            case 'industry':
+                              return DataCell(Text(tenant.industry));
+                            case 'subscriptionType':
+                              return DataCell(Text(tenant.subscriptionType));
+                            case 'status':
+                              return DataCell(_buildStatusChip(tenant.status));
+                            default:
+                              return DataCell(Text('-'));
+                          }
+                        }).toList();
+
+                    return DataRow(cells: cells);
+                  },
+                  dataLoader: (filterRequest, pageRequest) {
+                    return Future.delayed(
+                      Duration(milliseconds: 500),
+                      () => PagingResponse(
+                        content: controller.state.paginatedTenants,
+                        page: 0,
+                        totalElements: controller.state.tenants.length,
+                        totalPages: controller.state.totalPages.value,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -182,49 +185,6 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                 ),
               ),
           ],
-        ),
-      );
-    });
-  }
-
-  Widget _buildTenantTable() {
-    return Obx(() {
-      return Card(
-        elevation: 2,
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Tenants (${controller.state.filteredTenants.length})', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  Row(children: [_buildPaginationControls(), SizedBox(width: 16), _buildColumnOptionsMenu()]),
-                ],
-              ),
-              SizedBox(height: 16),
-              // Use separate controllers for this table if it's ever used
-              SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: _buildDataColumns(),
-                    rows: _buildDataRows(),
-                    columnSpacing: 20,
-                    headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                    dataRowMinHeight: 48,
-                    dataRowMaxHeight: 64,
-                    sortColumnIndex: controller.state.sortColumnIndex.value,
-                    sortAscending: controller.state.sortAscending.value,
-                    headingRowHeight: 56,
-                    border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       );
     });
@@ -401,113 +361,59 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
     );
   }
 
-  Widget _buildDataTable() {
-    // Create separate controllers for this table if it's ever used
-    final ScrollController verticalController = ScrollController();
-    final ScrollController horizontalController = ScrollController();
-
-    return Container(
-      width: 400,
-      height: 500,
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(4)),
-      child: Column(
-        children: [
-          // Sticky header
-          Container(
-            color: Colors.grey.shade100,
-            child: SingleChildScrollView(controller: horizontalController, scrollDirection: Axis.horizontal, child: Row(children: _buildHeaderRow())),
-          ),
-          // Table body
-          Expanded(
-            child: Scrollbar(
-              thumbVisibility: true,
-              controller: verticalController,
-              child: SingleChildScrollView(
-                controller: verticalController,
-                scrollDirection: Axis.vertical,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  controller: horizontalController,
-                  scrollbarOrientation: ScrollbarOrientation.bottom,
-                  child: SingleChildScrollView(
-                    controller: horizontalController,
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                      columns: _buildDataColumns(),
-                      rows: _buildDataRows(),
-                      columnSpacing: 20,
-                      headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                      dataRowMinHeight: 48,
-                      dataRowMaxHeight: 64,
-                      sortColumnIndex: controller.state.sortColumnIndex.value,
-                      sortAscending: controller.state.sortAscending.value,
-                      headingRowHeight: 0,
-                      // Hide the original header
-                      border: TableBorder(bottom: BorderSide(color: Colors.grey.shade300), horizontalInside: BorderSide(color: Colors.grey.shade200)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   List<DataColumn> _buildDataColumns() {
     final List<DataColumn> columns = [];
     int columnIndex = 0;
 
     // Always visible columns
     if (controller.isColumnVisible('tenantId')) {
-      columns.add(_buildSortableColumn('Tenant ID', 'tenantId', columnIndex++));
+      columns.add(_buildSortableColumn('Tenant ID'));
     }
 
     if (controller.isColumnVisible('tenantName')) {
-      columns.add(_buildSortableColumn('Tenant Name', 'tenantName', columnIndex++));
+      columns.add(_buildSortableColumn('Tenant Name'));
     }
 
     if (controller.isColumnVisible('createdAt')) {
-      columns.add(_buildSortableColumn('Created At', 'createdAt', columnIndex++));
+      columns.add(_buildSortableColumn('Created At'));
     }
 
     // Optional columns
     if (controller.isColumnVisible('creator')) {
-      columns.add(_buildSortableColumn('Creator', 'creator', columnIndex++));
+      columns.add(_buildSortableColumn('Creator'));
     }
 
     if (controller.isColumnVisible('domainUrl')) {
-      columns.add(_buildSortableColumn('Domain URL', 'domainUrl', columnIndex++));
+      columns.add(_buildSortableColumn('Domain URL'));
     }
 
     if (controller.isColumnVisible('description')) {
-      columns.add(_buildSortableColumn('Description', 'description', columnIndex++));
+      columns.add(_buildSortableColumn('Description'));
     }
 
     if (controller.isColumnVisible('contactEmail')) {
-      columns.add(_buildSortableColumn('Contact Email', 'contactEmail', columnIndex++));
+      columns.add(_buildSortableColumn('Contact Email'));
     }
 
     if (controller.isColumnVisible('contactPhone')) {
-      columns.add(_buildSortableColumn('Contact Phone', 'contactPhone', columnIndex++));
+      columns.add(_buildSortableColumn('Contact Phone'));
     }
 
     if (controller.isColumnVisible('industry')) {
-      columns.add(_buildSortableColumn('Industry', 'industry', columnIndex++));
+      columns.add(_buildSortableColumn('Industry'));
     }
 
     if (controller.isColumnVisible('subscriptionType')) {
-      columns.add(_buildSortableColumn('Subscription Type', 'subscriptionType', columnIndex++));
+      columns.add(_buildSortableColumn('Subscription Type'));
     }
 
     // Status column
-    columns.add(_buildSortableColumn('Status', 'status', columnIndex++));
+    columns.add(_buildSortableColumn('Status'));
 
     return columns;
   }
 
-  DataColumn _buildSortableColumn(String label, String columnName, int index) {
+  DataColumn _buildSortableColumn(String label) {
     return DataColumn(
       label: Container(padding: EdgeInsets.symmetric(vertical: 8.0), child: Text(label, style: TextStyle(fontWeight: FontWeight.bold))),
       onSort: (columnIndex, ascending) {

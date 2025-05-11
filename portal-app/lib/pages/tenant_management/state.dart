@@ -1,3 +1,4 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:get/get.dart';
 
 class TenantManagementPageState {
@@ -5,6 +6,8 @@ class TenantManagementPageState {
   final searchText = ''.obs;
   final isFilterPanelExpanded = true.obs;
   final selectedStatus = Rx<String?>(null);
+
+  final tenantFilter = Rx<PagingTenantFilter>(PagingTenantFilter());
 
   // Table states
   final tenants = <TenantModel>[].obs;
@@ -58,4 +61,12 @@ class TenantModel {
     required this.subscriptionType,
     required this.lastLoginAt,
   });
+}
+
+@CopyWith()
+class PagingTenantFilter {
+  final String? searchText;
+  final String? selectedStatus;
+
+  PagingTenantFilter({this.searchText, this.selectedStatus});
 }

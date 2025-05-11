@@ -87,47 +87,45 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
       height: 60,
       color: AppColors.colorPrimary01,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Expanded(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                // Toggle button for side navigation
-                if (showNavigationSideBar)
-                  IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
-                if (showNavigationSideBar) const SizedBox(width: 16),
-                // ContainerBase logo
-                TextButton(
-                  onPressed: () => Get.offAllNamed('/home'),
-                  style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
-                  child: Row(
-                    children: [
-                      Assets.icons.appLogo.image(height: 30, width: 30),
-                      const SizedBox(width: 8),
-                      const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              // Toggle button for side navigation
+              if (showNavigationSideBar)
+                IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
+              if (showNavigationSideBar) const SizedBox(width: 16),
+              // ContainerBase logo
+              TextButton(
+                onPressed: () => Get.offAllNamed('/home'),
+                style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
+                child: Row(
+                  children: [
+                    Assets.icons.appLogo.image(height: 30, width: 30),
+                    const SizedBox(width: 8),
+                    const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                  ],
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                // Notification button
-                IconButton(
-                  icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                  onPressed: () {
-                    // Handle notification button press
-                  },
-                  tooltip: 'Notifications',
-                ),
-                const SizedBox(width: 8),
-                // User profile avatar with dropdown
-                _buildUserProfileDropdown(),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              // Notification button
+              IconButton(
+                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+                onPressed: () {
+                  // Handle notification button press
+                },
+                tooltip: 'Notifications',
+              ),
+              const SizedBox(width: 8),
+              // User profile avatar with dropdown
+              _buildUserProfileDropdown(),
+            ],
+          ),
+        ],
       ),
     );
   }
