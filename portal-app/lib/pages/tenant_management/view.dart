@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vinta_shared_commons/constants/spaces.dart';
@@ -44,32 +45,26 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                   headerHorizontalScrollController: _headerHorizontalController,
                   filter: controller.state.filter,
                   columnSettings: [
-                    DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'tenantId', isVisible: true, isSortable: true),
-                    DataColumnSetting(index: 1, label: 'Title', columnKey: 'title'),
-                    DataColumnSetting(index: 2, label: 'Status', columnKey: 'status'),
-                    DataColumnSetting(index: 3, label: 'Description', columnKey: 'description'),
-                    DataColumnSetting(index: 4, label: 'Domain URL', columnKey: 'domainHost'),
-                    DataColumnSetting(index: 5, label: 'Created At', columnKey: 'createdAt'),
+                    DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'tenantId', size: ColumnSize.M, isVisible: true, isSortable: true),
+                    DataColumnSetting(index: 1, label: 'Title', size: ColumnSize.M, columnKey: 'title'),
+                    DataColumnSetting(index: 2, label: 'Status', size: ColumnSize.S, columnKey: 'status'),
+                    DataColumnSetting(index: 3, label: 'Description', size: ColumnSize.M, columnKey: 'description'),
+                    DataColumnSetting(index: 4, label: 'Domain URL', size: ColumnSize.M, columnKey: 'domainHost'),
+                    DataColumnSetting(index: 5, size: ColumnSize.S, label: 'Created At', columnKey: 'createdAt'),
                   ],
                   dataRowBuilder: (tenant, columnSettings) {
                     final cells =
                         columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((column) {
-                          switch (column.columnKey) {
-                            case 'tenantId':
-                              return DataCell(Text(tenant.id));
-                            case 'title':
-                              return DataCell(Text(tenant.title));
-                            case 'status':
-                              return DataCell(_buildStatusChip(tenant.status));
-                            case 'description':
-                              return DataCell(Text(tenant.description ?? '-'));
-                            case 'domainHost':
-                              return DataCell(Text(tenant.domainHost));
-                            case 'createdAt':
-                              return DataCell(Text(AppUtils.formatDateTime(tenant.createdAt)));
-                            default:
-                              return DataCell(Text('-'));
-                          }
+                          final Widget child = switch (column.columnKey) {
+                            'tenantId' => Text(tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                            'title' => Text(tenant.title, style: TextStyle(fontSize: 14)),
+                            'status' => _buildStatusChip(tenant.status),
+                            'description' => Text(tenant.description ?? '-', style: TextStyle(fontSize: 14)),
+                            'domainHost' => Text(tenant.domainHost, style: TextStyle(fontSize: 14)),
+                            'createdAt' => Text(AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false), style: TextStyle(fontSize: 14)),
+                            _ => Text('-'),
+                          };
+                          return DataCell(child);
                         }).toList();
 
                     return DataRow(cells: cells);

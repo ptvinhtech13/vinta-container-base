@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
@@ -8,10 +9,18 @@ class DataColumnSetting {
   final int index;
   final String label;
   final String columnKey;
+  final ColumnSize size;
   final bool isVisible;
   final bool isSortable;
 
-  DataColumnSetting({required this.index, required this.label, required this.columnKey, this.isVisible = true, this.isSortable = false});
+  DataColumnSetting({
+    required this.index,
+    required this.label,
+    required this.columnKey,
+    this.size = ColumnSize.S,
+    this.isVisible = true,
+    this.isSortable = true,
+  });
 }
 
 @CopyWith()
@@ -36,6 +45,16 @@ class PageRequest<T> {
   final int size;
   final int totalElements;
   final int totalPages;
+  final String? sortedField;
+  final String? sortDirection; // "ASC" or "DESC"
 
-  PageRequest({required this.page, required this.size, required this.totalElements, required this.totalPages, this.filter});
+  PageRequest({
+    required this.page,
+    required this.size,
+    required this.totalElements,
+    required this.totalPages,
+    this.filter,
+    this.sortedField,
+    this.sortDirection,
+  });
 }

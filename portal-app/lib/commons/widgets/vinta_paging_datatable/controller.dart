@@ -23,8 +23,20 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
     required List<DataColumnSetting> columnSettings,
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
+    String? initialSortedField,
+    String? initialSortDirection,
   }) {
-    this.state.pageRequest.value = this.state.pageRequest.value.copyWith(filter: filter);
+    // Set initial sort parameters if provided
+    if (initialSortedField != null) {
+      state.sortedColumnKey.value = initialSortedField;
+      state.isAscending.value = initialSortDirection != "DESC";
+    }
+
+    this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
+      filter: filter,
+      sortedField: initialSortedField,
+      sortDirection: initialSortDirection,
+    );
 
     this.dataLoader = dataLoader;
     this.dataRowBuilder = dataRowBuilder;
@@ -69,6 +81,23 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
     if (size < 0 || size > 500) return;
 
     state.pageRequest.value = state.pageRequest.value.copyWith(size: size);
+    updatePaginationTable();
+  }
+
+  void sortByColumn(String columnKey) {
+    // If clicking the same column, toggle sort direction
+    if (state.sortedColumnKey.value == columnKey) {
+      state.isAscending.value = !state.isAscending.value;
+    } else {
+      // New column, default to ascending
+      state.sortedColumnKey.value = columnKey;
+      state.isAscending.value = true;
+    }
+
+    // Update page request with sort parameters
+    state.pageRequest.value = state.pageRequest.value.copyWith(sortedField: columnKey, sortDirection: state.isAscending.value ? "ASC" : "DESC");
+
+    // Reload data with new sort parameters
     updatePaginationTable();
   }
 }

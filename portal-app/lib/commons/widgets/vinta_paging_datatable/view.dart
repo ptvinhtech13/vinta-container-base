@@ -1,7 +1,10 @@
 import 'package:collection/collection.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../pages/app_layout/controller.dart';
+import '../../constants/colors.dart';
 import 'controller.dart';
 import 'models.dart';
 
@@ -9,7 +12,9 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
   late final ScrollController? verticalScrollController;
   late final ScrollController? bodyHorizontalScrollController;
   late final ScrollController? headerHorizontalScrollController;
+  late final ScrollController? _scrollController;
   late final VintaPagingDataTableController<Model, Filter> _controller;
+  final appPageController = Get.find<AppPageController>();
 
   VintaPagingDataTable({
     super.key,
@@ -21,18 +26,31 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
     Filter? filter,
+    String? initialSortedField,
+    String? initialSortDirection,
   }) {
     this.verticalScrollController = verticalScrollController ?? ScrollController();
     this.bodyHorizontalScrollController = bodyHorizontalScrollController ?? ScrollController();
     this.headerHorizontalScrollController = headerHorizontalScrollController ?? ScrollController();
+    this._scrollController = ScrollController();
 
     _controller = Get.put(VintaPagingDataTableController<Model, Filter>(), tag: dataTableKey);
-    _controller.hydrate(filter: filter, columnSettings: columnSettings, dataRowBuilder: dataRowBuilder, dataLoader: dataLoader);
+    _controller.hydrate(
+      filter: filter,
+      columnSettings: columnSettings,
+      dataRowBuilder: dataRowBuilder,
+      dataLoader: dataLoader,
+      initialSortedField: initialSortedField,
+      initialSortDirection: initialSortDirection,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      final visibleColumns =
+          _controller.state.columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).toList();
+
       return Column(
         children: [
           Expanded(
@@ -40,94 +58,39 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: Column(
                 children: [
-                  // Sticky header
-                  Container(
-                    color: Colors.grey.shade100,
-                    child: SingleChildScrollView(
-                      controller: headerHorizontalScrollController,
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children:
-                            _controller.state.columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((
-                              column,
-                            ) {
-                              return InkWell(
-                                onTap: () {},
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      right: BorderSide(color: Colors.grey.shade300, width: 1),
-                                      bottom: BorderSide(color: Colors.grey.shade300, width: 1),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(column.label, style: TextStyle(fontWeight: FontWeight.bold)),
-                                      SizedBox(width: 4),
-                                      // if (isCurrentSortColumn) Icon(isAscending ? Icons.arrow_upward : Icons.arrow_downward, size: 16, color: Colors.grey.shade700),
-                                    ],
-                                  ),
-                                ),
-                              );
-                              ;
-                            }).toList(),
-                      ),
-                    ),
-                  ),
                   // Table body with scrolling
                   Expanded(
-                    child: Scrollbar(
-                      thumbVisibility: true,
-                      controller: verticalScrollController,
-                      child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        controller: verticalScrollController,
-                        scrollDirection: Axis.vertical,
-                        child: Scrollbar(
-                          thumbVisibility: true,
-                          controller: bodyHorizontalScrollController,
-                          scrollbarOrientation: ScrollbarOrientation.bottom,
-                          child: SingleChildScrollView(
-                            controller: bodyHorizontalScrollController,
-                            scrollDirection: Axis.horizontal,
-                            child: DataTable(
-                              columns:
-                                  _controller.state.columnSettings
-                                      .where((column) => column.isVisible)
-                                      .sorted((a, b) => a.index.compareTo(b.index))
-                                      .map((column) {
-                                        return DataColumn(
-                                          label: Container(
-                                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                                            child: Text(column.label, style: TextStyle(fontWeight: FontWeight.bold)),
-                                          ),
-                                          // onSort: (columnIndex, ascending) {
-                                          //   _controller.sortByColumn(columnIndex, ascending);
-                                          // },
-                                        );
-                                      })
-                                      .toList(),
-                              rows:
-                                  _controller.state.paginatedDataItem.map((tenant) {
-                                    return _controller.dataRowBuilder(tenant, _controller.state.columnSettings);
-                                  }).toList(),
-                              columnSpacing: 20,
-                              headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
-                              dataRowMinHeight: 48,
-                              dataRowMaxHeight: 64,
-                              // sortColumnIndex: controller.state.sortColumnIndex.value,
-                              // sortAscending: controller.state.sortAscending.value,
-                              headingRowHeight: 0,
-                              // Hide the original header
-                              border: TableBorder(
-                                bottom: BorderSide(color: Colors.grey.shade300),
-                                horizontalInside: BorderSide(color: Colors.grey.shade200),
-                              ),
-                            ),
-                          ),
+                    child: DataTable2(
+                      dividerThickness: 1,
+                      scrollController: _scrollController,
+                      columnSpacing: 5,
+                      // border: TableBorder.all(width: 1.0, color: Colors.grey),
+                      headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.greenAccent),
+                      headingRowDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                        gradient: LinearGradient(
+                          colors: [AppColors.colorPrimary01, AppColors.colorPrimary02],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                         ),
                       ),
+                      columns:
+                          visibleColumns.map((column) {
+                            return DataColumn2(
+                              size: column.size,
+                              label: Container(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                  column.label,
+                                  style: TextStyle(fontSize: 14, color: AppColors.colorPrimary11, fontWeight: FontWeight.w900),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                      rows:
+                          _controller.state.paginatedDataItem.map((item) {
+                            return _controller.dataRowBuilder(item, _controller.state.columnSettings);
+                          }).toList(),
                     ),
                   ),
                 ],

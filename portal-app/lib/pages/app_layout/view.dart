@@ -15,14 +15,13 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
   final Color? backgroundWhiteColor;
 
   late final AppPageController appPageController;
-  final isSideNavOpen = true.obs;
 
   AppPage({super.key, this.showNavigationSideBar = true, this.showAppBar = true, this.backgroundWhiteColor}) {
     appPageController = Get.put(AppPageController());
   }
 
   void toggleSideNav() {
-    isSideNavOpen.value = !isSideNavOpen.value;
+    appPageController.state.isSideNavOpen.value = !appPageController.state.isSideNavOpen.value;
   }
 
   @override
@@ -43,9 +42,9 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                         ? Obx(
                           () => AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            width: isSideNavOpen.value ? 280 : 0,
+                            width: appPageController.state.isSideNavOpen.value ? 280 : 0,
                             height: double.infinity,
-                            child: isSideNavOpen.value ? SideNavigationDrawer() : const SizedBox.shrink(),
+                            child: appPageController.state.isSideNavOpen.value ? SideNavigationDrawer() : const SizedBox.shrink(),
                           ),
                         )
                         : const SizedBox.shrink(),
