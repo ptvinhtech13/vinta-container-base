@@ -13,7 +13,9 @@ abstract class TenantApiClient {
   @GET("/api/tenant/tenants")
   Future<PagingResponse<TenantResponse>> queryTenants(
     @Query("page") int page,
-    @Query("size") int size,
+    @Query("size") int size, {
     @Query("filter.byTitle") String? filterByTitle,
-  );
+    @Query("sortFields") String? sortFields,
+    @Query("sortDirection") String? sortDirection,
+  });
 }

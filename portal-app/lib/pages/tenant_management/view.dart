@@ -41,24 +41,27 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                   scrollController: _scrollController,
                   filter: controller.state.filter,
                   columnSettings: [
-                    DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'tenantId', size: ColumnSize.M, isVisible: true, isSortable: true),
-                    DataColumnSetting(index: 1, label: 'Title', size: ColumnSize.M, columnKey: 'title'),
-                    DataColumnSetting(index: 2, label: 'Status', size: ColumnSize.S, columnKey: 'status'),
-                    DataColumnSetting(index: 3, label: 'Description', size: ColumnSize.M, columnKey: 'description'),
-                    DataColumnSetting(index: 4, label: 'Domain URL', size: ColumnSize.M, columnKey: 'domainHost'),
-                    DataColumnSetting(index: 5, size: ColumnSize.S, label: 'Created At', columnKey: 'createdAt'),
+                    DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'id', size: ColumnSize.M, isVisible: true, isSortable: true),
+                    DataColumnSetting(index: 1, label: 'Title', size: ColumnSize.M, columnKey: 'title', isSortable: true),
+                    DataColumnSetting(index: 2, label: 'Status', size: ColumnSize.S, columnKey: 'status', isSortable: false),
+                    DataColumnSetting(index: 3, label: 'Description', size: ColumnSize.M, columnKey: 'description', isSortable: false),
+                    DataColumnSetting(index: 4, label: 'Domain URL', size: ColumnSize.M, columnKey: 'domainHost', isSortable: false),
+                    DataColumnSetting(index: 5, size: ColumnSize.S, label: 'Created At', columnKey: 'createdAt', isSortable: true),
                   ],
                   dataRowBuilder: (tenant, columnSettings) {
                     final cells =
                         columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((column) {
                           final Widget child = switch (column.columnKey) {
-                            'tenantId' => SelectableText (tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                            'title' => SelectableText (tenant.title, style: TextStyle(fontSize: 14)),
+                            'id' => SelectableText(tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                            'title' => SelectableText(tenant.title, style: TextStyle(fontSize: 14)),
                             'status' => _buildStatusChip(tenant.status),
-                            'description' => SelectableText (tenant.description ?? '-', style: TextStyle(fontSize: 14)),
-                            'domainHost' => SelectableText (tenant.domainHost, style: TextStyle(fontSize: 14)),
-                            'createdAt' => SelectableText (AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false), style: TextStyle(fontSize: 14)),
-                            _ => SelectableText ('-'),
+                            'description' => SelectableText(tenant.description ?? '-', style: TextStyle(fontSize: 14)),
+                            'domainHost' => SelectableText(tenant.domainHost, style: TextStyle(fontSize: 14)),
+                            'createdAt' => SelectableText(
+                              AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false),
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            _ => SelectableText('-'),
                           };
                           return DataCell(child);
                         }).toList();

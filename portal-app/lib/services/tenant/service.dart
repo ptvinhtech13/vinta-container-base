@@ -11,13 +11,21 @@ class TenantService extends GetxService {
   TenantService({required this.tenantApiClient});
 
   Future<PagingResponse<TenantModel>> queryTenants(PageRequest<TenantFilter?> pageRequest) {
-    return tenantApiClient.queryTenants(pageRequest.page, pageRequest.size, pageRequest.filter?.byName).then((response) {
-      return PagingResponse<TenantModel>(
-        content: response.content.map((tenant) => TenantModel.fromTenantResponse(tenant)).toList(),
-        totalElements: response.totalElements,
-        totalPages: response.totalPages,
-        page: response.page,
-      );
-    });
+    return tenantApiClient
+        .queryTenants(
+          pageRequest.page,
+          pageRequest.size,
+          filterByTitle: pageRequest.filter?.byName,
+          sortFields: pageRequest.sortFields,
+          sortDirection: pageRequest.sortDirection,
+        )
+        .then((response) {
+          return PagingResponse<TenantModel>(
+            content: response.content.map((tenant) => TenantModel.fromTenantResponse(tenant)).toList(),
+            totalElements: response.totalElements,
+            totalPages: response.totalPages,
+            page: response.page,
+          );
+        });
   }
 }

@@ -45,8 +45,8 @@ class PageRequest<T> {
   final int size;
   final int totalElements;
   final int totalPages;
-  final String? sortedField;
-  final String? sortDirection; // "ASC" or "DESC"
+  final String? sortFields;
+  final String? sortDirection;
 
   PageRequest({
     required this.page,
@@ -54,7 +54,7 @@ class PageRequest<T> {
     required this.totalElements,
     required this.totalPages,
     this.filter,
-    this.sortedField,
+    this.sortFields,
     this.sortDirection,
   });
 }

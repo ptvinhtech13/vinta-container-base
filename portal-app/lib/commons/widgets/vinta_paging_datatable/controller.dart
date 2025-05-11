@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:async/async.dart';
 import 'package:containerbase/commons/widgets/vinta_paging_datatable/models.dart';
 import 'package:containerbase/commons/widgets/vinta_paging_datatable/stage.dart';
 import 'package:flutter/src/material/data_table.dart';
 import 'package:get/get.dart';
-import 'package:vinta_shared_commons/components/vinta_list_view_ng/models.dart';
 import 'package:vinta_shared_commons/index.dart';
 
 class VintaPagingDataTableController<Model, Filter> extends GetxController {
@@ -23,20 +20,16 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
     required List<DataColumnSetting> columnSettings,
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
-    String? initialSortedField,
-    String? initialSortDirection,
+    String? sortFields,
+    String? sortDirection,
   }) {
     // Set initial sort parameters if provided
-    if (initialSortedField != null) {
-      state.sortedColumnKey.value = initialSortedField;
-      state.isAscending.value = initialSortDirection != "DESC";
+    if (sortFields != null) {
+      state.sortedColumnKey.value = sortFields;
+      state.isAscending.value = sortDirection != "DESC";
     }
 
-    this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
-      filter: filter,
-      sortedField: initialSortedField,
-      sortDirection: initialSortDirection,
-    );
+    this.state.pageRequest.value = this.state.pageRequest.value.copyWith(filter: filter, sortFields: sortFields, sortDirection: sortDirection);
 
     this.dataLoader = dataLoader;
     this.dataRowBuilder = dataRowBuilder;
@@ -47,12 +40,6 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
-    eventBus.onEvent.where((event) => event is ForceRefreshVintaPagingDataTableEvent).cast<ForceRefreshVintaPagingDataTableEvent>().listen((
-      event,
-    ) async {
-      log("Received ${event.runtimeType}");
-      await updatePaginationTable();
-    });
     await updatePaginationTable();
   }
 
@@ -95,13 +82,19 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
     }
 
     // Update page request with sort parameters
-    state.pageRequest.value = state.pageRequest.value.copyWith(sortedField: columnKey, sortDirection: state.isAscending.value ? "ASC" : "DESC");
+    state.pageRequest.value = state.pageRequest.value.copyWith(sortFields: columnKey, sortDirection: state.isAscending.value ? "ASC" : "DESC");
 
     // Reload data with new sort parameters
     updatePaginationTable();
   }
-}
 
-class ForceRefreshVintaPagingDataTableEvent extends ListViewBaseEvent {
-  ForceRefreshVintaPagingDataTableEvent(super.listId);
+  // Set the column being hovered
+  void setHoveredColumn(String columnKey) {
+    state.hoveredColumnKey.value = columnKey;
+  }
+
+  // Clear the hovered column
+  void clearHoveredColumn() {
+    state.hoveredColumnKey.value = null;
+  }
 }

@@ -9,7 +9,6 @@ import 'controller.dart';
 import 'models.dart';
 
 class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
-
   late final ScrollController? _scrollController;
   late final VintaPagingDataTableController<Model, Filter> _controller;
   final appPageController = Get.find<AppPageController>();
@@ -22,8 +21,8 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
     Filter? filter,
-    String? initialSortedField,
-    String? initialSortDirection,
+    String? sortFields,
+    String? sortDirection,
   }) {
     this._scrollController = scrollController ?? ScrollController();
 
@@ -33,8 +32,8 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
       columnSettings: columnSettings,
       dataRowBuilder: dataRowBuilder,
       dataLoader: dataLoader,
-      initialSortedField: initialSortedField,
-      initialSortDirection: initialSortDirection,
+      sortFields: sortFields,
+      sortDirection: sortDirection,
     );
   }
 
@@ -43,7 +42,6 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
     return Obx(() {
       final visibleColumns =
           _controller.state.columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).toList();
-
       return Column(
         children: [
           Expanded(
@@ -68,13 +66,33 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
                       ),
                       columns:
                           visibleColumns.map((column) {
+                            final isCurrentSortColumn = _controller.state.sortedColumnKey.value == column.columnKey;
+                            final isAscending = _controller.state.isAscending.value;
+                            final isHovered = _controller.state.hoveredColumnKey.value == column.columnKey;
                             return DataColumn2(
                               size: column.size,
-                              label: Container(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                  column.label,
-                                  style: TextStyle(fontSize: 14, color: AppColors.colorPrimary11, fontWeight: FontWeight.w900),
+                              onSort: column.isSortable ? (_, __) => _controller.sortByColumn(column.columnKey) : null,
+                              label: MouseRegion(
+                                onEnter: (_) => column.isSortable ? _controller.setHoveredColumn(column.columnKey) : null,
+                                onExit: (_) => column.isSortable ? _controller.clearHoveredColumn() : null,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        column.label,
+                                        style: TextStyle(fontSize: 14, color: AppColors.colorPrimary11, fontWeight: FontWeight.w900),
+                                      ),
+                                      if (column.isSortable) SizedBox(width: 4),
+                                      if (column.isSortable && (isCurrentSortColumn || isHovered))
+                                        Icon(
+                                          isCurrentSortColumn ? (isAscending ? Icons.arrow_upward : Icons.arrow_downward) : Icons.unfold_more,
+                                          size: 16,
+                                          color: AppColors.colorPrimary11,
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             );
