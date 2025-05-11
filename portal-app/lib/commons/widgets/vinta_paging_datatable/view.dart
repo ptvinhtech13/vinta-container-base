@@ -9,9 +9,7 @@ import 'controller.dart';
 import 'models.dart';
 
 class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
-  late final ScrollController? verticalScrollController;
-  late final ScrollController? bodyHorizontalScrollController;
-  late final ScrollController? headerHorizontalScrollController;
+
   late final ScrollController? _scrollController;
   late final VintaPagingDataTableController<Model, Filter> _controller;
   final appPageController = Get.find<AppPageController>();
@@ -19,9 +17,7 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
   VintaPagingDataTable({
     super.key,
     String? dataTableKey,
-    ScrollController? verticalScrollController,
-    ScrollController? bodyHorizontalScrollController,
-    ScrollController? headerHorizontalScrollController,
+    ScrollController? scrollController,
     required List<DataColumnSetting> columnSettings,
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
@@ -29,10 +25,7 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
     String? initialSortedField,
     String? initialSortDirection,
   }) {
-    this.verticalScrollController = verticalScrollController ?? ScrollController();
-    this.bodyHorizontalScrollController = bodyHorizontalScrollController ?? ScrollController();
-    this.headerHorizontalScrollController = headerHorizontalScrollController ?? ScrollController();
-    this._scrollController = ScrollController();
+    this._scrollController = scrollController ?? ScrollController();
 
     _controller = Get.put(VintaPagingDataTableController<Model, Filter>(), tag: dataTableKey);
     _controller.hydrate(
@@ -64,7 +57,6 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
                       dividerThickness: 1,
                       scrollController: _scrollController,
                       columnSpacing: 5,
-                      // border: TableBorder.all(width: 1.0, color: Colors.grey),
                       headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.greenAccent),
                       headingRowDecoration: BoxDecoration(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),

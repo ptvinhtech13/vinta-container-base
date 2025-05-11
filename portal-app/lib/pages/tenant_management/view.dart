@@ -21,9 +21,7 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
   }
 
   // Add scroll controllers
-  final ScrollController _verticalScrollController = ScrollController();
-  final ScrollController _bodyHorizontalController = ScrollController();
-  final ScrollController _headerHorizontalController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget buildUI(BuildContext context) {
@@ -40,9 +38,7 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
               padding: const EdgeInsets.all(8.0),
               child: Obx(
                 () => VintaPagingDataTable<TenantModel, TenantFilter>(
-                  verticalScrollController: _verticalScrollController,
-                  bodyHorizontalScrollController: _bodyHorizontalController,
-                  headerHorizontalScrollController: _headerHorizontalController,
+                  scrollController: _scrollController,
                   filter: controller.state.filter,
                   columnSettings: [
                     DataColumnSetting(index: 0, label: 'Tenant ID', columnKey: 'tenantId', size: ColumnSize.M, isVisible: true, isSortable: true),
@@ -56,13 +52,13 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     final cells =
                         columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((column) {
                           final Widget child = switch (column.columnKey) {
-                            'tenantId' => Text(tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                            'title' => Text(tenant.title, style: TextStyle(fontSize: 14)),
+                            'tenantId' => SelectableText (tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                            'title' => SelectableText (tenant.title, style: TextStyle(fontSize: 14)),
                             'status' => _buildStatusChip(tenant.status),
-                            'description' => Text(tenant.description ?? '-', style: TextStyle(fontSize: 14)),
-                            'domainHost' => Text(tenant.domainHost, style: TextStyle(fontSize: 14)),
-                            'createdAt' => Text(AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false), style: TextStyle(fontSize: 14)),
-                            _ => Text('-'),
+                            'description' => SelectableText (tenant.description ?? '-', style: TextStyle(fontSize: 14)),
+                            'domainHost' => SelectableText (tenant.domainHost, style: TextStyle(fontSize: 14)),
+                            'createdAt' => SelectableText (AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false), style: TextStyle(fontSize: 14)),
+                            _ => SelectableText ('-'),
                           };
                           return DataCell(child);
                         }).toList();
