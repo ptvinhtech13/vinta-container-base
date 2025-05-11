@@ -1,14 +1,11 @@
-import 'package:containerbase/pages/tenant_management/state.dart';
 import 'package:get/get.dart';
 
 import 'models.dart';
 
-class VintaPagingDataTableState<T> {
-  PagingTenantFilter? dataFilter;
+class VintaPagingDataTableState<Model, Filter> {
+  final pageRequest = PageRequest<Filter?>(page: 0, size: 20, filter: null, totalElements: 0, totalPages: 0).obs;
 
-  final pageRequest = PageRequest(page: 0, size: 20, totalElements: 0, totalPages: 0).obs;
-
-  final paginatedDataItem = <T>[].obs;
+  final paginatedDataItem = <Model>[].obs;
 
   final columnSettings = <DataColumnSetting>[].obs;
 }

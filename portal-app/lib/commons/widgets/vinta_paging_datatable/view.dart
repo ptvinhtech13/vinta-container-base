@@ -1,16 +1,15 @@
 import 'package:collection/collection.dart';
-import 'package:containerbase/pages/tenant_management/state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'controller.dart';
 import 'models.dart';
 
-class VintaPagingDataTable<T> extends StatelessWidget {
+class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
   late final ScrollController? verticalScrollController;
   late final ScrollController? bodyHorizontalScrollController;
   late final ScrollController? headerHorizontalScrollController;
-  late final VintaPagingDataTableController<T> _controller;
+  late final VintaPagingDataTableController<Model, Filter> _controller;
 
   VintaPagingDataTable({
     super.key,
@@ -19,16 +18,16 @@ class VintaPagingDataTable<T> extends StatelessWidget {
     ScrollController? bodyHorizontalScrollController,
     ScrollController? headerHorizontalScrollController,
     required List<DataColumnSetting> columnSettings,
-    required DataRow Function(T, List<DataColumnSetting>) dataRowBuilder,
-    required Future<PagingResponse<T>> Function(PagingTenantFilter? filterRequest, PageRequest) dataLoader,
-    PagingTenantFilter? dataFilter,
+    required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
+    required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
+    Filter? filter,
   }) {
     this.verticalScrollController = verticalScrollController ?? ScrollController();
     this.bodyHorizontalScrollController = bodyHorizontalScrollController ?? ScrollController();
     this.headerHorizontalScrollController = headerHorizontalScrollController ?? ScrollController();
 
-    _controller = Get.put(VintaPagingDataTableController<T>(), tag: dataTableKey);
-    _controller.hydrate(dataFilter: dataFilter, columnSettings: columnSettings, dataRowBuilder: dataRowBuilder, dataLoader: dataLoader);
+    _controller = Get.put(VintaPagingDataTableController<Model, Filter>(), tag: dataTableKey);
+    _controller.hydrate(filter: filter, columnSettings: columnSettings, dataRowBuilder: dataRowBuilder, dataLoader: dataLoader);
   }
 
   @override

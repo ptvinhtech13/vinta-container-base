@@ -3,29 +3,29 @@ import 'dart:developer';
 import 'package:async/async.dart';
 import 'package:containerbase/commons/widgets/vinta_paging_datatable/models.dart';
 import 'package:containerbase/commons/widgets/vinta_paging_datatable/stage.dart';
-import 'package:containerbase/pages/tenant_management/state.dart';
 import 'package:flutter/src/material/data_table.dart';
 import 'package:get/get.dart';
 import 'package:vinta_shared_commons/components/vinta_list_view_ng/models.dart';
 import 'package:vinta_shared_commons/index.dart';
 
-class VintaPagingDataTableController<T> extends GetxController {
-  final state = VintaPagingDataTableState();
+class VintaPagingDataTableController<Model, Filter> extends GetxController {
+  final state = VintaPagingDataTableState<Model, Filter>();
 
-  late DataRow Function(T, List<DataColumnSetting>) dataRowBuilder;
-  late Future<PagingResponse<T>> Function(PagingTenantFilter? filterRequest, PageRequest) dataLoader;
+  late DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder;
+  late Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader;
 
   final eventBus = Get.find<InternalEventBusService>();
 
-  CancelableOperation<PagingResponse<T>>? _loadDataTask;
+  CancelableOperation<PagingResponse<Model>>? _loadDataTask;
 
   void hydrate({
-    PagingTenantFilter? dataFilter,
+    Filter? filter,
     required List<DataColumnSetting> columnSettings,
-    required DataRow Function(T, List<DataColumnSetting>) dataRowBuilder,
-    required Future<PagingResponse<T>> Function(PagingTenantFilter? filterRequest, PageRequest) dataLoader,
+    required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
+    required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
   }) {
-    this.state.dataFilter = dataFilter ?? PagingTenantFilter();
+    this.state.pageRequest.value = this.state.pageRequest.value.copyWith(filter: filter);
+
     this.dataLoader = dataLoader;
     this.dataRowBuilder = dataRowBuilder;
     this.state.columnSettings.clear();
@@ -46,7 +46,7 @@ class VintaPagingDataTableController<T> extends GetxController {
 
   Future<void> updatePaginationTable() async {
     await _loadDataTask?.cancel();
-    _loadDataTask = CancelableOperation.fromFuture(this.dataLoader(state.dataFilter, state.pageRequest.value));
+    _loadDataTask = CancelableOperation.fromFuture(this.dataLoader(state.pageRequest.value));
     _loadDataTask!.value.then((result) async {
       this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
         page: result.page,
