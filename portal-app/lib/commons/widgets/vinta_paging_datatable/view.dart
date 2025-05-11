@@ -14,6 +14,7 @@ class VintaPagingDataTable<T> extends StatelessWidget {
 
   VintaPagingDataTable({
     super.key,
+    String? dataTableKey,
     ScrollController? verticalScrollController,
     ScrollController? bodyHorizontalScrollController,
     ScrollController? headerHorizontalScrollController,
@@ -26,7 +27,7 @@ class VintaPagingDataTable<T> extends StatelessWidget {
     this.bodyHorizontalScrollController = bodyHorizontalScrollController ?? ScrollController();
     this.headerHorizontalScrollController = headerHorizontalScrollController ?? ScrollController();
 
-    _controller = Get.put(VintaPagingDataTableController<T>(), tag: 'vinta_paging_data_table');
+    _controller = Get.put(VintaPagingDataTableController<T>(), tag: dataTableKey);
     _controller.hydrate(dataFilter: dataFilter, columnSettings: columnSettings, dataRowBuilder: dataRowBuilder, dataLoader: dataLoader);
   }
 
@@ -134,14 +135,76 @@ class VintaPagingDataTable<T> extends StatelessWidget {
               ),
             ),
           ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     Row(children: [_buildPaginationControls(), SizedBox(width: 16), _buildColumnOptionsMenu()]),
-          //   ],
-          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                children: [
+                  _buildPaginationControls(),
+                  // SizedBox(width: 16),
+                  // _buildColumnOptionsMenu()
+                ],
+              ),
+            ],
+          ),
         ],
       );
     });
+  }
+
+  Widget _buildPaginationControls() {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(4)),
+          child: DropdownButton<int>(
+            value: _controller.state.pageRequest.value.size,
+            underline: SizedBox(),
+            items:
+                [20, 100, 500].map((size) {
+                  return DropdownMenuItem<int>(value: size, child: Text('$size items'));
+                }).toList(),
+            onChanged: (value) {
+              if (value != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                _controller.changePageSize(value);
+              }
+            },
+          ),
+        ),
+        SizedBox(width: 16),
+        Text(
+          'Showing ${(_controller.state.pageRequest.value.page) * _controller.state.pageRequest.value.size + 1} - ${(_controller.state.pageRequest.value.page + 1) * _controller.state.pageRequest.value.size} of ${_controller.state.pageRequest.value.totalElements} items',
+        ),
+        // Pagination buttons
+        IconButton(
+          icon:
+              _controller.state.pageRequest.value.page > 0
+                  ? Icon(Icons.navigate_before, color: Colors.grey.shade900)
+                  : Icon(Icons.navigate_before, color: Colors.grey.shade300),
+          onPressed: _controller.state.pageRequest.value.page > 0 ? () => _controller.goToPage(_controller.state.pageRequest.value.page - 1) : null,
+          tooltip: 'Previous Page',
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            '${_controller.state.pageRequest.value.page + 1} / ${_controller.state.pageRequest.value.totalPages}',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        IconButton(
+          icon:
+              _controller.state.pageRequest.value.page < _controller.state.pageRequest.value.totalPages - 1
+                  ? Icon(Icons.navigate_next, color: Colors.grey.shade900)
+                  : Icon(Icons.navigate_next, color: Colors.grey.shade300),
+          onPressed:
+              _controller.state.pageRequest.value.page < _controller.state.pageRequest.value.totalPages - 1
+                  ? () => _controller.goToPage(_controller.state.pageRequest.value.page + 1)
+                  : null,
+          tooltip: 'Next Page',
+        ),
+      ],
+    );
   }
 }

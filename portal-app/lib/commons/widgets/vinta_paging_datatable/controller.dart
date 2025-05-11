@@ -30,7 +30,6 @@ class VintaPagingDataTableController<T> extends GetxController {
     this.dataRowBuilder = dataRowBuilder;
     this.state.columnSettings.clear();
     this.state.columnSettings.addAll(columnSettings);
-    // Doto: OnUpdate table
   }
 
   @override
@@ -49,9 +48,28 @@ class VintaPagingDataTableController<T> extends GetxController {
     await _loadDataTask?.cancel();
     _loadDataTask = CancelableOperation.fromFuture(this.dataLoader(state.dataFilter, state.pageRequest.value));
     _loadDataTask!.value.then((result) async {
+      this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
+        page: result.page,
+        totalElements: result.totalElements,
+        totalPages: result.totalPages,
+      );
       this.state.paginatedDataItem.clear();
       this.state.paginatedDataItem.addAll(result.content);
     });
+  }
+
+  void goToPage(int page) {
+    if (page < 0 || page >= state.pageRequest.value.totalPages) return;
+
+    state.pageRequest.value = state.pageRequest.value.copyWith(page: page);
+    updatePaginationTable();
+  }
+
+  void changePageSize(int size) {
+    if (size < 0 || size > 500) return;
+
+    state.pageRequest.value = state.pageRequest.value.copyWith(size: size);
+    updatePaginationTable();
   }
 }
 

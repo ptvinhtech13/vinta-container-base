@@ -278,7 +278,7 @@ class TenantManagementPageController extends GetxController {
     final industries = ['Technology', 'Healthcare', 'Finance', 'Education', 'Manufacturing', 'Retail', 'Transportation'];
     final subscriptionTypes = ['Basic', 'Standard', 'Premium', 'Enterprise'];
 
-    for (int i = 1; i <= 50; i++) {
+    for (int i = 1; i <= 550; i++) {
       final tenantId = 'TN${i.toString().padLeft(3, '0')}';
       final status = i % 3 == 0 ? 'ACTIVE' : (i % 3 == 1 ? 'CREATED' : 'IN-ACTIVE');
       final industry = industries[i % industries.length];

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
 import 'package:containerbase/pages/tenant_management/state.dart';
 import 'package:flutter/material.dart';
@@ -90,13 +92,15 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     return DataRow(cells: cells);
                   },
                   dataLoader: (filterRequest, pageRequest) {
+                    final tenants = controller.state.tenants.sublist(pageRequest.page * pageRequest.size, (pageRequest.page + 1) * pageRequest.size);
+                    log("Loaded ${tenants.length} tenants");
                     return Future.delayed(
                       Duration(milliseconds: 500),
                       () => PagingResponse(
-                        content: controller.state.paginatedTenants,
-                        page: 0,
+                        content: tenants,
+                        page: pageRequest.page,
                         totalElements: controller.state.tenants.length,
-                        totalPages: controller.state.totalPages.value,
+                        totalPages: (controller.state.tenants.length / pageRequest.size).ceil(),
                       ),
                     );
                   },

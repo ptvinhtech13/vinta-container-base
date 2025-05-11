@@ -1,3 +1,8 @@
+import 'package:copy_with_extension/copy_with_extension.dart';
+
+part 'models.g.dart';
+
+@CopyWith()
 class DataColumnSetting {
   final int index;
   final String label;
@@ -17,6 +22,7 @@ class PagingResponse<T> {
   PagingResponse({required this.content, required this.page, required this.totalElements, required this.totalPages});
 }
 
+@CopyWith()
 class PageRequest {
   final int page;
   final int size;
