@@ -8,4 +8,8 @@ class AppPageController extends GetxController {
   void showLoading() {
     state.isShowLoadingCounter.value++;
   }
+
+  void tryCloseLoading() {
+    state.isShowLoadingCounter.value--;
+  }
 }

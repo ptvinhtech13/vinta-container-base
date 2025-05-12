@@ -5,6 +5,8 @@ import 'package:flutter/src/material/data_table.dart';
 import 'package:get/get.dart';
 import 'package:vinta_shared_commons/index.dart';
 
+import '../../../pages/app_layout/controller.dart';
+
 class VintaPagingDataTableController<Model, Filter> extends GetxController {
   final state = VintaPagingDataTableState<Model, Filter>();
 
@@ -12,6 +14,8 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
   late Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader;
 
   final eventBus = Get.find<InternalEventBusService>();
+
+  final appPageController = Get.find<AppPageController>();
 
   CancelableOperation<PagingResponse<Model>>? _loadDataTask;
 
@@ -45,16 +49,23 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
 
   Future<void> updatePaginationTable() async {
     await _loadDataTask?.cancel();
+    appPageController.showLoading();
     _loadDataTask = CancelableOperation.fromFuture(this.dataLoader(state.pageRequest.value));
-    _loadDataTask!.value.then((result) async {
-      this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
-        page: result.page,
-        totalElements: result.totalElements,
-        totalPages: result.totalPages,
-      );
-      this.state.paginatedDataItem.clear();
-      this.state.paginatedDataItem.addAll(result.content);
-    });
+    _loadDataTask!.value
+        .then((result) async {
+          this.state.pageRequest.value = this.state.pageRequest.value.copyWith(
+            page: result.page,
+            totalElements: result.totalElements,
+            totalPages: result.totalPages,
+          );
+          appPageController.tryCloseLoading();
+          this.state.paginatedDataItem.clear();
+          this.state.paginatedDataItem.addAll(result.content);
+        })
+        .catchError((error) {
+          appPageController.tryCloseLoading();
+          throw error;
+        });
   }
 
   void goToPage(int page) {

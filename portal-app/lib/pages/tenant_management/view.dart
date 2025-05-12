@@ -20,7 +20,6 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
     TenantManagementPageBindings().dependencies();
   }
 
-  // Add scroll controllers
   final ScrollController _scrollController = ScrollController();
 
   @override
