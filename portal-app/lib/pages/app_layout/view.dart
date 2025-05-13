@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:vinta_shared_commons/components/vinta_loading/view.dart';
 
 import '../../commons/constants/colors.dart';
 import '../../commons/widgets/side_navigation/view.dart';
@@ -51,26 +50,6 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                     Expanded(child: buildUI(context)),
                   ],
                 ),
-                Obx(() {
-                  return appPageController.state.isShowLoadingCounter.value > 0
-                      ? Visibility(
-                        visible: true,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: backgroundWhiteColor ?? Colors.white54,
-                            borderRadius: const BorderRadius.all(Radius.circular(0)),
-                          ),
-                          child: Center(
-                            child: VintaLoadingProgress(
-                              height: 130,
-                              width: 130,
-                              loadingWidget: Assets.icons.lottieShipContainer.lottie(height: 130, width: 130, repeat: true),
-                            ),
-                          ),
-                        ),
-                      )
-                      : const SizedBox.shrink();
-                }),
               ],
             ),
           ),
@@ -82,50 +61,61 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
   Widget buildUI(BuildContext context);
 
   Widget _buildAppBar() {
-    return Container(
-      height: 60,
-      color: AppColors.colorPrimary01,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    return Column(
+      children: [
+        Container(
+          height: 56, // Adjusted to maintain total height of 60 with the progress indicator
+          color: AppColors.colorPrimary01,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Toggle button for side navigation
-              if (showNavigationSideBar)
-                IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
-              if (showNavigationSideBar) const SizedBox(width: 16),
-              // ContainerBase logo
-              TextButton(
-                onPressed: () => Get.offAllNamed('/home'),
-                style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
-                child: Row(
-                  children: [
-                    Assets.icons.appLogo.image(height: 30, width: 30),
-                    const SizedBox(width: 8),
-                    const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                  ],
-                ),
+              Row(
+                children: [
+                  // Toggle button for side navigation
+                  if (showNavigationSideBar)
+                    IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
+                  if (showNavigationSideBar) const SizedBox(width: 16),
+                  // ContainerBase logo
+                  TextButton(
+                    onPressed: () => Get.offAllNamed('/home'),
+                    style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
+                    child: Row(
+                      children: [
+                        Assets.icons.appLogo.image(height: 30, width: 30),
+                        const SizedBox(width: 8),
+                        const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  // Notification button
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+                    onPressed: () {
+                      // Handle notification button press
+                    },
+                    tooltip: 'Notifications',
+                  ),
+                  const SizedBox(width: 8),
+                  // User profile avatar with dropdown
+                  _buildUserProfileDropdown(),
+                ],
               ),
             ],
           ),
-          Row(
-            children: [
-              // Notification button
-              IconButton(
-                icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                onPressed: () {
-                  // Handle notification button press
-                },
-                tooltip: 'Notifications',
-              ),
-              const SizedBox(width: 8),
-              // User profile avatar with dropdown
-              _buildUserProfileDropdown(),
-            ],
-          ),
-        ],
-      ),
+        ),
+        // Linear Progress Indicator at the top of AppBar
+        Obx(
+          () =>
+              appPageController.state.isShowLoadingCounter.value > 0
+                  ? LinearProgressIndicator(backgroundColor: AppColors.colorPrimary02, color: Colors.greenAccent, minHeight: 4)
+                  : const SizedBox(height: 4),
+        ),
+      ],
     );
   }
 
