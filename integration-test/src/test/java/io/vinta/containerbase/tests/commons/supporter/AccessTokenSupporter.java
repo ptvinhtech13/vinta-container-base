@@ -13,7 +13,6 @@ public class AccessTokenSupporter {
 
 	public String loginAsSuperAdmin() {
 		final var tokenPair = userTokenAccessService.login(
-
 				LoginCommand.builder()
 						.accessType(UserAccessType.BASIC_AUTH)
 						.email(superAdminConfigProperties.getEmail())

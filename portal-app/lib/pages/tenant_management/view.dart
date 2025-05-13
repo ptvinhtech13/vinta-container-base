@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vinta_shared_commons/constants/spaces.dart';
 import 'package:vinta_shared_commons/utils/app_utils.dart';
 
+import '../../commons/constants/colors.dart';
 import '../../commons/widgets/content_layout/view.dart';
 import '../../commons/widgets/vinta_paging_datatable/models.dart';
 import '../../commons/widgets/vinta_paging_datatable/view.dart';
@@ -41,21 +42,32 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     DataColumnSetting(index: 3, label: 'Description', size: ColumnSize.M, columnKey: 'description', isSortable: false),
                     DataColumnSetting(index: 4, label: 'Domain URL', size: ColumnSize.M, columnKey: 'domainHost', isSortable: false),
                     DataColumnSetting(index: 5, size: ColumnSize.S, label: 'Created At', columnKey: 'createdAt', isSortable: true),
+                    DataColumnSetting(index: 6, size: ColumnSize.S, label: 'Actions', columnKey: 'actions', isSortable: true),
                   ],
                   dataRowBuilder: (tenant, columnSettings) {
                     final cells =
                         columnSettings.where((column) => column.isVisible).sorted((a, b) => a.index.compareTo(b.index)).map((column) {
                           final Widget child = switch (column.columnKey) {
-                            'id' => SelectableText(tenant.id, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                            'title' => SelectableText(tenant.title, style: TextStyle(fontSize: 14)),
+                            'id' => SelectableText(tenant.id, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                            'title' => SelectableText(tenant.title, style: TextStyle(fontSize: 15)),
                             'status' => _buildStatusChip(tenant.status),
-                            'description' => SelectableText(tenant.description ?? '-', style: TextStyle(fontSize: 14)),
-                            'domainHost' => SelectableText(tenant.domainHost, style: TextStyle(fontSize: 14)),
+                            'description' => SelectableText(tenant.description ?? '-', style: TextStyle(fontSize: 15)),
+                            'domainHost' => SelectableText(tenant.domainHost, style: TextStyle(fontSize: 15)),
                             'createdAt' => SelectableText(
                               AppUtils.formatDateTime(tenant.createdAt, isAlreadyLocal: false),
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 15),
                             ),
-                            _ => SelectableText('-'),
+                            'actions' => Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.login, color: AppColors.colorPrimary01),
+                                  onPressed: () {
+                                    controller.loginToTenant(tenant);
+                                  },
+                                ),
+                              ],
+                            ),
+                            _ => SelectableText('-', style: TextStyle(fontSize: 15)),
                           };
                           return DataCell(child);
                         }).toList();

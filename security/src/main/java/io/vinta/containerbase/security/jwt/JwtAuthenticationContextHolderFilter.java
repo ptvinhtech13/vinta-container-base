@@ -56,7 +56,7 @@ public class JwtAuthenticationContextHolderFilter extends OncePerRequestFilter {
 						.tokenClaim(tokenClaim)
 						.tenantId(MapstructCommonDomainMapper.INSTANCE.stringToTenantId(getHeaderIgnoreCase(request,
 								SecurityConstants.X_TENANT_ID)))
-						.userId(MapstructCommonDomainMapper.INSTANCE.longToUserId(tokenClaim.getUserId()))
+						.userId(MapstructCommonDomainMapper.INSTANCE.stringToUserId(tokenClaim.getUserId()))
 						.userType(tokenClaim.getUserType())
 						.build());
 			} else {

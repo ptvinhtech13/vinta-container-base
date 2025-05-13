@@ -39,12 +39,9 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   children: [
                     showNavigationSideBar
                         ? Obx(
-                          () => AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: appPageController.state.isSideNavOpen.value ? 280 : 0,
-                            height: double.infinity,
-                            child: appPageController.state.isSideNavOpen.value ? SideNavigationDrawer() : const SizedBox.shrink(),
-                          ),
+                          () => appPageController.state.isSideNavOpen.value ? SizedBox(
+                              width: 280,
+                              child: SideNavigationDrawer()) : const SizedBox.shrink(),
                         )
                         : const SizedBox.shrink(),
                     Expanded(child: buildUI(context)),

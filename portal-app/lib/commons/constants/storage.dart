@@ -15,5 +15,5 @@ class SharePreferenceKeys {
   //
   // static const String storageLanguageCode = 'language_code';
 
-  static const List<String> removedKeys = [userAuthProfileKey, userAuthTokenKey, userAuthRefreshTokenKey];
+  static const List<String> removedKeys = [userAuthProfileKey, userAuthTokenKey, userAuthRefreshTokenKey, userAuthTokenExpiredAtKey, userAuthRefreshTokenExpiredAtKey];
 }

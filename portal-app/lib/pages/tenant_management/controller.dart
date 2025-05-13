@@ -12,4 +12,8 @@ class TenantManagementPageController extends GetxController {
   Future<PagingResponse<TenantModel>> queryTenants(PageRequest<TenantFilter?> pageRequest) {
     return tenantService.queryTenants(pageRequest);
   }
+
+  void loginToTenant(TenantModel tenant) {
+    tenantService.changeToTenant(tenant);
+  }
 }

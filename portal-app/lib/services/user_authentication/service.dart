@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:vinta_shared_commons/notifications/app_notification_service.dart';
 import 'package:vinta_shared_commons/notifications/content_models.dart';
 import 'package:vinta_shared_commons/notifications/models.dart';
@@ -12,19 +13,27 @@ import '../../commons/constants/storage.dart';
 import '../../commons/exceptions/error_response.dart';
 import '../../commons/routes/app_routes.dart';
 import '../user_access/service.dart';
+import '../users/service.dart';
 import 'state.dart';
 
 class UserAuthenticationService extends GetxService {
   final state = UserAuthenticationState();
+
   final UserAccessService _userAccessService;
   final SimpleRepository _simpleRepository;
+  final UserService _userService;
 
   final _tokenAuditIntervalDuration = Duration(minutes: 3);
   final _tokenRefreshDifferenceDuration = Duration(minutes: 6); // > =2x of tokenAuditIntervalDuration
 
-  UserAuthenticationService({required SimpleRepository simpleRepository, required UserAccessService userAccessService})
+  UserAuthenticationService({required SimpleRepository simpleRepository,
+    required UserAccessService userAccessService,
+    required UserService userService,
+  })
     : _simpleRepository = simpleRepository,
-      _userAccessService = userAccessService;
+      _userAccessService = userAccessService,
+  _userService = userService
+  ;
 
   @override
   Future<void> onReady() async {
@@ -36,8 +45,9 @@ class UserAuthenticationService extends GetxService {
   }
 
   Future<void> login(String username, String password) {
-    return _userAccessService.login(username, password).then((value) {
+    return _userAccessService.login(username, password).then((value) async {
       state.isAuthenticated.value = true;
+      await settleCurrentUser();
     });
   }
 
@@ -60,6 +70,8 @@ class UserAuthenticationService extends GetxService {
       return Future.value();
     }
 
+    await settleCurrentUser();
+
     if (differenceRefreshTokenExpired.inMinutes < _tokenRefreshDifferenceDuration.inMinutes) {
       await refreshToken().catchError((error) {
         log("Error refreshing token");
@@ -80,11 +92,19 @@ class UserAuthenticationService extends GetxService {
     return Future.value();
   }
 
+  Future<void> settleCurrentUser() async {
+    final tokenClaim = JwtDecoder.decode(_simpleRepository.getString(SharePreferenceKeys.userAuthTokenKey));
+    log("tokenClaim['tokenClaim']['userId': ${tokenClaim['tokenClaim']['userId']}");
+    state.currentUserId.value = "${tokenClaim['tokenClaim']['userId']}";
+    state.currentUser.value = await _userService.getUserProfile(state.currentUserId.value!);
+  }
+
   void logout() {
     _simpleRepository.remove(SharePreferenceKeys.userAuthTokenKey);
     _simpleRepository.remove(SharePreferenceKeys.userAuthTokenExpiredAtKey);
     _simpleRepository.remove(SharePreferenceKeys.userAuthRefreshTokenKey);
     _simpleRepository.remove(SharePreferenceKeys.userAuthRefreshTokenExpiredAtKey);
+    state.currentUserId.value = null;
     state.isAuthenticated.value = false;
     if (Get.key.currentContext != null && Get.currentRoute != AppRoutes.welcome) {
       Future.delayed(Duration(milliseconds: 100), () {
@@ -101,3 +121,10 @@ class UserAuthenticationService extends GetxService {
     });
   }
 }
+
+
+// 1370029103302795300
+// 1370029103302795300
+// 1370029103302795264
+
+

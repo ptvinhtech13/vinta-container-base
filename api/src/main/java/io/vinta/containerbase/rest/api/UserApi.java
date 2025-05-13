@@ -25,6 +25,11 @@ public interface UserApi {
 	@ResponseStatus(HttpStatus.OK)
 	UserResponse getUser(@PathVariable("userId") Long userId);
 
+	@GetMapping(path = "/api/user/users/me")
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	@ResponseStatus(HttpStatus.OK)
+	UserResponse getUserMe();
+
 	@PostMapping(path = "/api/user/users")
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	@ResponseStatus(HttpStatus.CREATED)

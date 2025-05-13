@@ -34,4 +34,8 @@ class TenantService extends GetxService {
           );
         });
   }
+
+  void changeToTenant(TenantModel tenant) {
+    state.currentTenant.value = tenant;
+  }
 }

@@ -40,10 +40,10 @@ class AppBindings extends Bindings {
     Get.put<UserAccessService>(UserAccessService(simpleRepository: Get.find<SimpleRepository>(), userAccessApiClient: userAccessApiClient));
 
     TenantServiceBindings().dependencies();
-    UserAuthenticationBindings().dependencies();
-    NavigationItemConfigBindings().dependencies();
     UsersBindings().dependencies();
     RoleBindings().dependencies();
+    UserAuthenticationBindings().dependencies();
+    NavigationItemConfigBindings().dependencies();
 
     log("Services initialized");
   }

@@ -30,4 +30,8 @@ abstract class UserApiClient {
     @Query("sortFields") String? sortFields,
     @Query("sortDirection") String? sortDirection,
   });
+
+  @GET("/api/user/users/{userId}")
+  Future<UserResponse> getUserProfile(
+      @Path("userId") String userId);
 }

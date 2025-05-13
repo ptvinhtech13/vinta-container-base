@@ -1,5 +1,6 @@
 package io.vinta.containerbase.tests.http.controller.users;
 
+import io.vinta.containerbase.app.users.SuperAdminConfigProperties;
 import io.vinta.containerbase.common.enums.UserStatus;
 import io.vinta.containerbase.common.enums.UserType;
 import io.vinta.containerbase.common.paging.Paging;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -40,6 +42,9 @@ import org.springframework.util.LinkedMultiValueMap;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = IntegrationTestConfiguration.class)
 class UserControllerIntegrationTest extends BaseIntegrationTest {
+
+	@Autowired
+	private SuperAdminConfigProperties superAdminConfigProperties;
 
 	@Test
 	void testCreateTenantOwnerWhenValidRequestThenReturnUserResponse() {
@@ -480,6 +485,44 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 					Assertions.assertEquals(saleMemberRole.getTenantId()
 							.getValue()
 							.toString(), userRoleResponse.getTenantId());
+				});
+	}
+
+	@Test
+	void testGetUserMeWhenValidRequestThenReturnUserResponse() {
+		// Arrange
+		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
+		final var admin = userQueryService.findSingleUser(FilterUserQuery.builder()
+				.byEmail(superAdminConfigProperties.getEmail())
+				.build())
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		// Act & Assert
+		webClient.get()
+				.uri(uri -> uri.path("/api/user/users/me")
+						.build(admin.getId()
+								.getValue()))
+				.headers(header -> HeaderGenerator.generateHttpHeaders(GenerateHttpHeader.builder()
+						.header(header)
+						.objectMapper(objectMapper)
+						.accessToken(accessTokenSupporter.loginAsSuperAdmin())
+						.requestId(1L)
+						.tenantId(tenant.getId()
+								.getValue())
+						.build()))
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBody(UserResponse.class)
+				.consumeWith(response -> {
+					final var userResponse = response.getResponseBody();
+					Assertions.assertNotNull(userResponse);
+					Assertions.assertEquals(UserType.SYSTEM_ADMIN, userResponse.getUserType());
+					Assertions.assertEquals(admin.getEmail(), userResponse.getEmail());
+					Assertions.assertEquals(admin.getFullName(), userResponse.getFullName());
+					Assertions.assertEquals(admin.getPhoneNumber(), userResponse.getPhoneNumber());
+					Assertions.assertEquals(1, userResponse.getUserRoles()
+							.size());
 				});
 	}
 

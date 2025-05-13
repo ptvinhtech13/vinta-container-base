@@ -4,6 +4,7 @@ import io.vinta.containerbase.common.accesstoken.UserTokenGenerator;
 import io.vinta.containerbase.common.enums.UserStatus;
 import io.vinta.containerbase.common.exceptions.BadRequestException;
 import io.vinta.containerbase.common.exceptions.NotFoundException;
+import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.security.domains.JwtTokenClaim;
 import io.vinta.containerbase.common.security.domains.JwtTokenType;
 import io.vinta.containerbase.core.useraccess.UserAccessRepository;
@@ -50,14 +51,12 @@ public class UserTokenAccessServiceImpl implements UserTokenAccessService {
 
 		return UserAccessTokenPair.builder()
 				.accessToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
-						.userId(user.getId()
-								.getValue())
+						.userId(MapstructCommonDomainMapper.INSTANCE.userIdToString(user.getId()))
 						.userType(user.getUserType())
 						.type(JwtTokenType.ACCESS_TOKEN)
 						.build()))
 				.refreshToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
-						.userId(user.getId()
-								.getValue())
+						.userId(MapstructCommonDomainMapper.INSTANCE.userIdToString(user.getId()))
 						.userType(user.getUserType())
 						.type(JwtTokenType.REFRESH_TOKEN)
 						.build()))
@@ -73,14 +72,12 @@ public class UserTokenAccessServiceImpl implements UserTokenAccessService {
 				.orElseThrow(() -> new NotFoundException("User Not Found"));
 		return UserAccessTokenPair.builder()
 				.accessToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
-						.userId(user.getId()
-								.getValue())
+						.userId(MapstructCommonDomainMapper.INSTANCE.userIdToString(user.getId()))
 						.userType(user.getUserType())
 						.type(JwtTokenType.ACCESS_TOKEN)
 						.build()))
 				.refreshToken(userTokenGenerator.generateToken(JwtTokenClaim.builder()
-						.userId(user.getId()
-								.getValue())
+						.userId(MapstructCommonDomainMapper.INSTANCE.userIdToString(user.getId()))
 						.userType(user.getUserType())
 						.type(JwtTokenType.REFRESH_TOKEN)
 						.build()))

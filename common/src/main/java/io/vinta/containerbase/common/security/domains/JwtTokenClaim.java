@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JwtTokenClaim implements Serializable {
 
-	private Long userId;
+	private String userId;
 	private UserType userType;
 	private JwtTokenType type;
 }
