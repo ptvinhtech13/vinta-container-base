@@ -4,11 +4,17 @@ import 'package:containerbase/services/tenant/requests.dart';
 import 'package:get/get.dart';
 
 import '../clients/rest/apis/tenant/tenant_api.dart';
+import 'state.dart';
 
 class TenantService extends GetxService {
   final TenantApiClient tenantApiClient;
+  final state = TenantState();
 
   TenantService({required this.tenantApiClient});
+
+  TenantModel getCurrentTenant() {
+    return state.currentTenant.value;
+  }
 
   Future<PagingResponse<TenantModel>> queryTenants(PageRequest<TenantFilter?> pageRequest) {
     return tenantApiClient

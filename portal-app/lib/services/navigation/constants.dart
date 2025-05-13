@@ -11,15 +11,24 @@ class AppNavigationItemConfig {
     route: AppRoutes.tenantManagement,
     iconCode: Icons.business.codePoint,
   );
-  static final NavigationItem userManagementUsers = NavigationItem(
-    "Users",
+
+  static final NavigationItem userManagementAccounts = NavigationItem(
+    "Accounts",
     displayOrder: 1,
     route: AppRoutes.userManagementUsers,
     iconCode: Icons.supervisor_account.codePoint,
   );
+
+  static final NavigationItem rolePermissions = NavigationItem(
+    "Role & Permissions",
+    displayOrder: 2,
+    route: AppRoutes.rolePermissions,
+    iconCode: Icons.security.codePoint,
+  );
+
   static final NavigationItem userManagementGroups = NavigationItem(
     "Groups",
-    displayOrder: 2,
+    displayOrder: 3,
     route: AppRoutes.userManagementGroups,
     iconCode: Icons.groups.codePoint,
   );
@@ -28,14 +37,9 @@ class AppNavigationItemConfig {
     "User Management",
     displayOrder: 2,
     iconCode: Icons.contacts.codePoint,
-    children: [userManagementUsers, userManagementGroups],
+    children: [userManagementAccounts, rolePermissions, userManagementGroups],
   );
-  static final NavigationItem rolePermissions = NavigationItem(
-    "Role & Permissions",
-    displayOrder: 3,
-    route: AppRoutes.rolePermissions,
-    iconCode: Icons.security.codePoint,
-  );
+
   static final NavigationItem quotations = NavigationItem("Quotations", displayOrder: 3);
 
   static final NavigationItem dashboardReportsDemoMetabase = NavigationItem("Demo Metabase", route: AppRoutes.demoMetabase);

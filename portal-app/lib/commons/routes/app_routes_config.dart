@@ -2,12 +2,12 @@ import 'package:containerbase/pages/role_permissions/index.dart';
 import 'package:containerbase/pages/tenant_management/index.dart';
 import 'package:get/get.dart';
 
+import '../../pages/accounts/bindings.dart';
+import '../../pages/accounts/view.dart';
 import '../../pages/demo_metabase/index.dart';
 import '../../pages/group_management/index.dart';
 import '../../pages/home/bindings.dart';
 import '../../pages/home/view.dart';
-import '../../pages/user_management/bindings.dart';
-import '../../pages/user_management/view.dart';
 import '../../pages/welcome/index.dart';
 import '../middlewares/index.dart';
 import 'app_routes.dart';
@@ -51,8 +51,8 @@ class AppRoutingConfigurations {
     ),
     GetPage(
       name: AppRoutes.userManagementUsers,
-      page: () => UserManagementPage(),
-      binding: UserManagementPageBindings(),
+      page: () => AccountPage(),
+      binding: AccountPageBindings(),
       middlewares: [UserAccessCheckerMiddleware(priority: 1)],
       transition: Transition.noTransition,
     ),

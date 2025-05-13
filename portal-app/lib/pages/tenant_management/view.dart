@@ -12,14 +12,9 @@ import '../../services/navigation/constants.dart';
 import '../../services/tenant/models.dart';
 import '../../services/tenant/requests.dart';
 import '../app_layout/view.dart';
-import 'bindings.dart';
 import 'controller.dart';
 
 class TenantManagementPage extends AppPage<TenantManagementPageController> {
-  TenantManagementPage({super.key}) {
-    TenantManagementPageBindings().dependencies();
-  }
-
   final ScrollController _scrollController = ScrollController();
 
   @override

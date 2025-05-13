@@ -13,8 +13,7 @@ class NavigationItemService extends GetxService {
       return <NavigationItem>[
         AppNavigationItemConfig.home,
         AppNavigationItemConfig.tenantManagement,
-        AppNavigationItemConfig.rolePermissions,
-        AppNavigationItemConfig.userManagementGroups,
+        AppNavigationItemConfig.userManagement,
         AppNavigationItemConfig.quotations,
         AppNavigationItemConfig.dashboardReports,
         AppNavigationItemConfig.settings,

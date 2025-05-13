@@ -1,5 +1,15 @@
-class AppCommons {
-  static const String appCommonUid = "00000000-0000-0000-0000-000000000000";
+import 'package:containerbase/services/tenant/index.dart';
+
+class DomainConstants {
+  static TenantModel defaultTenant = TenantModel(
+    id: '88888888',
+    title: 'Admin Tenant',
+    description: 'Admin Tenant',
+    domainHost: '',
+    status: TenantStatus.ACTIVE,
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+  );
 }
 
 class AppSlidingPanel {

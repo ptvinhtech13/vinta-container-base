@@ -8,6 +8,7 @@ import 'package:vinta_shared_commons/repository/simple_repository.dart';
 import 'package:vinta_shared_commons/utils/app_utils.dart';
 
 import '../../../../commons/exceptions/error_response.dart';
+import '../../../tenant/service.dart';
 
 class ContainerBaseDioService extends GetxService {
   late final Dio _containerBaseDioServer;
@@ -35,6 +36,7 @@ class ContainerBaseDioService extends GetxService {
         InterceptorsWrapper(
           onRequest: (options, handler) async {
             var accessToken = repository.getString(SharePreferenceKeys.userAuthTokenKey);
+            options.headers['X-Tenant-ID'] = Get.find<TenantService>().state.currentTenant.value.id;
             if (!AppUtils.isEmptyString(accessToken)) {
               options.headers['Authorization'] = "Bearer $accessToken";
             }
