@@ -20,7 +20,7 @@ class AccountPage extends AppPage<AccountPageController> {
   @override
   Widget buildUI(BuildContext context) {
     return ContentLayout(
-      title: 'Tenant Management',
+      title: 'Accounts',
       breadcrumbPaths: [AppNavigationItemConfig.home, AppNavigationItemConfig.userManagementAccounts],
       content: [
         // _buildFilterPanel(),

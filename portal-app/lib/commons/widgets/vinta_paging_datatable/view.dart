@@ -57,7 +57,6 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
                           dividerThickness: 1,
                           scrollController: _scrollController,
                           columnSpacing: 5,
-                          headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.greenAccent),
                           headingRowDecoration: BoxDecoration(
                             borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                             gradient: LinearGradient(

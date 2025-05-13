@@ -1,3 +1,4 @@
+import 'package:containerbase/services/clients/rest/apis/roles/dtos.dart';
 import 'package:containerbase/services/clients/rest/apis/users/dtos.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
@@ -66,5 +67,9 @@ class UserRoleModel {
 
   static UserRoleModel fromResponse(UserRoleResponse userRoleResponse, RoleModel roleModel) {
     return UserRoleModel(tenantId: userRoleResponse.tenantId, roleModel: roleModel);
+  }
+
+  static UserRoleModel fromRoleResponse(String tenantId, RoleResponse roleResponse) {
+    return UserRoleModel(tenantId: tenantId, roleModel: RoleModel.fromResponse(roleResponse));
   }
 }
