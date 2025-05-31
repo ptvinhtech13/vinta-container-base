@@ -26,14 +26,13 @@ class UserAuthenticationService extends GetxService {
   final _tokenAuditIntervalDuration = Duration(minutes: 3);
   final _tokenRefreshDifferenceDuration = Duration(minutes: 6); // > =2x of tokenAuditIntervalDuration
 
-  UserAuthenticationService({required SimpleRepository simpleRepository,
+  UserAuthenticationService({
+    required SimpleRepository simpleRepository,
     required UserAccessService userAccessService,
     required UserService userService,
-  })
-    : _simpleRepository = simpleRepository,
-      _userAccessService = userAccessService,
-  _userService = userService
-  ;
+  }) : _simpleRepository = simpleRepository,
+       _userAccessService = userAccessService,
+       _userService = userService;
 
   @override
   Future<void> onReady() async {
@@ -95,8 +94,8 @@ class UserAuthenticationService extends GetxService {
   Future<void> settleCurrentUser() async {
     final tokenClaim = JwtDecoder.decode(_simpleRepository.getString(SharePreferenceKeys.userAuthTokenKey));
     log("tokenClaim['tokenClaim']['userId': ${tokenClaim['tokenClaim']['userId']}");
-    state.currentUserId.value = "${tokenClaim['tokenClaim']['userId']}";
-    state.currentUser.value = await _userService.getUserProfile(state.currentUserId.value!);
+    state.currentUserId.value = tokenClaim['tokenClaim']['userId'];
+    state.currentUser.value = await _userService.getUserMe();
   }
 
   void logout() {
@@ -121,10 +120,3 @@ class UserAuthenticationService extends GetxService {
     });
   }
 }
-
-
-// 1370029103302795300
-// 1370029103302795300
-// 1370029103302795264
-
-

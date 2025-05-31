@@ -45,6 +45,7 @@ Future<void> main() async {
     },
     (exception, stack) {
       log("ERROR IN MAIN", error: exception, stackTrace: stack);
+      print(stack);
       if (exception is DioException && exception.error is ErrorResponse) {
         final errorResponse = exception.error as ErrorResponse;
         Get.find<AppNotificationCenterManager>().sendNotificationMessage(

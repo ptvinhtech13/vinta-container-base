@@ -3,6 +3,7 @@ import 'package:containerbase/services/tenant/models.dart';
 import 'package:containerbase/services/tenant/requests.dart';
 import 'package:get/get.dart';
 
+import '../../commons/constants/commons.dart';
 import '../clients/rest/apis/tenant/tenant_api.dart';
 import 'state.dart';
 
@@ -37,5 +38,9 @@ class TenantService extends GetxService {
 
   void changeToTenant(TenantModel tenant) {
     state.currentTenant.value = tenant;
+  }
+
+  void logoutTenant() {
+    state.currentTenant.value = DomainConstants.defaultTenant;
   }
 }

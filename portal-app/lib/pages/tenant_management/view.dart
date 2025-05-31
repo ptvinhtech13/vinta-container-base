@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vinta_shared_commons/constants/spaces.dart';
 import 'package:vinta_shared_commons/utils/app_utils.dart';
 
 import '../../commons/constants/colors.dart';
@@ -25,7 +24,6 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
       breadcrumbPaths: [AppNavigationItemConfig.home, AppNavigationItemConfig.tenantManagement],
       content: [
         // _buildFilterPanel(),
-        AppSpaces.spaceH16,
         Expanded(
           child: Card(
             elevation: 2,
@@ -41,8 +39,8 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                     DataColumnSetting(index: 2, label: 'Status', size: ColumnSize.S, columnKey: 'status', isSortable: false),
                     DataColumnSetting(index: 3, label: 'Description', size: ColumnSize.M, columnKey: 'description', isSortable: false),
                     DataColumnSetting(index: 4, label: 'Domain URL', size: ColumnSize.M, columnKey: 'domainHost', isSortable: false),
-                    DataColumnSetting(index: 5, size: ColumnSize.S, label: 'Created At', columnKey: 'createdAt', isSortable: true),
-                    DataColumnSetting(index: 6, size: ColumnSize.S, label: 'Actions', columnKey: 'actions', isSortable: true),
+                    DataColumnSetting(index: 5, label: 'Created At', size: ColumnSize.S, columnKey: 'createdAt', isSortable: true),
+                    DataColumnSetting(index: 6, label: 'Actions', size: ColumnSize.S, columnKey: 'actions', isSortable: true),
                   ],
                   dataRowBuilder: (tenant, columnSettings) {
                     final cells =

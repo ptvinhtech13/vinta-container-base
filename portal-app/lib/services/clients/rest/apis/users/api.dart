@@ -31,7 +31,6 @@ abstract class UserApiClient {
     @Query("sortDirection") String? sortDirection,
   });
 
-  @GET("/api/user/users/{userId}")
-  Future<UserResponse> getUserProfile(
-      @Path("userId") String userId);
+  @GET("/api/user/users/me")
+  Future<UserResponse> getUserMe();
 }

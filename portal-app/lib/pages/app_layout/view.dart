@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../commons/constants/colors.dart';
+import '../../commons/routes/app_routes.dart';
 import '../../commons/widgets/side_navigation/view.dart';
 import '../../generated/assets.gen.dart';
-import '../../services/user_authentication/service.dart';
 import 'controller.dart';
 
 abstract class AppPage<T extends GetxController> extends GetView<T> {
@@ -39,9 +39,10 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   children: [
                     showNavigationSideBar
                         ? Obx(
-                          () => appPageController.state.isSideNavOpen.value ? SizedBox(
-                              width: 280,
-                              child: SideNavigationDrawer()) : const SizedBox.shrink(),
+                          () =>
+                              appPageController.state.isSideNavOpen.value
+                                  ? SizedBox(width: 280, child: SideNavigationDrawer())
+                                  : const SizedBox.shrink(),
                         )
                         : const SizedBox.shrink(),
                     Expanded(child: buildUI(context)),
@@ -75,13 +76,18 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   if (showNavigationSideBar) const SizedBox(width: 16),
                   // ContainerBase logo
                   TextButton(
-                    onPressed: () => Get.offAllNamed('/home'),
+                    onPressed: () => Get.offAllNamed(AppRoutes.home),
                     style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
                     child: Row(
                       children: [
                         Assets.icons.appLogo.image(height: 30, width: 30),
                         const SizedBox(width: 8),
-                        const Text('ContainerBase', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        Obx(
+                          () => Text(
+                            appPageController.tenantService.state.currentTenant.value.title,
+                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -98,8 +104,119 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                     tooltip: 'Notifications',
                   ),
                   const SizedBox(width: 8),
-                  // User profile avatar with dropdown
-                  _buildUserProfileDropdown(),
+
+                  PopupMenuButton<String>(
+                    offset: const Offset(0, 56),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    tooltip: 'User profile',
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          const CircleAvatar(backgroundColor: Colors.white, radius: 16, child: Icon(Icons.person, color: AppColors.colorPrimary01)),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_drop_down, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                    itemBuilder:
+                        (context) => [
+                          PopupMenuItem<String>(
+                            enabled: false,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            height: 150,
+                            child: SizedBox(
+                              width: 250,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundColor: AppColors.colorPrimary01,
+                                        radius: 24,
+                                        child: Icon(Icons.person, color: Colors.white, size: 32),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SelectableText(
+                                              appPageController.userAuthenticationService.state.currentUser.value?.fullName ?? '-',
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black54),
+                                            ),
+                                            Text(
+                                              appPageController.userAuthenticationService.state.currentUser.value?.userRoles
+                                                      .map((e) => e.roleModel.title)
+                                                      .join(', ') ??
+                                                  '-',
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+                                            ),
+                                            Text(
+                                              "Logged: ${appPageController.tenantService.state.currentTenant.value.title}",
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  SelectableText(
+                                    'AccountID: ${appPageController.userAuthenticationService.state.currentUser.value?.id ?? '-'}',
+                                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                                  ),
+                                  SelectableText(
+                                    'Email: ${appPageController.userAuthenticationService.state.currentUser.value?.email ?? '-'}',
+                                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  const Divider(),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Logout option
+                          PopupMenuItem<String>(
+                            value: 'logout',
+                            height: 40,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.logout, color: AppColors.colorError03),
+                                const SizedBox(width: 8),
+                                const Text('Logout Tenant', style: TextStyle(color: AppColors.colorError03)),
+                              ],
+                            ),
+                            onTap: () {
+                              // Add a small delay to allow the popup to close before logging out
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                appPageController.tenantService.logoutTenant();
+                              });
+                            },
+                          ),
+                          PopupMenuItem<String>(
+                            value: 'logout',
+                            height: 40,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.logout, color: AppColors.colorError03),
+                                const SizedBox(width: 8),
+                                const Text('Logout', style: TextStyle(color: AppColors.colorError03)),
+                              ],
+                            ),
+                            onTap: () {
+                              // Add a small delay to allow the popup to close before logging out
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                appPageController.userAuthenticationService.logout();
+                              });
+                            },
+                          ),
+                        ],
+                  ),
                 ],
               ),
             ],
@@ -113,83 +230,6 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   : const SizedBox(height: 4),
         ),
       ],
-    );
-  }
-
-  Widget _buildUserProfileDropdown() {
-    final userAuthService = Get.find<UserAuthenticationService>();
-
-    return PopupMenuButton<String>(
-      offset: const Offset(0, 56),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      tooltip: 'User profile',
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: [
-            const CircleAvatar(backgroundColor: Colors.white, radius: 16, child: Icon(Icons.person, color: AppColors.colorPrimary01)),
-            const SizedBox(width: 8),
-            const Icon(Icons.arrow_drop_down, color: Colors.white),
-          ],
-        ),
-      ),
-      itemBuilder:
-          (context) => [
-            // User info header
-            PopupMenuItem<String>(
-              enabled: false,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              height: 150,
-              child: SizedBox(
-                width: 220,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Row(
-                      children: [
-                        CircleAvatar(backgroundColor: AppColors.colorPrimary01, radius: 24, child: Icon(Icons.person, color: Colors.white, size: 32)),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('John Doe', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text('Administrator', style: TextStyle(color: Colors.grey)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    const Text('Account ID: ACC123456', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    const Text('john.doe@example.com', style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    const SizedBox(height: 8),
-                    const Divider(),
-                  ],
-                ),
-              ),
-            ),
-            // Logout option
-            PopupMenuItem<String>(
-              value: 'logout',
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-              child: Row(
-                children: [
-                  const Icon(Icons.logout, color: AppColors.colorError03),
-                  const SizedBox(width: 8),
-                  const Text('Logout', style: TextStyle(color: AppColors.colorError03)),
-                ],
-              ),
-              onTap: () {
-                // Add a small delay to allow the popup to close before logging out
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  userAuthService.logout();
-                });
-              },
-            ),
-          ],
     );
   }
 }

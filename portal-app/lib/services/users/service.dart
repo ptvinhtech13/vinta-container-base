@@ -47,8 +47,8 @@ class UserService extends GetxService {
         });
   }
 
-  Future<UserModel> getUserProfile(String userId) {
-    return _userApiClient.getUserProfile(userId).then((response) {
+  Future<UserModel> getUserMe() {
+    return _userApiClient.getUserMe().then((response) {
       final byRoleIds = response.userRoles.map((e) => e.roleId).toSet().toList();
       return _roleApiClient.queryRoles(0, 500, byRoleIds: byRoleIds).then((roleResponse) {
         final roleMap = <String, RoleModel>{};
