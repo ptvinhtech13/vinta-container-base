@@ -24,4 +24,5 @@ import lombok.NoArgsConstructor;
 public class QueryRoleRequest {
 	private Set<String> byRoleIds;
 	private Set<String> byRoleKeys;
+	private Long byTenantId;
 }

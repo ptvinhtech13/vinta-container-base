@@ -308,6 +308,9 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 				.build();
 
 		final Map<String, String> requestParamMap = new HashMap<>();
+		requestParamMap.put("filter.byTenantId", tenant.getId()
+				.getValue()
+				.toString());
 		requestParamMap.put("size", String.valueOf(request.getSize()));
 		requestParamMap.put("page", String.valueOf(request.getPage()));
 		requestParamMap.put("sortDirection", "ASC");

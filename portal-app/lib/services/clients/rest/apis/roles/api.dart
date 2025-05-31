@@ -16,6 +16,7 @@ abstract class RoleApiClient {
     @Query("size") int size, {
     @Query("filter.byRoleIds") List<String>? byRoleIds,
     @Query("filter.byRoleKeys") List<String>? byRoleKeys,
+    @Query("filter.byTenantId") String? byTenantId,
 
     @Query("sortFields") String? sortFields,
     @Query("sortDirection") String? sortDirection,

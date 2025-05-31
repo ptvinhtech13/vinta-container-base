@@ -29,6 +29,7 @@ public class FeatureNodeResponse {
 	private String id;
 	private String nodeTitle;
 	private String nodePath;
+	private String key;
 
 	private FeatureNodeType nodeType;
 	private int displayOrder;

@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 
 import '../clients/rest/apis/users/api.dart';
 import '../roles/models.dart';
+import '../tenant/service.dart';
 import 'models.dart';
 
 class UserService extends GetxService {
   final _userApiClient = Get.find<UserApiClient>();
   final _roleApiClient = Get.find<RoleApiClient>();
+  final _tenantService = Get.find<TenantService>();
 
   Future<PagingResponse<UserModel>> queryUsers(PageRequest<UserFilter?> pageRequest) {
     return _userApiClient

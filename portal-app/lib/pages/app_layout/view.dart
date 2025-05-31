@@ -74,7 +74,6 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                   if (showNavigationSideBar)
                     IconButton(icon: const Icon(Icons.menu, color: Colors.white), onPressed: toggleSideNav, tooltip: 'Toggle navigation'),
                   if (showNavigationSideBar) const SizedBox(width: 16),
-                  // ContainerBase logo
                   TextButton(
                     onPressed: () => Get.offAllNamed(AppRoutes.home),
                     style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8)),
@@ -191,10 +190,7 @@ abstract class AppPage<T extends GetxController> extends GetView<T> {
                               ],
                             ),
                             onTap: () {
-                              // Add a small delay to allow the popup to close before logging out
-                              Future.delayed(const Duration(milliseconds: 100), () {
-                                appPageController.tenantService.logoutTenant();
-                              });
+                              appPageController.tenantService.logoutTenant();
                             },
                           ),
                           PopupMenuItem<String>(

@@ -11,19 +11,23 @@ class RoleService extends GetxService {
   final tenantService = Get.find<TenantService>();
 
   Future<PagingResponse<UserRoleModel>> queryUserRoles(PageRequest<UserRoleFilter?> pageRequest) {
-    return roleApiClient.queryRoles(
-      pageRequest.page,
-      pageRequest.size,
-      byRoleIds: pageRequest.filter?.byRoleIds?.toList(),
-      byRoleKeys: pageRequest.filter?.byRoleKeys?.toList(),
-      sortFields: pageRequest.sortFields,
-      sortDirection: pageRequest.sortDirection,
-    ).then((response) => PagingResponse<UserRoleModel>(
-        page: response.page,
-        totalElements: response.totalElements,
-        totalPages: response.totalPages,
-        content: response.content.map((e) => UserRoleModel.fromRoleResponse(tenantService.state.currentTenant.value.id, e)).toList(),
-      ),
-    );
+    return roleApiClient
+        .queryRoles(
+          pageRequest.page,
+          pageRequest.size,
+          byRoleIds: pageRequest.filter?.byRoleIds?.toList(),
+          byRoleKeys: pageRequest.filter?.byRoleKeys?.toList(),
+          byTenantId: tenantService.state.currentTenant.value.id,
+          sortFields: pageRequest.sortFields,
+          sortDirection: pageRequest.sortDirection,
+        )
+        .then(
+          (response) => PagingResponse<UserRoleModel>(
+            page: response.page,
+            totalElements: response.totalElements,
+            totalPages: response.totalPages,
+            content: response.content.map((e) => UserRoleModel.fromRoleResponse(tenantService.state.currentTenant.value.id, e)).toList(),
+          ),
+        );
   }
 }

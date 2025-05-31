@@ -6,6 +6,7 @@ part 'requests.g.dart';
 class UserRoleFilter {
   final Set<String>? byRoleIds;
   final Set<String>? byRoleKeys;
+  final String? byTenantId;
 
-  UserRoleFilter({this.byRoleIds, this.byRoleKeys});
+  UserRoleFilter({this.byRoleIds, this.byRoleKeys, this.byTenantId});
 }

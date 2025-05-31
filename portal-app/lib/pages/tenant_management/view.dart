@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vinta_shared_commons/utils/app_utils.dart';
 
 import '../../commons/constants/colors.dart';
+import '../../commons/routes/app_routes.dart';
 import '../../commons/widgets/content_layout/view.dart';
 import '../../commons/widgets/vinta_paging_datatable/models.dart';
 import '../../commons/widgets/vinta_paging_datatable/view.dart';
@@ -61,6 +62,7 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
                                   icon: Icon(Icons.login, color: AppColors.colorPrimary01),
                                   onPressed: () {
                                     controller.loginToTenant(tenant);
+                                    Get.offAllNamed(AppRoutes.home);
                                   },
                                 ),
                               ],

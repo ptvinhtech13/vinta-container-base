@@ -71,8 +71,7 @@ public class RoleController implements RoleApi {
 		return RolePaginationMapper.INSTANCE.toPagingResponse(featureNodeQueryService, roleQueryService.queryRoles(
 				pagingQuery.withFilter(Optional.ofNullable(pagingQuery.getFilter())
 						.orElseGet(() -> FilterRoleQuery.builder()
-								.build())
-						.withByTenantId(AppSecurityContextHolder.getTenantId()))));
+								.build()))));
 	}
 
 	@Override

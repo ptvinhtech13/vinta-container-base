@@ -32,6 +32,7 @@ public interface RoleResponseMapper {
 						.id(key.getId()
 								.getValue()
 								.toString())
+						.key(key.name())
 						.nodePath(key.getNodePath())
 						.nodeTitle(key.getNodeTitle())
 						.nodeType(key.getNodeType())

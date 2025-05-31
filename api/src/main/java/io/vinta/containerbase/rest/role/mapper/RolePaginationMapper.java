@@ -38,6 +38,6 @@ public interface RolePaginationMapper {
 			Paging<Role> source);
 
 	@Mapping(target = "byRoleIds", source = "byRoleIds", qualifiedByName = "stringsToRoleIds")
-	@Mapping(target = "byTenantId", ignore = true)
+	@Mapping(target = "byTenantId", source = "byTenantId", qualifiedByName = "longToTenantId")
 	FilterRoleQuery toFilter(QueryRoleRequest query);
 }
