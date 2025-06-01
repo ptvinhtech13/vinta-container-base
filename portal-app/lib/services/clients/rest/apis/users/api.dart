@@ -33,4 +33,7 @@ abstract class UserApiClient {
 
   @GET("/api/user/users/me")
   Future<UserResponse> getUserMe();
+
+  @POST("/api/user/users")
+  Future<UserResponse> createUser(@Body() CreateUserRequest request);
 }

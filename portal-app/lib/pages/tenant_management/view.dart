@@ -88,10 +88,10 @@ class TenantManagementPage extends AppPage<TenantManagementPageController> {
     Color chipColor;
     switch (status) {
       case TenantStatus.ACTIVE:
-        chipColor = Colors.green;
+        chipColor = AppColors.colorPrimary01;
         break;
       case TenantStatus.CREATED:
-        chipColor = Colors.blue;
+        chipColor = AppColors.colorBlueGray03;
         break;
       case TenantStatus.INACTIVE:
         chipColor = Colors.red;

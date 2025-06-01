@@ -4,6 +4,7 @@ import 'package:containerbase/services/users/requests.dart';
 import 'package:get/get.dart';
 
 import '../clients/rest/apis/users/api.dart';
+import '../clients/rest/apis/users/dtos.dart';
 import '../roles/models.dart';
 import '../tenant/service.dart';
 import 'models.dart';
@@ -18,6 +19,8 @@ class UserService extends GetxService {
         .queryUsers(
           pageRequest.page,
           pageRequest.size,
+          sortFields: pageRequest.sortFields,
+          sortDirection: pageRequest.sortDirection,
           byUserId: pageRequest.filter?.byUserId,
           byTenantId: pageRequest.filter?.byTenantId,
           byRoleIds: pageRequest.filter?.byRoleIds?.toList(),
@@ -51,6 +54,19 @@ class UserService extends GetxService {
 
   Future<UserModel> getUserMe() {
     return _userApiClient.getUserMe().then((response) {
+      final byRoleIds = response.userRoles.map((e) => e.roleId).toSet().toList();
+      return _roleApiClient.queryRoles(0, 500, byRoleIds: byRoleIds).then((roleResponse) {
+        final roleMap = <String, RoleModel>{};
+        for (final role in roleResponse.content) {
+          roleMap[role.id] = RoleModel.fromResponse(role);
+        }
+        return UserModel.fromResponse(response, roleMap);
+      });
+    });
+  }
+
+  Future<UserModel> createUser(CreateUserRequest request) {
+    return _userApiClient.createUser(request).then((response) {
       final byRoleIds = response.userRoles.map((e) => e.roleId).toSet().toList();
       return _roleApiClient.queryRoles(0, 500, byRoleIds: byRoleIds).then((roleResponse) {
         final roleMap = <String, RoleModel>{};

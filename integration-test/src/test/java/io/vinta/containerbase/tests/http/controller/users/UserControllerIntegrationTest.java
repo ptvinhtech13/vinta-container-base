@@ -11,7 +11,6 @@ import io.vinta.containerbase.core.users.request.CreateUserCommand;
 import io.vinta.containerbase.core.users.request.FilterUserQuery;
 import io.vinta.containerbase.rest.user.request.CreateUserAccessBasicAuthRequest;
 import io.vinta.containerbase.rest.user.request.CreateUserRequest;
-import io.vinta.containerbase.rest.user.request.CreateUserRoleRequest;
 import io.vinta.containerbase.rest.user.request.DeleteUserRequest;
 import io.vinta.containerbase.rest.user.request.QueryUserPaginationRequest;
 import io.vinta.containerbase.rest.user.request.UpdateUserRequest;
@@ -70,10 +69,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 				.userAccess(CreateUserAccessBasicAuthRequest.builder()
 						.password("0000")
 						.build())
-				.userRole(CreateUserRoleRequest.builder()
-						.roleId(userRole.getId()
-								.getValue())
-						.build())
+				.roleId(userRole.getId()
+						.getValue().toString())
 				.build();
 
 		// Act & Assert
@@ -139,10 +136,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 				.userAccess(CreateUserAccessBasicAuthRequest.builder()
 						.password("0000")
 						.build())
-				.userRole(CreateUserRoleRequest.builder()
-						.roleId(userRole.getId()
-								.getValue())
-						.build())
+				.roleId(userRole.getId()
+						.getValue().toString())
 				.build();
 
 		// Act & Assert
@@ -208,10 +203,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 				.userAccess(CreateUserAccessBasicAuthRequest.builder()
 						.password("0000")
 						.build())
-				.userRole(CreateUserRoleRequest.builder()
-						.roleId(userRole.getId()
-								.getValue())
-						.build())
+				.roleId(userRole.getId()
+						.getValue().toString())
 				.build();
 
 		// Act & Assert

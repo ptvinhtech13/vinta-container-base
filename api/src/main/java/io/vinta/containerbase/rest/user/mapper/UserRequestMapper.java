@@ -41,8 +41,7 @@ public interface UserRequestMapper {
 				.build());
 
 		builder.userRole(CreateUserRoleCommand.builder()
-				.roleId(MapstructCommonDomainMapper.INSTANCE.longToRoleId(request.getUserRole()
-						.getRoleId()))
+				.roleId(MapstructCommonDomainMapper.INSTANCE.stringToRoleId(request.getRoleId()))
 				.tenantId(tenantId)
 				.build());
 

@@ -50,3 +50,38 @@ class UserRoleResponse {
 
   Map<String, dynamic> toJson() => _$UserRoleResponseToJson(this);
 }
+
+@JsonSerializable()
+class CreateUserBasicAuthRequest {
+  final String accessType;
+  final String password;
+
+  CreateUserBasicAuthRequest({this.accessType = "BASIC_AUTH", required this.password});
+
+  factory CreateUserBasicAuthRequest.fromJson(Map<String, dynamic> json) => _$CreateUserBasicAuthRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CreateUserBasicAuthRequestToJson(this);
+}
+
+@JsonSerializable()
+class CreateUserRequest {
+  UserType userType;
+  String email;
+  String fullName;
+  String? phoneNumber;
+  String roleId;
+  CreateUserBasicAuthRequest userAccess;
+
+  CreateUserRequest({
+    required this.email,
+    required this.fullName,
+    this.phoneNumber,
+    required this.userType,
+    required this.roleId,
+    required this.userAccess,
+  });
+
+  factory CreateUserRequest.fromJson(Map<String, dynamic> json) => _$CreateUserRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CreateUserRequestToJson(this);
+}

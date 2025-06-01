@@ -108,4 +108,9 @@ class VintaPagingDataTableController<Model, Filter> extends GetxController {
   void clearHoveredColumn() {
     state.hoveredColumnKey.value = null;
   }
+
+  void refreshTable() {
+    state.pageRequest.value = state.pageRequest.value.copyWith(page: 0);
+    updatePaginationTable();
+  }
 }

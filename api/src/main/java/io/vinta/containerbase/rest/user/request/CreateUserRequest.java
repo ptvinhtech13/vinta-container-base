@@ -46,10 +46,10 @@ public class CreateUserRequest {
 	private String phoneNumber;
 
 	@NotNull
-	@Valid
-	private CreateUserAccessRequest userAccess;
+	private String roleId;
 
 	@NotNull
 	@Valid
-	private CreateUserRoleRequest userRole;
+	private CreateUserAccessRequest userAccess;
+
 }

@@ -20,13 +20,14 @@ class VintaPagingDataTable<Model, Filter> extends StatelessWidget {
     required List<DataColumnSetting> columnSettings,
     required DataRow Function(Model, List<DataColumnSetting>) dataRowBuilder,
     required Future<PagingResponse<Model>> Function(PageRequest<Filter?>) dataLoader,
+    VintaPagingDataTableController<Model, Filter>? controller,
     Filter? filter,
     String? sortFields,
     String? sortDirection,
   }) {
     this._scrollController = scrollController ?? ScrollController();
 
-    _controller = Get.put(VintaPagingDataTableController<Model, Filter>(), tag: dataTableKey);
+    _controller = controller ?? Get.put(VintaPagingDataTableController<Model, Filter>(), tag: dataTableKey);
     _controller.hydrate(
       filter: filter,
       columnSettings: columnSettings,

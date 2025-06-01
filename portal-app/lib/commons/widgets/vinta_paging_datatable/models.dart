@@ -51,8 +51,8 @@ class PageRequest<T> {
   PageRequest({
     required this.page,
     required this.size,
-    required this.totalElements,
-    required this.totalPages,
+    this.totalElements = 0,
+    this.totalPages = 0,
     this.filter,
     this.sortFields,
     this.sortDirection,

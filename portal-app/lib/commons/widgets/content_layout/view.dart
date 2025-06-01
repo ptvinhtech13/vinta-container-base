@@ -8,10 +8,10 @@ import '../breadcrumbs/view.dart';
 class ContentLayout extends StatelessWidget {
   final List<Widget> content;
   final List<NavigationItem> breadcrumbPaths;
-
   final String title;
+  final List<Widget>? actions;
 
-  const ContentLayout({super.key, required this.content, required this.title, this.breadcrumbPaths = const []});
+  const ContentLayout({super.key, required this.content, required this.title, this.breadcrumbPaths = const [], this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,10 @@ class ContentLayout extends StatelessWidget {
         children: [
           Text(title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: AppColors.colorPrimary01)),
           AppSpaces.spaceH16,
-          AppBreadcrumbs(routePaths: breadcrumbPaths),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [AppBreadcrumbs(routePaths: breadcrumbPaths), if (actions != null) Row(children: actions!)],
+          ),
           AppSpaces.spaceH16,
           ...content,
         ],
