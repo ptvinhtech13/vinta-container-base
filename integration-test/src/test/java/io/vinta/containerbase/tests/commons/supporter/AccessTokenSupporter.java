@@ -12,12 +12,11 @@ public class AccessTokenSupporter {
 	private final UserTokenAccessService userTokenAccessService;
 
 	public String loginAsSuperAdmin() {
-		final var tokenPair = userTokenAccessService.login(
-				LoginCommand.builder()
-						.accessType(UserAccessType.BASIC_AUTH)
-						.email(superAdminConfigProperties.getEmail())
-						.password(superAdminConfigProperties.getPassword())
-						.build());
+		final var tokenPair = userTokenAccessService.login(LoginCommand.builder()
+				.accessType(UserAccessType.BASIC_AUTH)
+				.email(superAdminConfigProperties.getEmail())
+				.password(superAdminConfigProperties.getPassword())
+				.build());
 		return tokenPair.getAccessToken()
 				.getToken();
 	}

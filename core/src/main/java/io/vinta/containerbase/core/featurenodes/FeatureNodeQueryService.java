@@ -8,4 +8,6 @@ public interface FeatureNodeQueryService {
 	List<ApiPermissionKey> getChildrenNodeByParentPath(String parentPath);
 
 	List<ApiPermissionKey> getFeatureNodes(List<FeatureNodeId> featureNodeIds);
+
+	List<ApiPermissionKey> getModuleNodes();
 }

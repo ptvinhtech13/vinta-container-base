@@ -24,7 +24,7 @@ class AccountPage extends AppPage<AccountPageController> {
 
   AccountPage({super.key}) {
     controller.hydrate();
-    _tableController = Get.put(VintaPagingDataTableController<UserModel, UserFilter>());
+    _tableController = Get.put(VintaPagingDataTableController<UserModel, UserFilter>(), tag: 'account-table');
   }
 
   @override

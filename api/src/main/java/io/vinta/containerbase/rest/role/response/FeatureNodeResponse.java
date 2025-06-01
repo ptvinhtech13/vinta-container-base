@@ -13,18 +13,21 @@ package io.vinta.containerbase.rest.role.response;
 
 import io.vinta.containerbase.common.enums.UserType;
 import io.vinta.containerbase.common.security.permissions.FeatureNodeType;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.With;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@With
 public class FeatureNodeResponse {
 	private String id;
 	private String nodeTitle;
@@ -34,4 +37,6 @@ public class FeatureNodeResponse {
 	private FeatureNodeType nodeType;
 	private int displayOrder;
 	private Set<UserType> allowedUserTypes;
+
+	private List<FeatureNodeResponse> children;
 }

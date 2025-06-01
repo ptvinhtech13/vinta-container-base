@@ -6,8 +6,10 @@ import io.vinta.containerbase.common.security.permissions.PlatformApiSecurityLev
 import io.vinta.containerbase.rest.role.request.CreateRoleRequest;
 import io.vinta.containerbase.rest.role.request.QueryRolePaginationRequest;
 import io.vinta.containerbase.rest.role.request.UpdateRoleRequest;
+import io.vinta.containerbase.rest.role.response.FeatureNodeResponse;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,5 +51,10 @@ public interface RoleApi {
 	@ResponseStatus(HttpStatus.OK)
 	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
 	void deleteRole(@PathVariable("roleId") Long roleId);
+
+	@GetMapping(path = "/api/feature-nodes/tree")
+	@ContainerBaseApiAuthorized(security = PlatformApiSecurityLevel.AUTHENTICATED)
+	@ResponseStatus(HttpStatus.OK)
+	List<FeatureNodeResponse> getFeatureNodeTree();
 
 }

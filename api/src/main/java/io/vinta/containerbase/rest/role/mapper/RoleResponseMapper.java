@@ -5,7 +5,6 @@ import io.vinta.containerbase.common.mapstruct.MapstructCommonMapper;
 import io.vinta.containerbase.common.mapstruct.MapstructConfig;
 import io.vinta.containerbase.core.featurenodes.FeatureNodeQueryService;
 import io.vinta.containerbase.core.role.entities.Role;
-import io.vinta.containerbase.rest.role.response.FeatureNodeResponse;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
 import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
@@ -28,17 +27,7 @@ public interface RoleResponseMapper {
 			@Context FeatureNodeQueryService featureNodeQueryService, Role role) {
 		builder.featureNodes(featureNodeQueryService.getFeatureNodes(role.getFeatureNodeIds())
 				.stream()
-				.map(key -> FeatureNodeResponse.builder()
-						.id(key.getId()
-								.getValue()
-								.toString())
-						.key(key.name())
-						.nodePath(key.getNodePath())
-						.nodeTitle(key.getNodeTitle())
-						.nodeType(key.getNodeType())
-						.displayOrder(key.getDisplayOrder())
-						.allowedUserTypes(key.getAllowedUserTypes())
-						.build())
+				.map(FeatureNodeResponseMapper.INSTANCE::toResponse)
 				.collect(Collectors.toSet()));
 	}
 }

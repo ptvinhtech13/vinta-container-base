@@ -70,7 +70,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 						.password("0000")
 						.build())
 				.roleId(userRole.getId()
-						.getValue().toString())
+						.getValue()
+						.toString())
 				.build();
 
 		// Act & Assert
@@ -137,7 +138,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 						.password("0000")
 						.build())
 				.roleId(userRole.getId()
-						.getValue().toString())
+						.getValue()
+						.toString())
 				.build();
 
 		// Act & Assert
@@ -204,7 +206,8 @@ class UserControllerIntegrationTest extends BaseIntegrationTest {
 						.password("0000")
 						.build())
 				.roleId(userRole.getId()
-						.getValue().toString())
+						.getValue()
+						.toString())
 				.build();
 
 		// Act & Assert

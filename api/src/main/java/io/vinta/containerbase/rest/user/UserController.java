@@ -53,8 +53,8 @@ public class UserController implements UserApi {
 	@Override
 	public UserResponse getUserMe() {
 		return UserResponseMapper.INSTANCE.toResponse(userQueryService.findSingleUser(FilterUserQuery.builder()
-						.byUserId(AppSecurityContextHolder.getUserId())
-						.build())
+				.byUserId(AppSecurityContextHolder.getUserId())
+				.build())
 				.orElseThrow(() -> new NotFoundException("User not found")));
 	}
 

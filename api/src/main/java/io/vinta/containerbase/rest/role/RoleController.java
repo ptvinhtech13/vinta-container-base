@@ -14,19 +14,25 @@ package io.vinta.containerbase.rest.role;
 import io.vinta.containerbase.common.mapstruct.MapstructCommonDomainMapper;
 import io.vinta.containerbase.common.paging.Paging;
 import io.vinta.containerbase.common.security.context.AppSecurityContextHolder;
+import io.vinta.containerbase.common.security.permissions.ApiPermissionKey;
 import io.vinta.containerbase.core.featurenodes.FeatureNodeQueryService;
 import io.vinta.containerbase.core.role.RoleCommandService;
 import io.vinta.containerbase.core.role.RoleQueryService;
 import io.vinta.containerbase.core.role.request.FilterRoleQuery;
 import io.vinta.containerbase.rest.api.RoleApi;
+import io.vinta.containerbase.rest.role.mapper.FeatureNodeResponseMapper;
 import io.vinta.containerbase.rest.role.mapper.RolePaginationMapper;
 import io.vinta.containerbase.rest.role.mapper.RoleRequestMapper;
 import io.vinta.containerbase.rest.role.mapper.RoleResponseMapper;
 import io.vinta.containerbase.rest.role.request.CreateRoleRequest;
 import io.vinta.containerbase.rest.role.request.QueryRolePaginationRequest;
 import io.vinta.containerbase.rest.role.request.UpdateRoleRequest;
+import io.vinta.containerbase.rest.role.response.FeatureNodeResponse;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,5 +84,19 @@ public class RoleController implements RoleApi {
 	public void deleteRole(Long roleId) {
 		roleCommandService.deleteRole(AppSecurityContextHolder.getTenantId(), MapstructCommonDomainMapper.INSTANCE
 				.longToRoleId(roleId));
+	}
+
+	@Override
+	public List<FeatureNodeResponse> getFeatureNodeTree() {
+		return featureNodeQueryService.getModuleNodes()
+				.stream()
+				.sorted(Comparator.comparing(ApiPermissionKey::getDisplayOrder))
+				.map(module -> FeatureNodeResponseMapper.INSTANCE.toResponse(module)
+						.withChildren(featureNodeQueryService.getChildrenNodeByParentPath(module.getNodePath())
+								.stream()
+								.sorted(Comparator.comparing(ApiPermissionKey::getDisplayOrder))
+								.map(FeatureNodeResponseMapper.INSTANCE::toResponse)
+								.collect(Collectors.toList())))
+				.collect(Collectors.toList());
 	}
 }

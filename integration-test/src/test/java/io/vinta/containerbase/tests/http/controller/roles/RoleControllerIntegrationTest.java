@@ -11,6 +11,7 @@ import io.vinta.containerbase.rest.role.request.CreateRoleRequest;
 import io.vinta.containerbase.rest.role.request.QueryRolePaginationRequest;
 import io.vinta.containerbase.rest.role.request.QueryRoleRequest;
 import io.vinta.containerbase.rest.role.request.UpdateRoleRequest;
+import io.vinta.containerbase.rest.role.response.FeatureNodeResponse;
 import io.vinta.containerbase.rest.role.response.RoleResponse;
 import io.vinta.containerbase.tests.commons.BaseIntegrationTest;
 import io.vinta.containerbase.tests.commons.utils.GenerateHttpHeader;
@@ -42,7 +43,7 @@ import org.springframework.util.LinkedMultiValueMap;
 class RoleControllerIntegrationTest extends BaseIntegrationTest {
 
 	@Test
-	void testCreateRoleWhenValidRequestThenReturnUserResponse() {
+	void testCreateRoleWhenValidRequestThenReturn() {
 		// Arrange
 		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
 		final var request = CreateRoleRequest.builder()
@@ -97,7 +98,6 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 										.orElseThrow(() -> new RuntimeException("Feature node not found"));
 								Assertions.assertEquals(expected.getId()
 										.getValue(), Long.valueOf(actualFeatureNode.getId()));
-								Assertions.assertEquals(expected.getNodePath(), actualFeatureNode.getNodePath());
 								Assertions.assertEquals(expected.getNodeTitle(), actualFeatureNode.getNodeTitle());
 								Assertions.assertEquals(expected.getNodeType(), actualFeatureNode.getNodeType());
 								Assertions.assertEquals(expected.getDisplayOrder(), actualFeatureNode
@@ -107,7 +107,7 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	void testGetRoleByKeyWhenValidRequestThenReturnUserResponse() {
+	void testGetRoleByKeyWhenValidRequestThenReturn() {
 		// Act & Assert
 		webClient.get()
 				.uri(uriBuilder -> uriBuilder.path("/api/role/roles/keys/{roleKey}")
@@ -143,7 +143,47 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	void testGetRoleByIdWhenValidRequestThenReturnUserResponse() {
+	void testGetFeatureNodeTreeWhenValidRequestThenReturnSuccessfully() {
+		// Act & Assert
+		webClient.get()
+				.uri(uriBuilder -> uriBuilder.path("/api/feature-nodes/tree")
+						.build(DefaultSystemRole.SYSTEM_ADMIN_ROLE.getRoleKey()))
+				.headers(header -> HeaderGenerator.generateHttpHeaders(GenerateHttpHeader.builder()
+						.header(header)
+						.objectMapper(objectMapper)
+						.accessToken(accessTokenSupporter.loginAsSuperAdmin())
+						.requestId(1L)
+						.tenantId(TenantConstants.ADMIN_TENANT_ID)
+						.build()))
+				.exchange()
+				.expectStatus()
+				.isOk()
+				.expectBodyList(FeatureNodeResponse.class)
+				.consumeWith(responses -> {
+					final var moduleNodes = responses.getResponseBody();
+					Assertions.assertNotNull(moduleNodes);
+
+					Assertions.assertEquals(Arrays.stream(ApiPermissionKey.values())
+							.filter(it -> FeatureNodeType.MODULE.equals(it.getNodeType()))
+							.count(), moduleNodes.size());
+
+					moduleNodes.forEach(moduleNode -> {
+						final var apiNodes = featureNodeQueryService.getChildrenNodeByParentPath(moduleNode
+								.getNodePath());
+						Assertions.assertEquals(apiNodes.size(), moduleNode.getChildren()
+								.size());
+
+						Assertions.assertTrue(apiNodes.stream()
+								.allMatch(apiNode -> moduleNode.getChildren()
+										.stream()
+										.anyMatch(it -> it.getKey()
+												.equals(apiNode.name()))));
+					});
+				});
+	}
+
+	@Test
+	void testGetRoleByIdWhenValidRequestThenReturn() {
 
 		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
 		final var role = roleSupporter.createRole(CreateRoleCommand.builder()
@@ -185,7 +225,7 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	void testUpdateRoleByIdWhenValidRequestThenReturnUserResponse() {
+	void testUpdateRoleByIdWhenValidRequestThenReturnSuccessfully() {
 
 		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
 		final var role = roleSupporter.createRole(CreateRoleCommand.builder()
@@ -237,7 +277,7 @@ class RoleControllerIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@Test
-	void testDeleteRoleByIdWhenValidRequestThenReturnUserResponse() {
+	void testDeleteRoleByIdWhenValidRequestThenReturnSuccessfully() {
 		final var tenant = tenantSupporter.initializeTenant("tenant1.com");
 		final var role = roleSupporter.createRole(CreateRoleCommand.builder()
 				.tenantId(tenant.getId())

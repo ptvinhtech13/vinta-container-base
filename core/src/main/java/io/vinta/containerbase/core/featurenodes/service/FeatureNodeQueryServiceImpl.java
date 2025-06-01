@@ -34,4 +34,11 @@ public class FeatureNodeQueryServiceImpl implements FeatureNodeQueryService {
 						.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<ApiPermissionKey> getModuleNodes() {
+		return Arrays.stream(ApiPermissionKey.values())
+				.filter(it -> FeatureNodeType.MODULE.equals(it.getNodeType()))
+				.collect(Collectors.toList());
+	}
+
 }
